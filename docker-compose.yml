@@ -1,0 +1,115 @@
+version: "3.0"
+
+services:
+  api:
+    build:
+      context: .
+    image: knawat_interview_test
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    links:
+      - nats
+      - redis
+      - mongo
+    depends_on:
+      - nats
+      - redis
+      - mongo
+    labels:
+      - "traefik.enable=true"   
+      - "traefik.backend=api"
+      - "traefik.port=3000"
+      - "traefik.frontend.entryPoints=http"
+      - "traefik.frontend.rule=PathPrefix:/"
+  products:
+    build:
+      context: .
+    image: knawat_interview_test
+    env_file: docker-compose.env
+    environment:
+      SERVICES: products
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+  es:
+    build:
+      context: .
+    image: knawat_interview_test
+    env_file: docker-compose.env
+    environment:
+      SERVICES: es
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+  cart:
+    build:
+      context: .
+    image: knawat_interview_test
+    env_file: docker-compose.env
+    environment:
+      SERVICES: cart
+    links:
+      - nats
+      - redis
+      - mongo
+    depends_on:
+      - nats
+      - redis
+      - mongo
+  users:
+    build:
+      context: .
+    image: knawat_interview_test
+    env_file: docker-compose.env
+    environment:
+      SERVICES: users
+    links:
+      - nats
+      - redis
+      - mongo
+    depends_on:
+      - nats
+      - redis
+      - mongo
+  nats:
+    image: nats
+  redis:
+    image: redis:alpine
+  mongo:
+    container_name: mongo
+    image: mongo
+    volumes:
+      - ./data:/data/db
+    ports:
+      - "27017:27017"
+  traefik:
+    image: traefik
+    command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false
+    ports:
+      - "3000:80"
+      - "3001:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.4.3
+    container_name: elasticsearch
+    volumes:
+      - esdata1:/usr/share/elasticsearch6/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+volumes:
+  esdata1:

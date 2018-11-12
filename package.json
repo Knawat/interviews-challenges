@@ -1,0 +1,51 @@
+{
+  "name": "knawat_interview_test",
+  "version": "1.0.0",
+  "description": "My Moleculer microservices project",
+  "scripts": {
+    "dev": "moleculer-runner --repl --hot services",
+    "start": "moleculer-runner",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint services"
+  },
+  "keywords": [
+    "microservices",
+    "moleculer"
+  ],
+  "author": "",
+  "devDependencies": {
+    "eslint": "^5.0.1",
+    "jest": "^23.3.0",
+    "jest-cli": "^23.3.0",
+    "moleculer-repl": "^0.5.0"
+  },
+  "dependencies": {
+    "bcrypt": "^3.0.2",
+    "bcryptjs": "^2.4.3",
+    "fs": "0.0.1-security",
+    "ioredis": "^3.2.2",
+    "jest-environment-node": "^23.4.0",
+    "jsonwebtoken": "^8.3.0",
+    "moleculer": "^0.13.0",
+    "moleculer-db": "^0.7.6",
+    "moleculer-db-adapter-mongo": "^0.4.2",
+    "moleculer-elasticsearch": "^1.1.1",
+    "moleculer-repl": "^0.5.2",
+    "moleculer-web": "^0.8.0",
+    "mongodb-memory-server": "^2.7.0",
+    "nats": "^1.0.0",
+    "path": "^0.12.7"
+  },
+  "engines": {
+    "node": ">= 8.x.x"
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "rootDir": "./services",
+    "roots": [
+      "../test"
+    ]
+  }
+}
