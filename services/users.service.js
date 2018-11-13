@@ -42,9 +42,9 @@ module.exports = {
 						if (entity.phone)
 							return this.adapter.findOne({ phone: entity.phone })
 								.then((res) => {
-									if (res) {
-										return Promise.reject({ success: false, msg: 'phone already registered ' })
-									}
+									if (res)
+										return Promise.reject(this.errorRes("phone already registered", null))
+
 								})
 					})
 					.then(() => {
@@ -52,7 +52,7 @@ module.exports = {
 							return this.adapter.findOne({ email: entity.email })
 								.then((res) => {
 									if (res) {
-										return Promise.reject({ success: false, msg: 'email already registered ' })
+										return Promise.reject(this.errorRes("email already registered", null))
 									}
 								})
 					})
@@ -63,7 +63,8 @@ module.exports = {
 							.then(doc => this.transformDocuments(ctx, {}, doc))
 							.then(user => this.transformToken(user, false, ctx.meta.token))
 							.then(json => this.entityChanged("created", json, ctx).then(() => json));
-					});
+					})
+					.catch(err => err);
 			}
 		},
 		login: {
@@ -141,6 +142,15 @@ module.exports = {
 				user.token = "Bearer " + this.generateJWT(user);;
 			}
 			return { user };
+		},
+		// structured API error res 
+		errorRes(msg, errObj) {
+			if (msg && errObj)
+				return { success: false, msg: msg, err: errObj }
+			else if (msg)
+				return { success: false, msg: msg };
+			else if (errObj)
+				return { success: false, err: errObj };
 		}
 	}
 };
