@@ -64,9 +64,10 @@ module.exports = {
 				.then(user => {
 					if (user) {
 						ctx.meta.userId = user._id;
-						return this.Promise.resolve(ctx);
+						return Promise.resolve(ctx);
 					}
-				});
+				})
+				.catch(err => Promise.reject({ success: false, err: err }))
 		}
 	}
 };

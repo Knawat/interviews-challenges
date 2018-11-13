@@ -140,14 +140,12 @@ module.exports = {
 				token: "string"
 			},
 			handler(ctx) {
-				return new this.Promise((resolve, reject) => {
-					jwt.verify(ctx.params.token, this.settings.JWT_SECRET, (err, decoded) => {
-						if (err)
-							return reject(err);
-						else if (decoded.id)
-							return resolve(this.getById(decoded.id));
-					});
-				})
+				return jwt.verify(ctx.params.token, this.settings.JWT_SECRET, (err, decoded) => {
+					if (err)
+						return Promise.reject({ success: false });
+					else if (decoded.id)
+						return Promise.resolve(this.getById(decoded.id));
+				});
 			}
 		}
 	},
