@@ -44,5 +44,13 @@
     "roots": [
       "../test"
     ]
+  },
+  "apidoc":{
+      "name": "docs",
+      "version": "0.1.0",
+      "description": "api docs for all public APIs",
+      "apidoc": {
+        "title": "Knawat API Docs",
+      }
   }
 }
