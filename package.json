@@ -50,7 +50,7 @@
       "version": "0.1.0",
       "description": "api docs for all public APIs",
       "apidoc": {
-        "title": "Knawat API Docs",
+        "title": "Knawat API Docs"
       }
   }
 }

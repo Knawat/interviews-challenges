@@ -44,7 +44,6 @@ module.exports = {
 								.then((res) => {
 									if (res)
 										return Promise.reject(this.errorRes("phone already registered", null))
-
 								})
 					})
 					.then(() => {
@@ -70,34 +69,28 @@ module.exports = {
 		login: {
 			params: {
 				user: {
-					type: "object"
+					type: "object", props: {
+						email: "email",
+						password: "string"
+					}
 				}
 			},
-			handler(ctx) {
-				if (ctx.params.user.email && ctx.params.user.password) {
-					const { email, password } = ctx.params.user;
-					return this.Promise.resolve()
-						.then(() => this.adapter.findOne({ email }))
-						.then(user => {
-							if (!user)
-								return this.Promise.reject(new MoleculerClientError("Email or password is invalid!", 422, "", [{ field: "email", message: "is not found" }]));
-
-							return bcrypt.compare(password, user.password).then(res => {
-								if (!res)
-									return Promise.reject(new MoleculerClientError("Wrong password!", 422, "", [{ field: "email", message: "is not found" }]));
-
-								return this.transformDocuments(ctx, {}, user);
-							});
-						})
-						.then(user => this.transformToken(user, true, ctx.meta.token));
-				}
-				else {
-					if (!ctx.params.user.email)
-						return Promise.reject({ success: false, msg: 'email address not provided' })
-					return Promise.reject({ success: false, msg: 'password not provided' })
-
-				}
-
+			async handler(ctx) {
+				const { email, password } = ctx.params.user;
+				return this.adapter.findOne({ email })
+					.then(user => {
+						if (!user) {
+							return Promise.reject(this.errorRes("email not found", null))
+						}
+						return bcrypt.compare(password, user.password).then(res => {
+							if (!res) {
+								return Promise.reject(this.errorRes("wrong password", null))
+							}
+							return this.transformDocuments(ctx, {}, user);
+						});
+					})
+					.then(user => this.transformToken(user, true, ctx.meta.token))
+					.catch(err => err);
 			}
 		},
 		resolveToken: {
@@ -113,14 +106,10 @@ module.exports = {
 					jwt.verify(ctx.params.token, this.settings.JWT_SECRET, (err, decoded) => {
 						if (err)
 							return reject(err);
-
-						resolve(decoded);
+						else if (decoded.id)
+							return resolve(this.getById(decoded.id));
 					});
 				})
-					.then(decoded => {
-						if (decoded.id)
-							return this.getById(decoded.id);
-					});
 			}
 		},
 
