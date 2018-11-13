@@ -23,40 +23,47 @@ module.exports = {
 			handler(ctx) {
 				let product = ctx.params;
 				product.userId = ctx.meta.userId;
-				return new this.Promise((resolve, reject) => {
-					this.adapter.findOne({
-						userId: product.userId,
-						prodId: product.prodId,
-						prodIndex: product.prodIndex
+				return this.adapter.findOne({
+					userId: product.userId,
+					prodId: product.prodId,
+					prodIndex: product.prodIndex
+				})
+					.then(prodFound => {
+						if (prodFound) {
+							prodFound.count = prodFound.count + product.count;
+							this.adapter.updateById(prodFound._id, { $set: { count: prodFound.count } })
+								.then(prodUpdated => Promise.resolve(prodUpdated))
+								.catch(() => Promise.reject(this.errorRes("update failed", null)))
+						}
+						else if (!prodFound) {
+							this.adapter.insert(product)
+								.then(Inserted => Promise.resolve(Inserted))
+								.catch(() => Promise.reject(this.errorRes("insert failed", null)))
+						}
 					})
-						.then(prodFound => {
-							if (prodFound) {
-								prodFound.count = prodFound.count + product.count;
-								this.adapter.updateById(prodFound._id, { $set: { count: prodFound.count } }).then(prodUpdated => {
-									if (prodUpdated) resolve({ success: true })
-								}).catch(err => reject({ success: false, msg: err }))
-							}
-							else if (!prodFound) {
-								this.adapter.insert(product)
-									.then(prodInserted => {
-										if (prodInserted) resolve({ success: true });
-									}).catch(err => reject({ success: false, msg: err }))
-							}
-						})
-						.catch(err => reject({ success: false, msg: err }));
-				});
+					.then(() => ({ success: true }))
+					.catch(err => err);
 			}
 		},
 		summary: {
 			handler(ctx) {
-				return new this.Promise((resolve, reject) => {
-					this.adapter.find({
-						userId: ctx.meta.userId
-					}).then(data => {
-						resolve({ success: true, data: data });
-					}).catch(err => reject({ success: false, msg: err }));
-				});
+				return this.adapter.find({
+					userId: ctx.meta.userId
+				})
+					.then(data => ({ success: true, data: data }))
+					.catch(err => this.errorRes("failed to get list", err));
 			}
+		}
+	},
+	methods: {
+		// structured API error res 
+		errorRes(msg, errObj) {
+			if (msg && errObj)
+				return { success: false, msg: msg, err: errObj }
+			else if (msg)
+				return { success: false, msg: msg };
+			else if (errObj)
+				return { success: false, err: errObj };
 		}
 	}
 };
