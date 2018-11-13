@@ -31,6 +31,26 @@ module.exports = {
 		}
 	},
 	actions: {
+		/**
+		* @api {post} /public/users/register user registeration API 
+		* @apiName customers register
+		* @apiGroup users
+		*
+		* @apiParam (user) {Object} user new user account object.
+		* @apiParam (user) {String} user.name user name.
+		* @apiParam (user) {String} user.password user password(min length 6).
+		* @apiParam (user) {String} user.email user email
+		* @apiParam (user) {String} user.phone user phone(length 11)
+		*
+		* @apiSuccess (Success) {Boolean} success ensuring success
+		* @apiSuccess (Success) {Object} user new user object created.
+
+		* @apiError (Error) {Boolean}  success ensuring that operation failed.
+		* @apiError (Error) {String}  [err] error object.
+		* @apiError (Error) {String}  [msg] error helpful message.
+		*
+		* @apiError (Error_params) {String}  [paramsValidation] error helpful message.
+		*/
 		register: {
 			params: {
 				user: { type: "object" }
@@ -66,6 +86,24 @@ module.exports = {
 					.catch(err => err);
 			}
 		},
+		/**
+		* @api {post} /public/users/register user registeration API 
+		* @apiName customers register
+		* @apiGroup users
+		*
+		* @apiParam (user) {Object} user user account object.
+		* @apiParam (user) {String} user.email user email.
+		* @apiParam (user) {String} user.password user password.
+		*
+		* @apiSuccess (Success) {Boolean} success ensuring success.
+		* @apiSuccess (Success) {Object} user user object created.
+		*
+		* @apiError (Error) {Boolean}  success ensuring that operation failed.
+		* @apiError (Error) {String}  [err] error object.
+		* @apiError (Error) {String}  [msg] error helpful message.
+		*
+		* @apiError (Error_params) {String}  [paramsValidation] error helpful message.
+		*/
 		login: {
 			params: {
 				user: {
@@ -111,8 +149,7 @@ module.exports = {
 					});
 				})
 			}
-		},
-
+		}
 	},
 	methods: {
 		generateJWT(user) {
@@ -130,7 +167,7 @@ module.exports = {
 				if (withToken) user.token = "Bearer " + token;
 				user.token = "Bearer " + this.generateJWT(user);;
 			}
-			return { user };
+			return { success: true, user: user };
 		},
 		// structured API error res 
 		errorRes(msg, errObj) {
