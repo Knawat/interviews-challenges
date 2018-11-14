@@ -5,8 +5,6 @@
   "scripts": {
     "dev": "moleculer-runner --repl --hot services",
     "start": "moleculer-runner",
-    "ci": "jest --watch",
-    "test": "jest --coverage",
     "lint": "eslint services"
   },
   "keywords": [
