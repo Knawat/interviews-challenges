@@ -33,14 +33,31 @@ module.exports = {
 					urlencoded: { extended: true }
 				},
 				aliases: {
-					// Products
-					"POST products/create": "products.create",
 					"POST products/query": "products.query",
 					// my cart
 					"POST cart/add": "cart.addOne",
 					"GET  cart/summary": "cart.summary",
 				}
+			},
+			{
+				path: "/admin/",
+				// authorization: true,
+				// use: [
+				// 	adminAuthorize()
+				// ],
+				bodyParsers: {
+					json: true,
+					urlencoded: { extended: true }
+				},
+				aliases: {
+					// create admin
+					"POST users/add-admin": "users.addAdmin",
+					// // Products
+					"POST products/create-one": "products.createProd",
+					"POST products/query": "products.query",
+				}
 			}
+
 		],
 		// Serve assets from "public" folder
 		assets: {
@@ -65,6 +82,30 @@ module.exports = {
 					if (user) {
 						ctx.meta.userId = user._id;
 						return Promise.resolve(ctx);
+					}
+				})
+				.catch(err => Promise.reject({ success: false, err: err }))
+		},
+		adminAuthorize(ctx, route, req) {
+			let token;
+			if (req.headers.authorization) {
+				let type = req.headers.authorization.split(" ")[0];
+				if (type === "Bearer") {
+					token = req.headers.authorization.split(" ")[1];
+				}
+			}
+			if (!token) {
+				return Promise.reject(new UnAuthorizedError(ERR_NO_TOKEN));
+			}
+			// Verify JWT token
+			ctx.call("users.resolveToken", { token })
+				.then(user => {
+					if (user && user.role === 1) {
+						ctx.meta.userId = user._id;
+						return Promise.resolve(ctx);
+					}
+					else {
+						Promise.reject({ success: false, msg: "not an admin" })
 					}
 				})
 				.catch(err => Promise.reject({ success: false, err: err }))
