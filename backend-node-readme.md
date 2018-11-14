@@ -30,3 +30,10 @@ Note: that we assume you already build them.
 ## Patterns used:
 
  - API Gateway: in order to let the services be consumed using http
+
+## APIs Documentation
+- we are using (APIDoc)[http://apidocjs.com] in order to generate documentation on how to consume the APIs
+- first install it on command line:
+> npm install apidoc -g
+- then run this to generate the documentation:
+> apidoc -i YOUR-FOLDER/services -o docs/ 
