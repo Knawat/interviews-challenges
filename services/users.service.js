@@ -20,7 +20,7 @@ module.exports = {
 		JWT_SECRET: process.env.JWT_SECRET || "jwt-conduit-secret",
 
 		/** Public fields */
-		fields: ["_id", "phone", "email", "name", "password"],
+		fields: ["_id", "phone", "email", "name", "password", "role"],
 
 		/** Validator schema for entity */
 		entityValidator: {
@@ -28,6 +28,9 @@ module.exports = {
 			password: { type: "string", min: 6 },
 			email: { type: "email" },
 			phone: { type: "string", min: 11, max: 11 },
+			//1->admin
+			//2->customer
+			role: { type: "number", min: 1, max: 1 },
 		}
 	},
 	actions: {
@@ -41,10 +44,10 @@ module.exports = {
 		* @apiParam (user) {String} user.password user password(min length 6).
 		* @apiParam (user) {String} user.email user email
 		* @apiParam (user) {String} user.phone user phone(length 11)
+		* @apiParam (user) {String} user.role user role (super:1,moderator:2,customer:3)
 		*
 		* @apiSuccess (Success) {Boolean} success ensuring success
 		* @apiSuccess (Success) {Object} user new user object created.
-
 		* @apiError (Error) {Boolean}  success ensuring that operation failed.
 		* @apiError (Error) {String}  [err] error object.
 		* @apiError (Error) {String}  [msg] error helpful message.
@@ -57,6 +60,65 @@ module.exports = {
 			},
 			handler(ctx) {
 				let entity = ctx.params.user;
+				entity.role = 2;
+				return this.validateEntity(entity)
+					.then(() => {
+						if (entity.phone)
+							return this.adapter.findOne({ phone: entity.phone })
+								.then((res) => {
+									if (res)
+										return Promise.reject(this.errorRes("phone already registered", null))
+								})
+					})
+					.then(() => {
+						if (entity.email)
+							return this.adapter.findOne({ email: entity.email })
+								.then((res) => {
+									if (res) {
+										return Promise.reject(this.errorRes("email already registered", null))
+									}
+								})
+					})
+					.then(() => {
+						entity.password = bcrypt.hashSync(entity.password, 10);
+						entity.createdAt = new Date();
+						return this.adapter.insert(entity)
+							.then(doc => this.transformDocuments(ctx, {}, doc))
+							.then(user => this.transformToken(user, false, ctx.meta.token))
+							.then(json => this.entityChanged("created", json, ctx).then(() => json));
+					})
+					.catch(err => err);
+			}
+		},
+		/**
+		* @api {post} /admin/add-admin admin create admin/moderator account 
+		* @apiName admin register
+		* @apiGroup users
+		*
+		* @apiParam (user) {Object} user new user account object.
+		* @apiParam (user) {String} user.name user name.
+		* @apiParam (user) {String} user.password user password(min length 6).
+		* @apiParam (user) {String} user.email user email
+		* @apiParam (user) {String} user.phone user phone(length 11)
+		* @apiParam (user) {String} user.role user role (admin:1,customer:2)
+		* @apiParam (user) {String} user.createdBy admin(id) who created new account (admin:1)
+		*
+		* @apiSuccess (Success) {Boolean} success ensuring success
+		* @apiSuccess (Success) {Object} user new user object created.
+		*
+		* @apiError (Error) {Boolean}  success ensuring that operation failed.
+		* @apiError (Error) {String}  [err] error object.
+		* @apiError (Error) {String}  [msg] error helpful message.
+		*
+		* @apiError (Error_params) {String}  [paramsValidation] error helpful message.
+		*/
+		addAdmin: {
+			params: {
+				user: { type: "object" }
+			},
+			handler(ctx) {
+				let entity = ctx.params.user;
+				entity.role = 1;
 				return this.validateEntity(entity)
 					.then(() => {
 						if (entity.phone)
