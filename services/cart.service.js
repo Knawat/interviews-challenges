@@ -14,14 +14,39 @@ module.exports = {
 	fields: ["_id", "prodIndex", "prodId", "userId", "count"],
 	dependencies: [],
 	actions: {
+		/**
+		* @api {post} /cart/add add a product in my cart 
+		* @apiName add product 
+		* @apiGroup cart
+		*
+		* @apiHeader (MyHeaderGroup) {String} authorization Authorization value.
+		*
+    	* @apiParam  {Object} product product object to add to cart.
+		* @apiParam  {String} product.index product index.
+		* @apiParam  {String} product.id  product id.
+		* @apiParam  {String} product.count  product count.
+		*
+		* @apiSuccess {Boolean} success ensuring indexing
+		* 
+		* @apiError (Error) {Boolean}  success ensuring that operation failed.
+		* @apiError (Error) {String}  [err] error object.
+		* @apiError (Error) {String}  [msg] error helpful message.
+		*
+		* @apiError (Error_params) {String}  [paramsValidation] error helpful message.
+		*/
 		addOne: {
 			params: {
-				prodIndex: "string",
-				prodId: "string",
-				count: "number"
+				product: {
+					type: "object",
+					props: {
+						prodIndex: "string",
+						prodId: "string",
+						count: "number"
+					}
+				}
 			},
 			handler(ctx) {
-				let product = ctx.params;
+				let product = ctx.params.product;
 				product.userId = ctx.meta.userId;
 				return this.adapter.findOne({
 					userId: product.userId,
@@ -45,12 +70,28 @@ module.exports = {
 					.catch(err => err);
 			}
 		},
+		/**
+		* @api {get} /cart/summary get list of products in my cart 
+		* @apiName list cart products 
+		* @apiGroup cart
+		*
+		* @apiHeader (MyHeaderGroup) {String} authorization Authorization value.
+		*
+		* @apiSuccess {Boolean} success ensuring indexing
+		* @apiSuccess {Object} list products listed saved in cart
+		* 
+		* @apiError (Error) {Boolean}  success ensuring that operation failed.
+	   * @apiError (Error) {String}  [err] error object.
+	   * @apiError (Error) {String}  [msg] error helpful message.
+	   *
+	   * @apiError (Error_params) {String}  [paramsValidation] error helpful message.
+		*/
 		summary: {
 			handler(ctx) {
 				return this.adapter.find({
 					userId: ctx.meta.userId
 				})
-					.then(data => ({ success: true, data: data }))
+					.then(data => ({ success: true, list: data }))
 					.catch(err => this.errorRes("failed to get list", err));
 			}
 		}
