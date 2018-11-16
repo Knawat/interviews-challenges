@@ -10,7 +10,7 @@ const MongoDBAdapter = require("moleculer-db-adapter-mongo");
 module.exports = {
 	name: "users",
 	mixins: [DbService],
-	adapter: new MongoDBAdapter("mongodb://localhost:27017/knawat", {
+	adapter: new MongoDBAdapter("mongodb://localhost/knawat", {
 		keepAlive: 1,
 		useNewUrlParser: true
 	}),
