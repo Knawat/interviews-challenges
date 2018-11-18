@@ -1,9 +1,6 @@
 "use strict";
-let ESService = require("moleculer-elasticsearch");
-
 module.exports = {
 	name: "products",
-	mixins: [ESService],
 	dependencies: [],
 	actions: {
 		/**
