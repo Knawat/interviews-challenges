@@ -3,18 +3,11 @@
 const { MoleculerClientError } = require("moleculer").Errors;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
-
-const DbService = require("moleculer-db");
-const MongoDBAdapter = require("moleculer-db-adapter-mongo");
+const DbService = require("../mixins/db.mixin");
 
 module.exports = {
 	name: "users",
-	mixins: [DbService],
-	adapter: new MongoDBAdapter("mongodb://localhost/knawat", {
-		keepAlive: 1,
-		useNewUrlParser: true
-	}),
-	collection: "users",
+	mixins: [DbService("users")],
 	settings: {
 		/** Secret for JWT */
 		JWT_SECRET: process.env.JWT_SECRET || "jwt-conduit-secret",

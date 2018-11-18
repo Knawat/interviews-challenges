@@ -1,16 +1,9 @@
 "use strict";
-let ESService = require("moleculer-elasticsearch");
-const DbService = require("moleculer-db");
-const MongoDBAdapter = require("moleculer-db-adapter-mongo");
+const DbService = require("../mixins/db.mixin");
 
 module.exports = {
 	name: "cart",
-	mixins: [ESService, DbService],
-	adapter: new MongoDBAdapter("mongodb://localhost/knawat", {
-		keepAlive: 1,
-		useNewUrlParser: true
-	}),
-	collection: "cart",
+	mixins: [DbService("cart")],
 	fields: ["_id", "prodIndex", "prodId", "userId", "count"],
 	dependencies: [],
 	actions: {
