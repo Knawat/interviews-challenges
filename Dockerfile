@@ -7,12 +7,14 @@ WORKDIR /app
 
 COPY package.json .
 
-RUN apk add --no-cache --virtual .gyp \
-        python \
-        make \
-        g++ \
-    && npm install --production \
-    && apk del .gyp
+RUN npm install --production
+    
+# RUN apk add --no-cache --virtual .gyp \
+#         python \
+#         make \
+#         g++ \
+#     && npm install --production \
+#     && apk del .gyp
 
 COPY . .
 
