@@ -6,7 +6,7 @@ module.exports = {
     mixins: [ESService],
     settings: {
         elasticsearch: {
-            host: "http://elastic:changeme@localhost:9200"
+            host: process.env.ELASTICSEARCH_HOST || "http://elastic:changeme@localhost:9200"
         }
     }
 }
