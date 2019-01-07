@@ -1,0 +1,98 @@
+version: "3.0"
+services:
+  api:
+    build:
+      context: .
+      # dockerfile: ./moleculer.dockerfile
+    image: hazem
+    # working_dir: /app
+    ports:
+      - "3000:3000"
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    # command: /bin/sh -c "npm install && npm start"
+    links:
+      - redis
+      - nats
+    depends_on:
+      - redis
+      - nats
+    # tty: true
+
+  users:
+    build:
+      context: .
+      # dockerfile: ./moleculer.dockerfile
+    image: hazem
+    env_file: docker-compose.env
+    environment:
+      SERVICES: users
+    links:
+      - redis
+      - mongo
+      - elasticsearch
+    depends_on:
+      - redis
+      - mongo
+      - elasticsearch
+
+  cart:
+    build:
+      context: .
+      # dockerfile: ./moleculer.dockerfile
+    image: hazem
+    env_file: docker-compose.env
+    environment:
+      SERVICES: cart
+    links:
+      - redis
+      - mongo
+      - elasticsearch
+    depends_on:
+      - redis
+      - mongo
+      - elasticsearch
+
+  es:
+    build:
+      context: .
+      # dockerfile: ./moleculer.dockerfile
+    image: hazem
+    env_file: docker-compose.env
+    environment:
+      SERVICES: es
+    links:
+      - elasticsearch
+    depends_on:
+      - elasticsearch
+    # command: ["wait-for-it.sh", "hazem_elasticsearch_1:9200"]
+
+  mongo:
+    image: mongo
+    volumes:
+      - ./db:/data/db
+
+  redis:
+    image: redis
+
+  nats:
+    image: nats
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    ports:
+      - "9200:9200"
+      - "9300:9300"
+    volumes:
+      - esdata1:/usr/share/elasticsearch6/data
+
+  # elasticsearch-mapping-init:
+  #   build: es-init
+  #   links:
+  #     - elasticsearch
+  #   depends_on:
+  #     - elasticsearch
+volumes: 
+  esdata1:
