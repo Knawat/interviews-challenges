@@ -1,0 +1,55 @@
+{
+  "name": "interviews-challenges",
+  "version": "1.0.0",
+  "description": "My Moleculer microservices project",
+  "scripts": {
+    "dev": "moleculer-runner --repl --hot --env services",
+    "start": "moleculer-runner",
+    "cli": "moleculer connect NATS",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint services mixins",
+    "prettier": "prettier services/*.js mixins/*.js *.js --write",
+    "dc:up": "docker-compose up --build -d",
+    "dc:down": "docker-compose down"
+  },
+  "keywords": [
+    "microservices",
+    "moleculer"
+  ],
+  "author": "Parth Jethwa",
+  "devDependencies": {
+    "eslint": "^5.10.0",
+    "eslint-config-airbnb-base": "^13.1.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.14.0",
+    "jest": "^23.6.0",
+    "jest-cli": "^23.6.0",
+    "moleculer-repl": "^0.5.3",
+    "npm-check": "^5.9.0",
+    "prettier": "^1.15.3"
+  },
+  "dependencies": {
+    "dotenv": "^6.2.0",
+    "elasticsearch": "^15.3.0",
+    "ioredis": "^4.5.1",
+    "jsonwebtoken": "^8.4.0",
+    "lodash": "^4.17.11",
+    "moleculer": "^0.13.0",
+    "moleculer-db": "^0.7.7",
+    "moleculer-db-adapter-mongo": "^0.4.2",
+    "moleculer-web": "^0.8.0",
+    "nats": "^1.0.1"
+  },
+  "engines": {
+    "node": ">= 8.x.x"
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "rootDir": "./services",
+    "roots": [
+      "../test"
+    ]
+  }
+}
