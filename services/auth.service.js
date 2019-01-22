@@ -129,13 +129,16 @@ class AuthService extends Service {
                 ]);
               })
               .then(async uniqueEmail => {
-                
-								if (!uniqueEmail) {
+                if (!uniqueEmail) {
                   return this.Promise.reject({ status: false, message: 'Email already exist!' });
-								}
-								
+                }
+
                 return this.addUsers(ctx.params).then(result =>
-                  this.Promise.resolve({ status: true, message: 'Registration successfull!', id: result._id })
+                  this.Promise.resolve({
+                    status: true,
+                    message: 'Registration successfull!',
+                    id: result._id
+                  })
                 );
               });
           }
