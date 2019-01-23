@@ -66,8 +66,70 @@ class ProductService extends Service {
                 return this.Promise.resolve(products);
               });
           }
+        },
+
+        /**
+         * Add Product to Cart
+         *
+         * @actions
+         * @param {String} id - productId
+         * @returns {Promise} API response with Product array
+         */
+        add_to_cart: {
+          auth: 'required',
+          cache: false,
+          params: {
+            productId: 'string',
+            quantity: 'number'
+          },
+          async handler(ctx) {
+            const { productId, quantity } = ctx.params;
+            return this.Promise.resolve()
+              .then(() => this.isProductExist(productId))
+              .then(async exist => {
+                if (!exist) {
+                  throw new MoleculerClientError('Product not found!', 404, '', [
+                    {
+                      field: 'products',
+                      message: 'Product not found!'
+                    },
+                    {
+                      field: 'success',
+                      message: false
+                    }
+                  ]);
+                }
+                return this.Promise.resolve(true);
+              })
+              .then(() => this.addToCart(ctx, productId, quantity))
+              .then(result => result);
+          }
         }
       }
+    });
+  }
+
+  /**
+   * add Product to redis productCartHash
+   *
+   * @param {String} productId
+   * @memberof ProductService
+   */
+  async addToCart(ctx, productId, quantity) {
+    const { userId } = ctx.meta.auth;
+    const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
+    let cartArray = {};
+
+    if (cart) cartArray = JSON.parse(cart);
+
+    cartArray[productId] = quantity;
+    const returnString = JSON.stringify(cartArray);
+
+    await this.executeRedisCommand('hmset', ['userCartHash', { [userId]: returnString }]);
+
+    return this.Promise.resolve({
+      status: true,
+      message: 'Product added to cart'
     });
   }
 }

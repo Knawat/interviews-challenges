@@ -56,7 +56,8 @@ class APIService extends Service {
             aliases: {
               'POST login': 'auth.login',
               'POST register': 'auth.register',
-              'POST products': 'product.list'
+              'GET products': 'product.list',
+              'POST add-to-cart': 'product.add_to_cart'
             },
 
             // Disable to call not-mapped actions
