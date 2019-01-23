@@ -1,6 +1,3 @@
-const elasticsearch = require('elasticsearch');
-// const { MoleculerClientError } = require('moleculer').Errors;
-
 const indices = {
   products: 'products',
   users: 'users'
@@ -9,27 +6,19 @@ const type = {
   products: 'product',
   users: 'user'
 };
-const es = new elasticsearch.Client({
-  host: [
-    {
-      host: process.env.ELASTIC_HOST || 'localhost',
-      protocol: process.env.ELASTIC_PROTOCOL || 'http',
-      port: process.env.ELASTIC_PORT || 9200
-    }
-  ],
-  log: process.env.ELASTIC_LOG || 'info'
-});
+
 module.exports = {
   methods: {
     /**
      * fetch users
      *
      * @methods
+     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Object} params - params with searching data
      *
      * @returns {Promise} reponse with user info
      */
-    async fetchUsers(params) {
+    async fetchUsers(esObject, params) {
       const { email, password } = params;
       const paramData = [];
       if (email) {
@@ -45,7 +34,7 @@ module.exports = {
         }
       };
 
-      return es
+      return esObject
         .search({
           index: indices.users,
           type: type.users,
@@ -66,20 +55,24 @@ module.exports = {
             id: user._id,
             ...user._source
           }));
+        })
+        .catch(err => {
+          this.handleErr(err);
         });
     },
     /**
      * add users
      *
      * @methods
+     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Object} params - params with data
      *
      * @returns {Promise} response object from elastic search
      */
-    async addUsers(params) {
+    async addUsers(esObject, params) {
       const { name, email, password } = params;
 
-      return es
+      return esObject
         .index({
           index: indices.users,
           type: type.users,
@@ -89,11 +82,20 @@ module.exports = {
             password: password
           }
         })
-        .then(result => result);
+        .then(result => result)
+        .catch(err => {
+          this.handleErr(err);
+        });
     },
 
-    async getAllProducts() {
-      return es
+    /**
+     * Get product listing
+     *
+     * @param {elasticsearch} esObject - elasticsearch object
+     * @returns {Promise} response object from elastic search
+     */
+    async getAllProducts(esObject) {
+      return esObject
         .search({
           index: indices.products,
           type: type.products,
@@ -111,11 +113,17 @@ module.exports = {
               message: 'No products found.'
             };
           }
-
-          return result.hits.hits.map(product => ({
+          const products = result.hits.hits.map(product => ({
             id: product._id,
             ...product._source
           }));
+          return this.Promise.resolve({
+            status: true,
+            products: products
+          });
+        })
+        .catch(err => {
+          this.handleErr(err);
         });
     },
 
@@ -123,12 +131,13 @@ module.exports = {
      * Get product from elastic search by id
      *
      * @methods
+     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Number} productId
      *
      * @returns {Promise} response object from elastic search
      */
-    async getProductById(productId) {
-      return es
+    async getProductById(esObject, productId) {
+      return esObject
         .get({
           index: indices.products,
           type: type.products,
@@ -142,6 +151,9 @@ module.exports = {
             id: result._id,
             ...result._source
           });
+        })
+        .catch(err => {
+          this.handleErr(err);
         });
     },
 
@@ -149,18 +161,37 @@ module.exports = {
      * check if product exist or not.
      *
      * @methods
+     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Number} productId
      *
      * @returns {boolean} exist flag(true, flase)
      */
-    async isProductExist(productId) {
-      return es
+    async isProductExist(esObject, productId) {
+      return esObject
         .exists({
           index: indices.products,
           type: type.products,
           id: productId
         })
-        .then(result => result);
+        .then(result => result)
+        .catch(err => {
+          this.handleErr(err);
+        });
+    },
+
+    /**
+     * handling response error
+     *
+     * @methods
+     * @param {Response} response redis cli error response
+     *
+     * @returns {Object} Response Object with status code and message
+     */
+    handleErr(res) {
+      return err => {
+        this.logger.error('Request error!', err);
+        res.status(err.code || 500).send(err.message);
+      };
     }
   }
 };

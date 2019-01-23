@@ -3,7 +3,6 @@ const { MoleculerClientError } = require('moleculer').Errors;
 
 const Redis = require('../mixins/redis.mixin');
 const Common = require('../mixins/common.mixin');
-const Elastic = require('../mixins/elastic.mixin');
 /**
  * Handles Product actions
  *
@@ -22,11 +21,11 @@ class ProductService extends Service {
 
     this.parseServiceSchema({
       name: 'product',
-      mixins: [Elastic, Redis, Common],
+      mixins: [Redis, Common],
       /**
        * Service dependencies
        */
-      dependencies: [],
+      dependencies: ['elastic'],
 
       /**
        * Service settings
@@ -47,24 +46,22 @@ class ProductService extends Service {
          */
         list: {
           cache: false,
-          async handler() {
-            return this.Promise.resolve()
-              .then(() => this.getAllProducts())
-              .then(async products => {
-                if (!products) {
-                  throw new MoleculerClientError('No product found!', 404, '', [
-                    {
-                      field: 'products',
-                      message: 'No products found!'
-                    },
-                    {
-                      field: 'success',
-                      message: false
-                    }
-                  ]);
-                }
-                return this.Promise.resolve(products);
-              });
+          async handler(ctx) {
+            return ctx.call('elastic.get_all_products').then(async products => {
+              if (!products) {
+                throw new MoleculerClientError('No product found!', 404, '', [
+                  {
+                    field: 'products',
+                    message: 'No products found!'
+                  },
+                  {
+                    field: 'success',
+                    message: false
+                  }
+                ]);
+              }
+              return this.Promise.resolve(products);
+            });
           }
         },
 
@@ -85,7 +82,7 @@ class ProductService extends Service {
           async handler(ctx) {
             const { productId, quantity } = ctx.params;
             return this.Promise.resolve()
-              .then(() => this.isProductExist(productId))
+              .then(() => ctx.call('elastic.is_product_exist', { productId: productId }))
               .then(async exist => {
                 if (!exist) {
                   throw new MoleculerClientError('Product not found!', 404, '', [
@@ -133,26 +130,26 @@ class ProductService extends Service {
           auth: 'required',
           async handler(ctx) {
             const { userId } = ctx.meta.auth;
-						const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
-						
+            const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
+
             let cartArray = {};
             const cartDetails = [];
-						
-						if (cart) cartArray = JSON.parse(cart, true);
-						
-						const productIdS = Object.keys(cartArray);
-						
-            await this.asyncForEach(productIdS, async (product) => {
-							
-							const quantity = cartArray[product];
 
-              const productDetails = await this.getProductById(product);
-              if (productDetails !== '') {
-                cartDetails.push({
-                  quantity: quantity,
-                  ...productDetails
-                });
-              }
+            if (cart) cartArray = JSON.parse(cart, true);
+
+            const productIdS = Object.keys(cartArray);
+
+            await this.asyncForEach(productIdS, async product => {
+              const quantity = cartArray[product];
+
+              await ctx.call('elastic.get_product_by_id', { productId: product }).then(pr => {
+                if (pr !== '') {
+                  cartDetails.push({
+                    ...pr,
+                    quantity: quantity
+                  });
+                }
+              });
             });
 
             return this.Promise.resolve(cartDetails);

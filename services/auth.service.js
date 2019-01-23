@@ -2,7 +2,7 @@ const { Service } = require('moleculer');
 const jwt = require('jsonwebtoken');
 const { MoleculerClientError } = require('moleculer').Errors;
 const Common = require('../mixins/common.mixin');
-const Elastic = require('../mixins/elastic.mixin');
+// const Elastic = require('../mixins/elastic.mixin');
 /**
  * Handles User Authentication
  *
@@ -21,11 +21,11 @@ class AuthService extends Service {
 
     this.parseServiceSchema({
       name: 'auth',
-      mixins: [Common, Elastic],
+      mixins: [Common],
       /**
        * Service dependencies
        */
-      dependencies: [],
+      dependencies: ['elastic'],
 
       /**
        * Service settings
@@ -60,7 +60,7 @@ class AuthService extends Service {
           },
           cache: false,
           async handler(ctx) {
-            return this.fetchUsers(ctx.params).then(async result => {
+            return ctx.call('elastic.fetch_users', ctx.params).then(async result => {
               if ('status' in result && !result.status) {
                 throw new MoleculerClientError('email or password is invalid!', 422, '', [
                   {
@@ -110,8 +110,8 @@ class AuthService extends Service {
             const verificationData = {
               email: email
             };
-
-            return this.fetchUsers(verificationData)
+            return ctx
+              .call('elastic.fetch_users', verificationData)
               .then(async result => {
                 if ('status' in result && !result.status) {
                   return this.Promise.resolve(true);
@@ -131,8 +131,7 @@ class AuthService extends Service {
                 if (!uniqueEmail) {
                   return this.Promise.reject({ status: false, message: 'Email already exist!' });
                 }
-
-                return this.addUsers(ctx.params).then(result =>
+                return ctx.call('elastic.add_users', ctx.params).then(result =>
                   this.Promise.resolve({
                     status: true,
                     message: 'Registration successfull!',
