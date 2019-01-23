@@ -104,6 +104,59 @@ class ProductService extends Service {
               .then(() => this.addToCart(ctx, productId, quantity))
               .then(result => result);
           }
+        },
+
+        /**
+         * clear user product Cart
+         *
+         * @actions
+         * @returns {Promise} status
+         */
+        clear_cart: {
+          auth: 'required',
+          async handler(ctx) {
+            const { userId } = ctx.meta.auth;
+
+            await this.executeRedisCommand('hdel', ['userCartHash', userId]);
+
+            return this.Promise.resolve(true);
+          }
+        },
+
+        /**
+         * get user Cart summary
+         *
+         * @actions
+         * @returns {Promise} cart details
+         */
+        cart_summary: {
+          auth: 'required',
+          async handler(ctx) {
+            const { userId } = ctx.meta.auth;
+						const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
+						
+            let cartArray = {};
+            const cartDetails = [];
+						
+						if (cart) cartArray = JSON.parse(cart, true);
+						
+						const productIdS = Object.keys(cartArray);
+						
+            await this.asyncForEach(productIdS, async (product) => {
+							
+							const quantity = cartArray[product];
+
+              const productDetails = await this.getProductById(product);
+              if (productDetails !== '') {
+                cartDetails.push({
+                  quantity: quantity,
+                  ...productDetails
+                });
+              }
+            });
+
+            return this.Promise.resolve(cartDetails);
+          }
         }
       }
     });

@@ -57,7 +57,9 @@ class APIService extends Service {
               'POST login': 'auth.login',
               'POST register': 'auth.register',
               'GET products': 'product.list',
-              'POST add-to-cart': 'product.add_to_cart'
+              'POST add-to-cart': 'product.add_to_cart',
+              'POST cart-summary': 'product.cart_summary',
+              'POST clear-cart': 'product.clear_cart'
             },
 
             // Disable to call not-mapped actions
