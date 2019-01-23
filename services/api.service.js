@@ -54,29 +54,13 @@ class APIService extends Service {
             authorization: true,
 
             aliases: {
-              health: '$node.health',
               'POST login': 'auth.login',
-              'POST register': 'auth.register'
+              'POST register': 'auth.register',
+              'POST products': 'product.list'
             },
 
             // Disable to call not-mapped actions
             mappingPolicy: 'restrict',
-
-            // Set CORS headers
-            cors: {
-              // Configures the Access-Control-Allow-Origin CORS header.
-              origin: '*',
-              // Configures the Access-Control-Allow-Methods CORS header.
-              methods: ['GET', 'OPTIONS', 'POST', 'PUT', 'DELETE'],
-              // Configures the Access-Control-Allow-Headers CORS header.
-              allowedHeaders: ['Authorization', 'Content-Type'],
-              // Configures the Access-Control-Expose-Headers CORS header.
-              exposedHeaders: [],
-              // Configures the Access-Control-Allow-Credentials CORS header.
-              credentials: false,
-              // Configures the Access-Control-Max-Age CORS header.
-              maxAge: 3600
-            },
 
             // Parse body content
             bodyParsers: {

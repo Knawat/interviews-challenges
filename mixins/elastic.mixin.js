@@ -20,23 +20,15 @@ const es = new elasticsearch.Client({
   log: process.env.ELASTIC_LOG || 'info'
 });
 module.exports = {
-  indices: {
-    users: 'users'
-  },
-  type: {
-    users: 'user'
-  },
-  es: new elasticsearch.Client({
-    host: [
-      {
-        protocol: process.env.ELASTIC_PROTOCOL || 'http',
-        host: process.env.ELASTIC_HOST || 'localhost',
-        port: process.env.ELASTIC_PORT || 9200
-      }
-    ],
-    log: process.env.ELASTIC_LOG || 'info'
-  }),
   methods: {
+    /**
+     * fetch users
+     *
+     * @methods
+     * @param {Object} params - params with searching data
+     *
+     * @returns {Promise} reponse with user info
+     */
     async fetchUsers(params) {
       const { email, password } = params;
       const paramData = [];
@@ -76,7 +68,14 @@ module.exports = {
           }));
         });
     },
-
+    /**
+     * add users
+     *
+     * @methods
+     * @param {Object} params - params with data
+     *
+     * @returns {Promise} response object from elastic search
+     */
     async addUsers(params) {
       const { name, email, password } = params;
 
@@ -89,6 +88,77 @@ module.exports = {
             email: email,
             password: password
           }
+        })
+        .then(result => result);
+    },
+
+    async getAllProducts() {
+      return es
+        .search({
+          index: indices.products,
+          type: type.products,
+          body: {
+            query: {
+              match_all: {}
+            }
+          },
+          size: 999
+        })
+        .then(result => {
+          if (result.hits.total === 0) {
+            return {
+              status: false,
+              message: 'No products found.'
+            };
+          }
+
+          return result.hits.hits.map(product => ({
+            id: product._id,
+            ...product._source
+          }));
+        });
+    },
+
+    /**
+     * Get product from elastic search by id
+     *
+     * @methods
+     * @param {Number} productId
+     *
+     * @returns {Promise} response object from elastic search
+     */
+    async getProductById(productId) {
+      return es
+        .get({
+          index: indices.products,
+          type: type.products,
+          id: productId
+        })
+        .then(result => {
+          if (!result) {
+            return '';
+          }
+          return this.Promise.resolve({
+            id: result._id,
+            ...result._source
+          });
+        });
+    },
+
+    /**
+     * check if product exist or not.
+     *
+     * @methods
+     * @param {Number} productId
+     *
+     * @returns {boolean} exist flag(true, flase)
+     */
+    async isProductExist(productId) {
+      return es
+        .exists({
+          index: indices.products,
+          type: type.products,
+          id: productId
         })
         .then(result => result);
     }

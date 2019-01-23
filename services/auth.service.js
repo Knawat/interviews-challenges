@@ -1,9 +1,8 @@
 const { Service } = require('moleculer');
 const jwt = require('jsonwebtoken');
 const { MoleculerClientError } = require('moleculer').Errors;
-const RedisService = require('../mixins/redis.mixin');
-const CommonService = require('../mixins/common.mixin');
-const ElasticMixin = require('../mixins/elastic.mixin');
+const Common = require('../mixins/common.mixin');
+const Elastic = require('../mixins/elastic.mixin');
 /**
  * Handles User Authentication
  *
@@ -22,7 +21,7 @@ class AuthService extends Service {
 
     this.parseServiceSchema({
       name: 'auth',
-      mixins: [RedisService, CommonService, ElasticMixin],
+      mixins: [Common, Elastic],
       /**
        * Service dependencies
        */
@@ -31,7 +30,14 @@ class AuthService extends Service {
       /**
        * Service settings
        */
-      settings: {},
+      settings: {
+        /*
+         * JWT Secret to generate token
+         */
+        secret: process.env.SECRET || '123456',
+        /* JWT expiration time (in days) */
+        expire: process.env.EXPIRE || 1
+      },
       /**
        * Service metadata
        */
@@ -68,15 +74,8 @@ class AuthService extends Service {
                 ]);
               }
               const user = result[0];
-              const userId = user.id;
-
-              // delete old token
-              await this.executeRedisCommand('hdel', ['userHash', userId]);
 
               const token = await this.generateToken(user);
-
-              // set token in redis to maintain session on server
-              await this.executeRedisCommand('hmset', ['userHash', { [userId]: token }]);
 
               return this.Promise.resolve({
                 succes: true,
@@ -154,14 +153,14 @@ class AuthService extends Service {
         verifyToken: {
           cache: {
             keys: ['token'],
-            ttl: 60 * 60 * 24 * process.env.EXPIRE // expire time
+            ttl: 60 * 60 // expire time
           },
           params: {
             token: 'string'
           },
           handler(ctx) {
             return new this.Promise((resolve, reject) => {
-              jwt.verify(ctx.params.token, process.env.SECRET, (err, decoded) => {
+              jwt.verify(ctx.params.token, this.settings.secret, (err, decoded) => {
                 if (err) return reject(err);
 
                 resolve(decoded);
@@ -176,18 +175,6 @@ class AuthService extends Service {
   }
 
   /**
-   * get user token from userHash
-   *
-   * @param {String} userId - user id
-   * @returns {String} Token - stored token from rediss
-   * @memberof AuthService
-   */
-  async getUserTokenFromHash(userId) {
-    const token = await this.executeRedisCommand('hget', ['userHash', userId]);
-    return token;
-  }
-
-  /**
    * generate JWT token from user
    *
    * @param {Object} user
@@ -198,9 +185,9 @@ class AuthService extends Service {
     const token = await jwt.sign(
       {
         id: user.id,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * process.env.EXPIRE
+        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * this.settings.expire
       },
-      process.env.SECRET
+      this.settings.secret
     );
     return token;
   }
