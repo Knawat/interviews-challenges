@@ -151,12 +151,12 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(esObject, productId) {
-			let index = indices.products;
+      let index = indices.products;
 
       if (process.env.NODE_ENV === 'test') {
         index = testIndices.products;
-			}
-			
+      }
+
       return esObject
         .get({
           index: index,
@@ -184,11 +184,11 @@ module.exports = {
      * @returns {boolean} exist flag(true, flase)
      */
     async isProductExist(esObject, productId) {
-			let index = indices.products;
+      let index = indices.products;
 
       if (process.env.NODE_ENV === 'test') {
         index = testIndices.products;
-			}
+      }
       return esObject
         .exists({
           index: index,
