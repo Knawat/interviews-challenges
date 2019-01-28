@@ -1,5 +1,3 @@
-const { MoleculerClientError } = require('moleculer').Errors;
-
 const indices = {
   products: 'products',
   users: 'users'

@@ -23,9 +23,9 @@ module.exports = {
         }
       }
       await Promise.all(promiseArray);
-		},
-		
-		/**
+    },
+
+    /**
      * handling response error
      *
      * @methods
@@ -34,17 +34,17 @@ module.exports = {
      * @returns {Object} Response Object with status code and message
      */
     handleError(err) {
-			this.logger.error('>> err : ', err);
-			throw new MoleculerClientError('internal server error!', 422, '', [
-				{
-					field: 'error',
-					message: err.message || 'internal server error!'
-				},
-				{
-					field: 'success',
-					message: false
-				}
-			]);
-    },
+      this.logger.error('>> err : ', err);
+      throw new MoleculerClientError('internal server error!', 422, '', [
+        {
+          field: 'error',
+          message: err.message || 'internal server error!'
+        },
+        {
+          field: 'success',
+          message: false
+        }
+      ]);
+    }
   }
 };
