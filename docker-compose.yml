@@ -32,9 +32,11 @@ services:
     links:
       - nats
       - redis
+      - elasticsearch
     depends_on:
       - nats
       - redis
+      - elasticsearch
     labels:
       - "traefik.enable=true"
       - "traefik.backend=api"
@@ -53,11 +55,11 @@ services:
     links:
       - nats
       - redis
-      - elastic
+      - elasticsearch
     depends_on:
       - nats
       - redis
-      - elastic
+      - elasticsearch
   
   products:
     build:
@@ -70,11 +72,11 @@ services:
     links:
       - nats
       - redis
-      - elastic
+      - elasticsearch
     depends_on:
       - nats
       - redis
-      - elastic
+      - elasticsearch
   
   elastic:
     build:
@@ -87,6 +89,7 @@ services:
     links:
     - nats
     - redis
+    - elasticsearch
     depends_on:
     - nats
     - redis
