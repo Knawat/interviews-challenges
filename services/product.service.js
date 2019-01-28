@@ -1,5 +1,4 @@
 const { Service } = require('moleculer');
-const { MoleculerClientError } = require('moleculer').Errors;
 
 const Redis = require('../mixins/redis.mixin');
 const Common = require('../mixins/common.mixin');
@@ -51,16 +50,11 @@ class ProductService extends Service {
               .call('elastic.get_all_products')
               .then(async products => {
                 if (!products) {
-                  throw new MoleculerClientError('No product found!', 404, '', [
-                    {
-                      field: 'products',
-                      message: 'No products found!'
-                    },
-                    {
-                      field: 'success',
-                      message: false
-                    }
-                  ]);
+                  return this.Promise.resolve({
+                    success: true,
+                    message: 'No product found',
+                    products: []
+                  });
                 }
                 return this.Promise.resolve(products);
               })
@@ -88,18 +82,15 @@ class ProductService extends Service {
               .then(() => ctx.call('elastic.is_product_exist', { productId: productId }))
               .then(async exist => {
                 if (!exist) {
-                  throw new MoleculerClientError('Product not found!', 404, '', [
-                    {
-                      field: 'products',
-                      message: 'Product not found!'
-                    },
-                    {
-                      field: 'success',
-                      message: false
-                    }
-                  ]);
+                  return this.Promise.reject({
+                    success: false,
+                    message: 'Product not found!'
+                  });
                 }
-                return this.Promise.resolve(true);
+                return this.Promise.resolve({
+                  success: true,
+                  message: 'Product added to cart!'
+                });
               })
               .then(() => this.addToCart(ctx, productId, quantity))
               .then(result => result)

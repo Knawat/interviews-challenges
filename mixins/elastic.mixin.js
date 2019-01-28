@@ -7,6 +7,11 @@ const type = {
   users: 'user'
 };
 
+const testIndices = {
+  products: 'test_products',
+  users: 'test_users'
+};
+
 module.exports = {
   methods: {
     /**
@@ -34,9 +39,15 @@ module.exports = {
         }
       };
 
+      let index = indices.users;
+
+      if (process.env.NODE_ENV === 'test') {
+        index = testIndices.users;
+      }
+
       return esObject
         .search({
-          index: indices.users,
+          index: index,
           type: type.users,
           body: {
             query: query
@@ -46,7 +57,7 @@ module.exports = {
         .then(result => {
           if (result.hits.total === 0) {
             return {
-              status: false,
+              success: false,
               message: 'No user found.'
             };
           }
@@ -69,9 +80,15 @@ module.exports = {
     async addUsers(esObject, params) {
       const { name, email, password } = params;
 
+      let index = indices.users;
+
+      if (process.env.NODE_ENV === 'test') {
+        index = testIndices.users;
+      }
+
       return esObject
         .index({
-          index: indices.users,
+          index: index,
           type: type.users,
           body: {
             name: name,
@@ -89,9 +106,15 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getAllProducts(esObject) {
+      let index = indices.products;
+
+      if (process.env.NODE_ENV === 'test') {
+        index = testIndices.products;
+      }
+
       return esObject
         .search({
-          index: indices.products,
+          index: index,
           type: type.products,
           body: {
             query: {
@@ -103,7 +126,7 @@ module.exports = {
         .then(result => {
           if (result.hits.total === 0) {
             return {
-              status: false,
+              success: false,
               message: 'No products found.'
             };
           }
@@ -112,7 +135,7 @@ module.exports = {
             ...product._source
           }));
           return this.Promise.resolve({
-            status: true,
+            success: true,
             products: products
           });
         });
@@ -128,9 +151,15 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(esObject, productId) {
+			let index = indices.products;
+
+      if (process.env.NODE_ENV === 'test') {
+        index = testIndices.products;
+			}
+			
       return esObject
         .get({
-          index: indices.products,
+          index: index,
           type: type.products,
           id: productId
         })
@@ -155,9 +184,14 @@ module.exports = {
      * @returns {boolean} exist flag(true, flase)
      */
     async isProductExist(esObject, productId) {
+			let index = indices.products;
+
+      if (process.env.NODE_ENV === 'test') {
+        index = testIndices.products;
+			}
       return esObject
         .exists({
-          index: indices.products,
+          index: index,
           type: type.products,
           id: productId
         })

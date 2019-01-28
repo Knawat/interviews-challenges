@@ -80,7 +80,7 @@ class AuthService extends Service {
                 const token = await this.generateToken(user);
 
                 return this.Promise.resolve({
-                  succes: true,
+                  success: true,
                   message: 'Login Successfull',
                   data: {
                     token: token,
