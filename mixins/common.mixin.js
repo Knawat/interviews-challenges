@@ -1,3 +1,5 @@
+const { MoleculerClientError } = require('moleculer').Errors;
+
 module.exports = {
   methods: {
     /**
@@ -21,6 +23,28 @@ module.exports = {
         }
       }
       await Promise.all(promiseArray);
-    }
+		},
+		
+		/**
+     * handling response error
+     *
+     * @methods
+     * @param {Response} response redis cli error response
+     *
+     * @returns {Object} Response Object with status code and message
+     */
+    handleError(err) {
+			this.logger.error('>> err : ', err);
+			throw new MoleculerClientError('internal server error!', 422, '', [
+				{
+					field: 'error',
+					message: err.message || 'internal server error!'
+				},
+				{
+					field: 'success',
+					message: false
+				}
+			]);
+    },
   }
 };

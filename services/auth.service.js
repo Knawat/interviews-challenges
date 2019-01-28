@@ -60,32 +60,35 @@ class AuthService extends Service {
           },
           cache: false,
           async handler(ctx) {
-            return ctx.call('elastic.fetch_users', ctx.params).then(async result => {
-              if ('status' in result && !result.status) {
-                throw new MoleculerClientError('email or password is invalid!', 422, '', [
-                  {
-                    field: 'email',
-                    message: 'email or password is invalid!'
-                  },
-                  {
-                    field: 'success',
-                    message: false
-                  }
-                ]);
-              }
-              const user = result[0];
-
-              const token = await this.generateToken(user);
-
-              return this.Promise.resolve({
-                succes: true,
-                message: 'Login Successfull',
-                data: {
-                  token: token,
-                  user: user
+            return ctx
+              .call('elastic.fetch_users', ctx.params)
+              .then(async result => {
+                if ('status' in result && !result.status) {
+                  throw new MoleculerClientError('email or password is invalid!', 422, '', [
+                    {
+                      field: 'email',
+                      message: 'email or password is invalid!'
+                    },
+                    {
+                      field: 'success',
+                      message: false
+                    }
+                  ]);
                 }
-              });
-            });
+                const user = result[0];
+
+                const token = await this.generateToken(user);
+
+                return this.Promise.resolve({
+                  succes: true,
+                  message: 'Login Successfull',
+                  data: {
+                    token: token,
+                    user: user
+                  }
+                });
+              })
+              .catch(err => this.handleError(err));
           }
         },
         /**
@@ -138,7 +141,8 @@ class AuthService extends Service {
                     id: result._id
                   })
                 );
-              });
+              })
+              .catch(err => this.handleError(err));
           }
         },
         /**
@@ -164,9 +168,11 @@ class AuthService extends Service {
 
                 resolve(decoded);
               });
-            }).then(decoded => {
-              if (decoded.id) return decoded;
-            });
+            })
+              .then(decoded => {
+                if (decoded.id) return decoded;
+              })
+              .catch(err => this.handleError(err));
           }
         }
       }

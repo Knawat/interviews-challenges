@@ -47,21 +47,24 @@ class ProductService extends Service {
         list: {
           cache: false,
           async handler(ctx) {
-            return ctx.call('elastic.get_all_products').then(async products => {
-              if (!products) {
-                throw new MoleculerClientError('No product found!', 404, '', [
-                  {
-                    field: 'products',
-                    message: 'No products found!'
-                  },
-                  {
-                    field: 'success',
-                    message: false
-                  }
-                ]);
-              }
-              return this.Promise.resolve(products);
-            });
+            return ctx
+              .call('elastic.get_all_products')
+              .then(async products => {
+                if (!products) {
+                  throw new MoleculerClientError('No product found!', 404, '', [
+                    {
+                      field: 'products',
+                      message: 'No products found!'
+                    },
+                    {
+                      field: 'success',
+                      message: false
+                    }
+                  ]);
+                }
+                return this.Promise.resolve(products);
+              })
+              .catch(err => this.handleError(err));
           }
         },
 
@@ -99,7 +102,8 @@ class ProductService extends Service {
                 return this.Promise.resolve(true);
               })
               .then(() => this.addToCart(ctx, productId, quantity))
-              .then(result => result);
+              .then(result => result)
+              .catch(err => this.handleError(err));
           }
         },
 
@@ -116,7 +120,10 @@ class ProductService extends Service {
 
             await this.executeRedisCommand('hdel', ['userCartHash', userId]);
 
-            return this.Promise.resolve(true);
+            return this.Promise.resolve({
+              status: true,
+              message: 'Cart cleared!'
+            });
           }
         },
 
@@ -142,14 +149,17 @@ class ProductService extends Service {
             await this.asyncForEach(productIdS, async product => {
               const quantity = cartArray[product];
 
-              await ctx.call('elastic.get_product_by_id', { productId: product }).then(pr => {
-                if (pr !== '') {
-                  cartDetails.push({
-                    ...pr,
-                    quantity: quantity
-                  });
-                }
-              });
+              await ctx
+                .call('elastic.get_product_by_id', { productId: product })
+                .then(pr => {
+                  if (pr !== '') {
+                    cartDetails.push({
+                      ...pr,
+                      quantity: quantity
+                    });
+                  }
+                })
+                .catch(err => this.handleError(err));
             });
 
             return this.Promise.resolve(cartDetails);

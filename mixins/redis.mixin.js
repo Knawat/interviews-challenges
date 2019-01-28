@@ -1,4 +1,5 @@
 const Redis = require('ioredis');
+const { MoleculerClientError } = require('moleculer').Errors;
 
 const redis = new Redis({
   port: process.env.REDIS_PORT || 6379,
@@ -23,10 +24,11 @@ module.exports = {
           value = result;
         })
         .catch(err => {
-          this.handleErr(err);
+          this.handleError(err);
         });
       return value;
     },
+
     /**
      * handling response error
      *
@@ -35,11 +37,18 @@ module.exports = {
      *
      * @returns {Object} Response Object with status code and message
      */
-    handleErr(res) {
-      return err => {
-        this.logger.error('Request error!', err);
-        res.status(err.code || 500).send(err.message);
-      };
+    handleError(err) {
+      this.logger.error('>> err : ', err);
+      throw new MoleculerClientError('internal server error!', 422, '', [
+        {
+          field: 'error',
+          message: 'internal server error! Please try after sometime'
+        },
+        {
+          field: 'success',
+          message: false
+        }
+      ]);
     }
   }
 };

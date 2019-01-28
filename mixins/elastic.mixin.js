@@ -1,3 +1,5 @@
+const { MoleculerClientError } = require('moleculer').Errors;
+
 const indices = {
   products: 'products',
   users: 'users'
@@ -55,9 +57,6 @@ module.exports = {
             id: user._id,
             ...user._source
           }));
-        })
-        .catch(err => {
-          this.handleErr(err);
         });
     },
     /**
@@ -82,10 +81,7 @@ module.exports = {
             password: password
           }
         })
-        .then(result => result)
-        .catch(err => {
-          this.handleErr(err);
-        });
+        .then(result => result);
     },
 
     /**
@@ -121,9 +117,6 @@ module.exports = {
             status: true,
             products: products
           });
-        })
-        .catch(err => {
-          this.handleErr(err);
         });
     },
 
@@ -151,9 +144,6 @@ module.exports = {
             id: result._id,
             ...result._source
           });
-        })
-        .catch(err => {
-          this.handleErr(err);
         });
     },
 
@@ -173,25 +163,7 @@ module.exports = {
           type: type.products,
           id: productId
         })
-        .then(result => result)
-        .catch(err => {
-          this.handleErr(err);
-        });
-    },
-
-    /**
-     * handling response error
-     *
-     * @methods
-     * @param {Response} response redis cli error response
-     *
-     * @returns {Object} Response Object with status code and message
-     */
-    handleErr(res) {
-      return err => {
-        this.logger.error('Request error!', err);
-        res.status(err.code || 500).send(err.message);
-      };
+        .then(result => result);
     }
   }
 };
