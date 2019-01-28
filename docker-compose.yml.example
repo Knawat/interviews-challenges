@@ -2,124 +2,101 @@ version: "2.0"
 
 services:
 
-	nats:
-		image: nats
-		container_name: nats
-
-	redis:
-		image: redis:alpine
-		container_name: redis
-	
-	elasticsearch:
-		image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
-		container_name: elasticsearch
-		environment:
-			- cluster.name=docker-cluster
-			- bootstrap.memory_lock=true
-			- "ES_JAVA_OPTS=-Xms512m -Xmx512m"
-		ulimits:
-		memlock:
-		soft: -1
-		hard: -1
-		ports:
-			- 9200:9200
-		
-	api:
-		build:
-			context: .
-		image: interviews-challenges
-		container_name: api
-		restart: always
-		env_file: .env
-		environment:
-		SERVICES: api
-		PORT: 80
-		ports:
-			- 3015:3015
-		links:
-			- nats
-			- redis
-		depends_on:
-			- nats
-			- redis
-		labels:
-		- "traefik.enable=true"
-		- "traefik.backend=production"
-		- "traefik.port=80"
-		- "traefik.frontend.entryPoints=http,https"
-		- "traefik.frontend.rule=PathPrefix:/"
-	
-		auth:
-			build:
-				context: .
-			image: interviews-challenges
-			container_name: auth
-			restart: always
-			env_file: .env
-			environment:
-			SERVICES: auth
-			PORT: 3011
-			ports:
-				- 3011:3011
-			links:
-				- nats
-				- redis
-				- elastic
-			depends_on:
-				- nats
-				- redis
-				- elastic
-
-	products:
-		build:
-			context: .
-		image: interviews-challenges
-		container_name: products
-		restart: always
-		env_file: .env
-		environment:
-			SERVICES: product
-			PORT: 3012
-		ports:
-			- 3012:3012
-		links:
-			- nats
-			- redis
-			- elastic
-		depends_on:
-			- nats
-			- redis
-			- elastic
-	
-	elastic:
-		build:
-			context: .
-		image: interviews-challenges
-		container_name: elastic
-		restart: always
-		env_file: .env
-		environment:
-			SERVICES: elastic
-			PORT: 3003
-		ports:
-			- 3003:3003
-		links:
-			- nats
-			- redis
-		depends_on:
-			- nats
-			- redis
-			- elasticsearch
-
-	traefik:
-		image: traefik
-		container_name: traefik
+  nats:
+    image: nats
+  
+  redis:
+    image: redis:alpine
+  
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+  
+  api:
+    build:
+      context: .
+    image: interviews-challenges
     restart: always
-		command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false
-		ports:
-		- "3000:80"
-		volumes:
-		- /var/run/docker.sock:/var/run/docker.sock
-    - /dev/null:/traefik.
-    - ./traefik.toml:/traefik.toml
-    - ./acme.json:/acme.json
+    env_file: .env
+    environment:
+      SERVICES: api
+    links:
+      - nats
+      - redis
+    depends_on:
+      - nats
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=api"
+      - "traefik.port=3000"
+      - "traefik.frontend.entryPoints=http"
+      - "traefik.frontend.rule=PathPrefix:/"
+  
+  auth:
+    build:
+      context: .
+    image: interviews-challenges
+    restart: always
+    env_file: .env
+    environment:
+      SERVICES: auth
+    links:
+      - nats
+      - redis
+      - elastic
+    depends_on:
+      - nats
+      - redis
+      - elastic
+  
+  products:
+    build:
+      context: .
+    image: interviews-challenges
+    restart: always
+    env_file: .env
+    environment:
+      SERVICES: product
+    links:
+      - nats
+      - redis
+      - elastic
+    depends_on:
+      - nats
+      - redis
+      - elastic
+  
+  elastic:
+    build:
+      context: .
+    image: interviews-challenges
+    restart: always
+    env_file: .env
+    environment:
+      SERVICES: elastic
+    links:
+    - nats
+    - redis
+    depends_on:
+    - nats
+    - redis
+    - elasticsearch
+    
+  traefik:
+    image: traefik
+    command: --web --docker --docker.domain=docker.localhost --logLevel=INFO --docker.exposedbydefault=false
+    ports:
+      - "3000:80"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.
