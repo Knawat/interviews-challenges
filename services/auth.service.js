@@ -2,7 +2,7 @@ const { Service } = require('moleculer');
 const jwt = require('jsonwebtoken');
 const { MoleculerClientError } = require('moleculer').Errors;
 const Common = require('../mixins/common.mixin');
-// const Elastic = require('../mixins/elastic.mixin');
+
 /**
  * Handles User Authentication
  *
@@ -63,7 +63,7 @@ class AuthService extends Service {
             return ctx
               .call('elastic.fetch_users', ctx.params)
               .then(async result => {
-                if ('status' in result && !result.status) {
+                if ('success' in result && !result.success) {
                   throw new MoleculerClientError('email or password is invalid!', 422, '', [
                     {
                       field: 'email',
@@ -116,7 +116,7 @@ class AuthService extends Service {
             return ctx
               .call('elastic.fetch_users', verificationData)
               .then(async result => {
-                if ('status' in result && !result.status) {
+                if ('success' in result && !result.success) {
                   return this.Promise.resolve(true);
                 }
                 throw new MoleculerClientError('email already exist!', 422, '', [
@@ -132,11 +132,11 @@ class AuthService extends Service {
               })
               .then(async uniqueEmail => {
                 if (!uniqueEmail) {
-                  return this.Promise.reject({ status: false, message: 'Email already exist!' });
+                  return this.Promise.reject({ success: false, message: 'Email already exist!' });
                 }
                 return ctx.call('elastic.add_users', ctx.params).then(result =>
                   this.Promise.resolve({
-                    status: true,
+                    success: true,
                     message: 'Registration successfull!',
                     id: result._id
                   })
@@ -187,14 +187,17 @@ class AuthService extends Service {
    * @memberof AuthService
    */
   async generateToken(user) {
-    const token = await jwt.sign(
-      {
-        id: user.id,
-        exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * this.settings.expire
-      },
-      this.settings.secret
-    );
-    return token;
+    if (typeof user !== 'undefined') {
+      const token = await jwt.sign(
+        {
+          id: user.id,
+          exp: Math.floor(Date.now() / 1000) + 60 * 60 * 24 * this.settings.expire
+        },
+        this.settings.secret
+      );
+      return token;
+    }
+    return '';
   }
 }
 

@@ -5,7 +5,7 @@ const elastic = require('../../services/elastic.service');
 const product = require('../../services/product.service');
 
 const cart = {
-  productId: 'Rl7zc2gBToh1-7Uobb6W',
+  productId: 'BxSFlGgB29P723uFOqA2',
   quantity: 4
 };
 
@@ -18,7 +18,7 @@ const clearCartResult = {
   message: 'Cart cleared!'
 };
 
-describe("Test 'Auth' service", async () => {
+describe("Test 'Product' service", async () => {
   const broker = new ServiceBroker();
   broker.createService(elastic);
   broker.createService(product);
@@ -37,8 +37,6 @@ describe("Test 'Auth' service", async () => {
 
   describe("Test 'product.add_to_cart' action", () => {
     it('should return confirmation on cart added', async () => {
-      // eslint-disable-next-line max-nested-callbacks
-      await broker.call('product.add_to_cart', cart).then(data => expect(data.status).toEqual(true));
       expect(broker.call('product.add_to_cart', cart)).resolves.toEqual({
         status: true,
         message: 'Product added to cart'

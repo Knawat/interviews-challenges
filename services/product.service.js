@@ -87,10 +87,7 @@ class ProductService extends Service {
                     message: 'Product not found!'
                   });
                 }
-                return this.Promise.resolve({
-                  success: true,
-                  message: 'Product added to cart!'
-                });
+                return true;
               })
               .then(() => this.addToCart(ctx, productId, quantity))
               .then(result => result)
@@ -179,7 +176,7 @@ class ProductService extends Service {
     await this.executeRedisCommand('hmset', ['userCartHash', { [userId]: returnString }]);
 
     return this.Promise.resolve({
-      status: true,
+      success: true,
       message: 'Product added to cart'
     });
   }
