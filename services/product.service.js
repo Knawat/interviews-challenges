@@ -87,6 +87,14 @@ class ProductService extends Service {
                     message: 'Product not found!'
                   });
                 }
+                /* For unit testing */
+                if (process.env.NODE_ENV === 'test') {
+                  const { userId } = ctx.params;
+                  ctx.meta.auth = {
+                    userId: userId
+                  };
+                }
+
                 return true;
               })
               .then(() => this.addToCart(ctx, productId, quantity))
@@ -99,17 +107,24 @@ class ProductService extends Service {
          * clear user product Cart
          *
          * @actions
-         * @returns {Promise} status
+         * @returns {Promise} success and message
          */
         clear_cart: {
           auth: 'required',
           async handler(ctx) {
+            /* For unit testing */
+            if (process.env.NODE_ENV === 'test') {
+              ctx.meta.auth = {
+                userId: ctx.params.userId
+              };
+            }
+
             const { userId } = ctx.meta.auth;
 
             await this.executeRedisCommand('hdel', ['userCartHash', userId]);
 
             return this.Promise.resolve({
-              status: true,
+              success: true,
               message: 'Cart cleared!'
             });
           }
@@ -124,6 +139,13 @@ class ProductService extends Service {
         cart_summary: {
           auth: 'required',
           async handler(ctx) {
+            /* For unit testing */
+            if (process.env.NODE_ENV === 'test') {
+              ctx.meta.auth = {
+                userId: ctx.params.userId
+              };
+            }
+
             const { userId } = ctx.meta.auth;
             const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
 
@@ -165,6 +187,7 @@ class ProductService extends Service {
    */
   async addToCart(ctx, productId, quantity) {
     const { userId } = ctx.meta.auth;
+
     const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
     let cartArray = {};
 
