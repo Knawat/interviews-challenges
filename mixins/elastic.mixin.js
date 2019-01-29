@@ -89,8 +89,7 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getAllProducts(esObject) {
-			
-			return esObject
+      return esObject
         .search({
           index: indices.products,
           type: type.products,
@@ -129,8 +128,7 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(esObject, productId) {
-			
-			return esObject
+      return esObject
         .get({
           index: indices.products,
           type: type.products,
@@ -157,8 +155,7 @@ module.exports = {
      * @returns {boolean} exist flag(true, flase)
      */
     async isProductExist(esObject, productId) {
-			
-			return esObject
+      return esObject
         .exists({
           index: indices.products,
           type: type.products,

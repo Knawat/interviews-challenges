@@ -10,10 +10,6 @@ const type = {
   users: 'user'
 };
 
-const testIndices = {
-  products: 'test_products',
-  users: 'test_users'
-};
 let es;
 
 const users = [
