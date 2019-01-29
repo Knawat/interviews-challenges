@@ -197,26 +197,6 @@ initializeES().then(async eSearch => {
   console.log('[USER INDEX CREATED] : ', userIndex);
 
   console.log('******************************************************');
-  console.log('********   Creatating Test Users index   *************');
-  console.log('******************************************************');
-
-  const testUserIndex = await eSearch.indices.create({
-    index: testIndices.users,
-    body: {
-      mappings: {
-        user: {
-          properties: {
-            name: { type: 'text' },
-            email: { type: 'keyword' },
-            password: { type: 'keyword' }
-          }
-        }
-      }
-    }
-  });
-  console.log('[TEST USER INDEX CREATED] : ', testUserIndex);
-
-  console.log('******************************************************');
   console.log('*********   Creatating Product index   ***************');
   console.log('******************************************************');
 
@@ -239,30 +219,6 @@ initializeES().then(async eSearch => {
     }
   });
   console.log('[PRODUCT INDEX CREATED] : ', productIndex);
-
-  console.log('******************************************************');
-  console.log('*******   Creatating Test Product index   ************');
-  console.log('******************************************************');
-
-  const testProductIndex = await eSearch.indices.create({
-    index: testIndices.products,
-    body: {
-      mappings: {
-        product: {
-          properties: {
-            name: { type: 'text' },
-            sku: { type: 'keyword' },
-            url: { type: 'text' },
-            barcode: { type: 'keyword' },
-            brand: { type: 'keyword' },
-            category: { type: 'text' },
-            created: { type: 'date' }
-          }
-        }
-      }
-    }
-  });
-  console.log('[TEST PRODUCT INDEX CREATED] : ', testProductIndex);
 
   console.log('******************************************************');
   console.log('**************   Creatating Users   ******************');
@@ -302,45 +258,5 @@ initializeES().then(async eSearch => {
       }
     });
     console.log('[PRODUCT CREATED] : ', response);
-  });
-
-  console.log('******************************************************');
-  console.log('**********   Creatating Testing Users   **************');
-  console.log('******************************************************');
-
-  await asyncForEach(users, async user => {
-    const responseTest = await eSearch.index({
-      index: testIndices.users,
-      type: type.users,
-      id: user.id,
-      body: {
-        name: user.name,
-        email: user.email,
-        password: user.password
-      }
-    });
-    console.log('[TESTING USER CREATED] : ', responseTest);
-  });
-
-  console.log('******************************************************');
-  console.log('*********   Creatating Testing Products   ************');
-  console.log('******************************************************');
-
-  await asyncForEach(products, async product => {
-    const responseTest = await eSearch.index({
-      index: testIndices.products,
-      type: type.products,
-      id: product.id,
-      body: {
-        name: product.name,
-        url: product.url,
-        sku: product.sku,
-        barcode: product.barcode,
-        brand: product.brand,
-        category: product.category,
-        created: product.created
-      }
-    });
-    console.log('[TEST PRODUCT CREATED] : ', responseTest);
   });
 });

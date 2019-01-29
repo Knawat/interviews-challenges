@@ -7,11 +7,6 @@ const type = {
   users: 'user'
 };
 
-const testIndices = {
-  products: 'test_products',
-  users: 'test_users'
-};
-
 module.exports = {
   methods: {
     /**
@@ -39,15 +34,9 @@ module.exports = {
         }
       };
 
-      let index = indices.users;
-
-      if (process.env.NODE_ENV === 'test') {
-        index = testIndices.users;
-      }
-
       return esObject
         .search({
-          index: index,
+          index: indices.users,
           type: type.users,
           body: {
             query: query
@@ -80,15 +69,9 @@ module.exports = {
     async addUsers(esObject, params) {
       const { name, email, password } = params;
 
-      let index = indices.users;
-
-      if (process.env.NODE_ENV === 'test') {
-        index = testIndices.users;
-      }
-
       return esObject
         .index({
-          index: index,
+          index: indices.users,
           type: type.users,
           body: {
             name: name,
@@ -106,15 +89,10 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getAllProducts(esObject) {
-      let index = indices.products;
-
-      if (process.env.NODE_ENV === 'test') {
-        index = testIndices.products;
-      }
-
-      return esObject
+			
+			return esObject
         .search({
-          index: index,
+          index: indices.products,
           type: type.products,
           body: {
             query: {
@@ -151,15 +129,10 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(esObject, productId) {
-      let index = indices.products;
-
-      if (process.env.NODE_ENV === 'test') {
-        index = testIndices.products;
-      }
-
-      return esObject
+			
+			return esObject
         .get({
-          index: index,
+          index: indices.products,
           type: type.products,
           id: productId
         })
@@ -184,14 +157,10 @@ module.exports = {
      * @returns {boolean} exist flag(true, flase)
      */
     async isProductExist(esObject, productId) {
-      let index = indices.products;
-
-      if (process.env.NODE_ENV === 'test') {
-        index = testIndices.products;
-      }
-      return esObject
+			
+			return esObject
         .exists({
-          index: index,
+          index: indices.products,
           type: type.products,
           id: productId
         })
