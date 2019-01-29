@@ -75,7 +75,7 @@ class AuthService extends Service {
                     }
                   ]);
                 }
-                const user = result[0];
+                const user = result.data[0];
 
                 const token = await this.generateToken(user);
 

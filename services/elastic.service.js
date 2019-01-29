@@ -70,6 +70,11 @@ class ElasticService extends Service {
          * @returns {Promise} response object from elastic search
          */
         add_users: {
+          params: {
+            name: { type: 'string' },
+            email: { type: 'string' },
+            password: { type: 'string' }
+          },
           catch: false,
           async handler(ctx) {
             return this.addUsers(this.es, ctx.params);

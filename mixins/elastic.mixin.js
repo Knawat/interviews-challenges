@@ -50,11 +50,14 @@ module.exports = {
               message: 'No user found.'
             };
           }
-
-          return result.hits.hits.map(user => ({
+          const data = result.hits.hits.map(user => ({
             id: user._id,
             ...user._source
           }));
+          return this.Promise.resolve({
+            success: true,
+            data: data
+          });
         });
     },
     /**
@@ -128,21 +131,26 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(esObject, productId) {
-      return esObject
-        .get({
-          index: indices.products,
-          type: type.products,
-          id: productId
-        })
-        .then(result => {
-          if (!result) {
-            return '';
-          }
-          return this.Promise.resolve({
-            id: result._id,
-            ...result._source
-          });
-        });
+      return this.isProductExist(esObject, productId).then(exist => {
+        if (exist) {
+          return esObject
+            .get({
+              index: indices.products,
+              type: type.products,
+              id: productId
+            })
+            .then(result => {
+              if (!result) {
+                return '';
+              }
+              return this.Promise.resolve({
+                id: result._id,
+                ...result._source
+              });
+            });
+        }
+        return '';
+      });
     },
 
     /**
