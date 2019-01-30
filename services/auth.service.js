@@ -64,10 +64,10 @@ class AuthService extends Service {
               .call('elastic.fetch_users', ctx.params)
               .then(async result => {
                 if ('success' in result && !result.success) {
-                  throw new MoleculerClientError('email or password is invalid!', 422, '', [
+                  throw new MoleculerClientError('Email or password is invalid!', 422, '', [
                     {
                       field: 'email',
-                      message: 'email or password is invalid!'
+                      message: 'Email or password is invalid!'
                     },
                     {
                       field: 'success',
@@ -119,10 +119,10 @@ class AuthService extends Service {
                 if ('success' in result && !result.success) {
                   return this.Promise.resolve(true);
                 }
-                throw new MoleculerClientError('email already exist!', 422, '', [
+                throw new MoleculerClientError('Email already exist!', 422, '', [
                   {
                     field: 'email',
-                    message: 'email already exist!'
+                    message: 'Email already exist!'
                   },
                   {
                     field: 'success',

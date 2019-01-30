@@ -1,6 +1,4 @@
 const { Service } = require('moleculer');
-
-const elasticsearch = require('elasticsearch');
 const Elastic = require('../mixins/elastic.mixin');
 
 /**
@@ -18,17 +16,6 @@ class ElasticService extends Service {
    */
   constructor(broker) {
     super(broker);
-
-    this.es = new elasticsearch.Client({
-      host: [
-        {
-          host: process.env.ELASTIC_HOST || 'localhost',
-          protocol: process.env.ELASTIC_PROTOCOL || 'http',
-          port: process.env.ELASTIC_PORT || 9200
-        }
-      ],
-      log: process.env.ELASTIC_LOG || 'info'
-    });
 
     this.parseServiceSchema({
       name: 'elastic',
@@ -59,7 +46,7 @@ class ElasticService extends Service {
         fetch_users: {
           cache: false,
           async handler(ctx) {
-            return this.fetchUsers(this.es, ctx.params);
+            return this.fetchUsers(ctx.params);
           }
         },
         /**
@@ -77,7 +64,7 @@ class ElasticService extends Service {
           },
           catch: false,
           async handler(ctx) {
-            return this.addUsers(this.es, ctx.params);
+            return this.addUsers(ctx.params);
           }
         },
 
@@ -93,7 +80,7 @@ class ElasticService extends Service {
             ttl: 60 * 60 * 1
           },
           async handler() {
-            return this.getAllProducts(this.es);
+            return this.getAllProducts();
           }
         },
 
@@ -112,26 +99,7 @@ class ElasticService extends Service {
           },
           async handler(ctx) {
             const { productId } = ctx.params;
-            return this.getProductById(this.es, productId);
-          }
-        },
-
-        /**
-         * check if product exist or not.
-         *
-         * @methods
-         * @param {Number} productId
-         *
-         * @returns {boolean} exist flag(true, flase)
-         */
-        is_product_exist: {
-          catch: false,
-          params: {
-            productId: 'string'
-          },
-          async handler(ctx) {
-            const { productId } = ctx.params;
-            return this.isProductExist(this.es, productId);
+            return this.getProductById(productId);
           }
         }
       }

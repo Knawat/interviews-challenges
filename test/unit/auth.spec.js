@@ -18,7 +18,7 @@ const test2 = {
 
 const registrationDetails = {
   name: 'testing User',
-  email: 'unit2@test.com',
+  email: 'unit12@test.com',
   password: 'unittest'
 };
 const rTest1 = {

@@ -81,12 +81,4 @@ describe("Test 'Elastic' service", () => {
     it('should throw ValidationError Error ', () =>
       expect(broker.call('elastic.get_product_by_id')).rejects.toBeInstanceOf(ValidationError));
   });
-
-  /* describe("Test 'elastic.is_product_exist' action", () => {
-    it('should return Object with exist status on matching product id ', async () =>
-      expect(broker.call('elastic.is_product_exist', productWithId)).resolves.toBeInstanceOf(Boolean));
-
-    it('should throw ValidationError Error ', () =>
-      expect(broker.call('elastic.is_product_exist')).rejects.toBeInstanceOf(ValidationError));
-  }); */
 });

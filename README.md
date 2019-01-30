@@ -1,24 +1,27 @@
-# Knawat is hiring
+## Interview Challenges
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career
+This Project will provide simple set of services with [Moleculer](https://moleculer.services/) Framework, with [REDIS](https://redis.io/) caching, and [NATS](https://nats.io/) for transportation.
 
-## Open vacancies (Tech)
+## Functionality:
 
-- [Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [Junior WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- [System Analyst (ERP)](http://smrtr.io/N-Rm)
+- User can log in & register.
+- User can add product to the cart.
+- User can get his cart summary.
+- docker-compose support
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Elastic APM, Jest, Kubernates, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuffChck
+## Backend:
 
-# >>>>> Check our interview assignment for [Full Stack](https://github.com/Knawat/interviews-challenges/blob/master/Full-Stack-JavaScript.md) & [Back-End](https://github.com/Knawat/interviews-challenges/blob/master/Back-End-Node.js.md) <<<<<
+- Elasticsearch as a database.
+- NATs messaging system for services transportation.
 
-## Hiring Process for technical positions
+# How to scale cart/product service?
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skils, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+	docker scale product=2
+
+# Mention some micro-services specific pattern you used and why?
+
+project uses [EVERY SERVICE ON A SINGLE NODE](https://moleculer.services/docs/0.13/clustering.html#Microservices-architecture) micro-service architecture to make project scallable. By using this architecture we can scale all services to make system falut tolerant and flexible as there won’t be many dependency concerns and rolling back changes becomes much easier.
+
+
+## Postman Collection
+	https://www.getpostman.com/collections/3ee4f1c212614ff64a82

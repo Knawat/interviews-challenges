@@ -1,3 +1,5 @@
+const elasticsearch = require('elasticsearch');
+
 const indices = {
   products: 'products',
   users: 'users'
@@ -6,6 +8,16 @@ const type = {
   products: 'product',
   users: 'user'
 };
+const es = new elasticsearch.Client({
+  host: [
+    {
+      host: process.env.ELASTIC_HOST || 'localhost',
+      protocol: process.env.ELASTIC_PROTOCOL || 'http',
+      port: process.env.ELASTIC_PORT || 9200
+    }
+  ],
+  log: process.env.ELASTIC_LOG || 'info'
+});
 
 module.exports = {
   methods: {
@@ -13,12 +25,11 @@ module.exports = {
      * fetch users
      *
      * @methods
-     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Object} params - params with searching data
      *
      * @returns {Promise} reponse with user info
      */
-    async fetchUsers(esObject, params) {
+    async fetchUsers(params) {
       const { email, password } = params;
       const paramData = [];
       if (email) {
@@ -34,7 +45,7 @@ module.exports = {
         }
       };
 
-      return esObject
+      return es
         .search({
           index: indices.users,
           type: type.users,
@@ -64,15 +75,14 @@ module.exports = {
      * add users
      *
      * @methods
-     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Object} params - params with data
      *
      * @returns {Promise} response object from elastic search
      */
-    async addUsers(esObject, params) {
+    async addUsers(params) {
       const { name, email, password } = params;
 
-      return esObject
+      return es
         .index({
           index: indices.users,
           type: type.users,
@@ -88,11 +98,10 @@ module.exports = {
     /**
      * Get product listing
      *
-     * @param {elasticsearch} esObject - elasticsearch object
      * @returns {Promise} response object from elastic search
      */
-    async getAllProducts(esObject) {
-      return esObject
+    async getAllProducts() {
+      return es
         .search({
           index: indices.products,
           type: type.products,
@@ -125,15 +134,14 @@ module.exports = {
      * Get product from elastic search by id
      *
      * @methods
-     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Number} productId
      *
      * @returns {Promise} response object from elastic search
      */
-    async getProductById(esObject, productId) {
-      return this.isProductExist(esObject, productId).then(exist => {
+    async getProductById(productId) {
+      return this.isProductExist(productId).then(exist => {
         if (exist) {
-          return esObject
+          return es
             .get({
               index: indices.products,
               type: type.products,
@@ -157,13 +165,12 @@ module.exports = {
      * check if product exist or not.
      *
      * @methods
-     * @param {elasticsearch} esObject - elasticsearch object
      * @param {Number} productId
      *
      * @returns {boolean} exist flag(true, flase)
      */
-    async isProductExist(esObject, productId) {
-      return esObject
+    async isProductExist(productId) {
+      return es
         .exists({
           index: indices.products,
           type: type.products,

@@ -39,10 +39,10 @@ module.exports = {
      */
     handleError(err) {
       this.logger.error('>> err : ', err);
-      throw new MoleculerClientError('internal server error!', 422, '', [
+      throw new MoleculerClientError('Internal server error!', 422, '', [
         {
           field: 'error',
-          message: 'internal server error! Please try after sometime'
+          message: 'Internal server error! Please try after sometime'
         },
         {
           field: 'success',

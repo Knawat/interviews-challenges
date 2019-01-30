@@ -2,6 +2,7 @@ const { Service } = require('moleculer');
 
 const Redis = require('../mixins/redis.mixin');
 const Common = require('../mixins/common.mixin');
+const Elastic = require('../mixins/elastic.mixin');
 /**
  * Handles Product actions
  *
@@ -20,7 +21,7 @@ class ProductService extends Service {
 
     this.parseServiceSchema({
       name: 'product',
-      mixins: [Redis, Common],
+      mixins: [Redis, Common, Elastic],
       /**
        * Service dependencies
        */
@@ -52,7 +53,7 @@ class ProductService extends Service {
                 if (!products) {
                   return this.Promise.resolve({
                     success: true,
-                    message: 'No product found',
+                    message: 'No product found!',
                     products: []
                   });
                 }
@@ -79,26 +80,24 @@ class ProductService extends Service {
           async handler(ctx) {
             const { productId, quantity } = ctx.params;
             return this.Promise.resolve()
-              .then(() => ctx.call('elastic.is_product_exist', { productId: productId }))
+              .then(() => this.isProductExist(productId))
               .then(async exist => {
                 if (!exist) {
-                  return this.Promise.reject({
+                  return this.Promise.resolve({
                     success: false,
                     message: 'Product not found!'
                   });
                 }
-                /* For unit testing */
-                if (process.env.NODE_ENV === 'test') {
-                  const { userId } = ctx.params;
-                  ctx.meta.auth = {
-                    userId: userId
-                  };
-                }
-
-                return true;
+                return this.Promise.resolve({
+                  success: true
+                });
               })
-              .then(() => this.addToCart(ctx, productId, quantity))
-              .then(result => result)
+              .then(data => {
+                if (data.success) {
+                  return this.addToCart(ctx, productId, quantity);
+                }
+                return data;
+              })
               .catch(err => this.handleError(err));
           }
         },
@@ -112,13 +111,6 @@ class ProductService extends Service {
         clear_cart: {
           auth: 'required',
           async handler(ctx) {
-            /* For unit testing */
-            if (process.env.NODE_ENV === 'test') {
-              ctx.meta.auth = {
-                userId: ctx.params.userId
-              };
-            }
-
             const { userId } = ctx.meta.auth;
 
             await this.executeRedisCommand('hdel', ['userCartHash', userId]);
@@ -139,13 +131,6 @@ class ProductService extends Service {
         cart_summary: {
           auth: 'required',
           async handler(ctx) {
-            /* For unit testing */
-            if (process.env.NODE_ENV === 'test') {
-              ctx.meta.auth = {
-                userId: ctx.params.userId
-              };
-            }
-
             const { userId } = ctx.meta.auth;
             const cart = await this.executeRedisCommand('hget', ['userCartHash', userId]);
 
