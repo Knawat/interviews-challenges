@@ -16,7 +16,9 @@ This Project will provide simple set of services with [Moleculer](https://molecu
 
 # How to scale cart/product service?
 
-	docker scale product=2
+	docker-compose scale products=2
+	docker-compose scale auth=2
+	docker-compose scale elastic=5
 
 # Mention some micro-services specific pattern you used and why?
 
@@ -24,4 +26,5 @@ project uses [EVERY SERVICE ON A SINGLE NODE](https://moleculer.services/docs/0.
 
 
 ## Postman Collection
-	https://www.getpostman.com/collections/3ee4f1c212614ff64a82
+
+[https://www.getpostman.com/collections/3ee4f1c212614ff64a82](https://www.getpostman.com/collections/3ee4f1c212614ff64a82)
