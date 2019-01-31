@@ -29,7 +29,7 @@ module.exports = {
      *
      * @returns {Promise} reponse with user info
      */
-    async fetchUsers(params) {
+    fetchUsers(params) {
       const { email, password } = params;
       const paramData = [];
       if (email) {
@@ -79,7 +79,7 @@ module.exports = {
      *
      * @returns {Promise} response object from elastic search
      */
-    async addUsers(params) {
+    addUsers(params) {
       const { name, email, password } = params;
 
       return es
@@ -100,7 +100,7 @@ module.exports = {
      *
      * @returns {Promise} response object from elastic search
      */
-    async getAllProducts() {
+    getAllProducts() {
       return es
         .search({
           index: indices.products,
@@ -138,7 +138,7 @@ module.exports = {
      *
      * @returns {Promise} response object from elastic search
      */
-    async getProductById(productId) {
+    getProductById(productId) {
       return es
         .get({
           index: indices.products,
@@ -167,7 +167,7 @@ module.exports = {
      *
      * @returns {boolean} exist flag(true, flase)
      */
-    async isProductExist(productId) {
+    isProductExist(productId) {
       return es
         .exists({
           index: indices.products,
@@ -182,7 +182,7 @@ module.exports = {
      *
      * @returns {Object} - Elastic Search object
      */
-    async getElasticObject() {
+    getElasticObject() {
       return es;
     }
   }

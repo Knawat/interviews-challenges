@@ -37,7 +37,7 @@ describe("Test 'Auth' service", () => {
   afterAll(() => broker.stop());
 
   describe("Test 'auth.login' action with credentials", () => {
-    it('should return Object with userDetails on matching credentials ', async () =>
+    it('should return Object with userDetails on matching credentials ', () =>
       broker.call('auth.login', loginDetails).then(
         // eslint-disable-next-line max-nested-callbacks
         data =>
@@ -47,13 +47,13 @@ describe("Test 'Auth' service", () => {
           expect(data.data.token.length).toBeGreaterThan(0)
       ));
 
-    it('should throw MolecularClient Error without entering password', async () =>
+    it('should throw MolecularClient Error without entering password', () =>
       expect(broker.call('auth.login', test1)).rejects.toBeInstanceOf(MoleculerClientError));
 
-    it('should throw MolecularClient Error on wrong credentials', async () =>
+    it('should throw MolecularClient Error on wrong credentials', () =>
       expect(broker.call('auth.login', test2)).rejects.toBeInstanceOf(MoleculerClientError));
 
-    it('should throw ValidationError on sending empty field values', async () =>
+    it('should throw ValidationError on sending empty field values', () =>
       expect(broker.call('auth.login')).rejects.toBeInstanceOf(ValidationError));
   });
 

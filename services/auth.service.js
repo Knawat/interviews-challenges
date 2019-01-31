@@ -59,7 +59,7 @@ class AuthService extends Service {
             password: { type: 'string' }
           },
           cache: false,
-          async handler(ctx) {
+          handler(ctx) {
             return ctx
               .call('elastic.fetch_users', ctx.params)
               .then(async result => {
@@ -107,15 +107,42 @@ class AuthService extends Service {
             email: { type: 'string' },
             password: { type: 'string' }
           },
-          async handler(ctx) {
-            const { email } = ctx.params;
-
+          handler(ctx) {
+            const { name, email, password } = ctx.params;
             const verificationData = {
               email: email
             };
+            let error = false;
+            let text = 'Input is required';
+            let field = 'Email';
+            if (name === '') {
+              text = 'Name is required';
+              error = true;
+              field = 'name';
+            } else if (email === '') {
+              text = 'Email is required';
+              error = true;
+              field = 'email';
+            } else if (password === '') {
+              text = 'Password is required';
+              error = true;
+              field = 'password';
+            }
+            if (error) {
+              throw new MoleculerClientError('Name is required!', 422, '', [
+                {
+                  field: field,
+                  message: text
+                },
+                {
+                  field: 'success',
+                  message: false
+                }
+              ]);
+            }
             return ctx
               .call('elastic.fetch_users', verificationData)
-              .then(async result => {
+              .then(result => {
                 if ('success' in result && !result.success) {
                   return this.Promise.resolve(true);
                 }
@@ -130,7 +157,7 @@ class AuthService extends Service {
                   }
                 ]);
               })
-              .then(async uniqueEmail => {
+              .then(uniqueEmail => {
                 if (!uniqueEmail) {
                   return this.Promise.reject({ success: false, message: 'Email already exist!' });
                 }

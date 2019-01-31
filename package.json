@@ -8,7 +8,7 @@
     "cli": "moleculer connect NATS",
     "ci": "jest --watch",
     "test": "jest --coverage",
-    "lint": "eslint services mixins migrations.js",
+    "lint": "eslint services mixins",
     "prettier": "prettier services/*.js mixins/*.js test/unit/*.js *.js --write",
     "dc:up": "docker-compose up --build -d",
     "dc:down": "docker-compose down"

@@ -166,8 +166,8 @@ class ElasticService extends Service {
          */
         fetch_users: {
           cache: false,
-          async handler(ctx) {
-            return this.fetchUsers(ctx.params);
+          handler(ctx) {
+            return this.fetchUsers(ctx.params).catch(err => this.handleError(err));
           }
         },
         /**
@@ -184,8 +184,8 @@ class ElasticService extends Service {
             password: { type: 'string' }
           },
           catch: false,
-          async handler(ctx) {
-            return this.addUsers(ctx.params);
+          handler(ctx) {
+            return this.addUsers(ctx.params).catch(err => this.handleError(err));
           }
         },
 
@@ -200,8 +200,8 @@ class ElasticService extends Service {
             keys: ['products'],
             ttl: 60 * 60 * 1
           },
-          async handler() {
-            return this.getAllProducts();
+          handler() {
+            return this.getAllProducts().catch(err => this.handleError(err));
           }
         },
 
@@ -218,9 +218,9 @@ class ElasticService extends Service {
           params: {
             productId: 'string'
           },
-          async handler(ctx) {
+          handler(ctx) {
             const { productId } = ctx.params;
-            return this.getProductById(productId);
+            return this.getProductById(productId).catch(err => this.handleError(err));
           }
         }
       },
@@ -259,16 +259,18 @@ class ElasticService extends Service {
           });
           this.logger.info('[USER INDEX CREATED] : ', userIndex);
           await this.asyncForEach(users, async user => {
-            const response = await eSearch.index({
-              index: indices.users,
-              type: type.users,
-              id: user.id,
-              body: {
-                name: user.name,
-                email: user.email,
-                password: user.password
-              }
-            });
+            const response = await eSearch
+              .index({
+                index: indices.users,
+                type: type.users,
+                id: user.id,
+                body: {
+                  name: user.name,
+                  email: user.email,
+                  password: user.password
+                }
+              })
+              .catch(err => this.handleError(err));
             this.logger.info('[USER CREATED] : ', response);
           });
         }
@@ -295,20 +297,22 @@ class ElasticService extends Service {
           this.logger.info('[PRODUCT INDEX CREATED] : ', productIndex);
 
           await this.asyncForEach(products, async product => {
-            const response = await eSearch.index({
-              index: indices.products,
-              type: type.products,
-              id: product.id,
-              body: {
-                name: product.name,
-                url: product.url,
-                sku: product.sku,
-                barcode: product.barcode,
-                brand: product.brand,
-                category: product.category,
-                created: product.created
-              }
-            });
+            const response = await eSearch
+              .index({
+                index: indices.products,
+                type: type.products,
+                id: product.id,
+                body: {
+                  name: product.name,
+                  url: product.url,
+                  sku: product.sku,
+                  barcode: product.barcode,
+                  brand: product.brand,
+                  category: product.category,
+                  created: product.created
+                }
+              })
+              .catch(err => this.handleError(err));
             this.logger.info('[PRODUCT CREATED] : ', response);
           });
         }

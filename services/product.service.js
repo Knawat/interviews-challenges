@@ -46,10 +46,10 @@ class ProductService extends Service {
          */
         list: {
           cache: false,
-          async handler(ctx) {
+          handler(ctx) {
             return ctx
               .call('elastic.get_all_products')
-              .then(async products => {
+              .then(products => {
                 if (!products) {
                   return this.Promise.resolve({
                     success: true,
@@ -77,11 +77,11 @@ class ProductService extends Service {
             productId: 'string',
             quantity: 'number'
           },
-          async handler(ctx) {
+          handler(ctx) {
             const { productId, quantity } = ctx.params;
             return this.Promise.resolve()
               .then(() => this.isProductExist(productId))
-              .then(async exist => {
+              .then(exist => {
                 if (!exist) {
                   return this.Promise.resolve({
                     success: false,

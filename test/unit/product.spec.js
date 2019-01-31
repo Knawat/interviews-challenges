@@ -14,7 +14,7 @@ const clearCartResult = {
   message: 'Cart cleared!'
 };
 
-describe("Test 'Product' service", async () => {
+describe("Test 'Product' service", () => {
   const broker = new ServiceBroker();
   broker.createService(elastic);
   broker.createService(product);
@@ -23,7 +23,7 @@ describe("Test 'Product' service", async () => {
   afterAll(() => broker.stop());
 
   describe("Test 'product.list' action", () => {
-    it('should return array of products', async () =>
+    it('should return array of products', () =>
       // eslint-disable-next-line max-nested-callbacks
       broker.call('product.list').then(products => {
         expect(products.success).toEqual(true);
@@ -31,7 +31,7 @@ describe("Test 'Product' service", async () => {
   });
 
   describe("Test 'product.add_to_cart' action", () => {
-    it('should return confirmation on cart added', async () =>
+    it('should return confirmation on cart added', () =>
       expect(
         broker.call('product.add_to_cart', cart, {
           meta: {
