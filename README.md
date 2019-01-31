@@ -44,7 +44,7 @@ npm run prettier
 
 ### Set environment
 
-- `cp .env.example .env`
+- `cp .env.example .env` and make desired changes into .env
 
 ### Run in Docker (Development)
 
@@ -57,32 +57,16 @@ npm run prettier
 
     `docker-compose scale api=3 products=2 auth=2`
 
-### Multiple instances
-
-You can run multiple instances of services. In this case you need to use a transporter i.e.: [NATS](https://nats.io). NATS is a lightweight & fast message broker. Download it and start with `gnatsd` command. After it started, set the `TRANSPORTER` env variable and start services.
-
-```
-TRANSPORTER=nats://localhost:4222
-```
-
-### elasticsearch setup
-
-Download [elastic search](https://www.elastic.co/downloads/elasticsearch) and install it. You can check the working of elastic search on http://localhost:9200. After it started, set the `ELASTIC_HOST`, `ELASTIC_PROTOCOL`, `ELASTIC_PORT` env variables that you described during the setup of elasticsearch and start services.
-
-```
-ELASTIC_HOST=localhost
-ELASTIC_PROTOCOL=http
-ELASTIC_PORT=9200
-ELASTIC_LOG=info
-```
-
 ## Code Overview
 
 ### Dependencies
 
 - [moleculer](https://github.com/moleculerjs/moleculer) - Microservices framework for NodeJS
+- [moleculer-web](https://github.com/moleculerjs/moleculer-web) - Official API Gateway service for Moleculer
 - [nats](https://github.com/nats-io/node-nats) - [NATS](https://nats.io) transport driver for Moleculer _(optional)_
 - [elasticsearch](https://github.com/elastic/elasticsearch-js) - [ELASTICSEARCH](https://www.elastic.co/products/elasticsearch) as database
+- [ioredis](https://github.com/luin/ioredis) - [REDIS](https://redis.io/) caching
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - JWT user autheentication
 
 ### Application Structure
 
@@ -96,11 +80,12 @@ $ npm test
 ```
 
 # How to scale services?
-
-	docker-compose scale products=2
-	docker-compose scale auth=2
-	docker-compose scale elastic=5
-
+You can use docker compose scale command to scale services. for example,
+```
+ docker-compose scale products=2
+ docker-compose scale auth=2
+ docker-compose scale elastic=5
+```
 # Mention some micro-services specific pattern you used and why?
 
 Project uses [EVERY SERVICE ON A SINGLE NODE](https://moleculer.services/docs/0.13/clustering.html#Microservices-architecture) micro-service architecture to make project scalable. By using this architecture we can scale all services to make system falut tolerant and flexible as there won’t be many dependency concerns and rolling back changes becomes much easier.

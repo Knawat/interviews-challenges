@@ -139,26 +139,24 @@ module.exports = {
      * @returns {Promise} response object from elastic search
      */
     async getProductById(productId) {
-      return this.isProductExist(productId).then(exist => {
-        if (exist) {
-          return es
-            .get({
-              index: indices.products,
-              type: type.products,
-              id: productId
-            })
-            .then(result => {
-              if (!result) {
-                return '';
-              }
-              return this.Promise.resolve({
-                id: result._id,
-                ...result._source
-              });
+      return es
+        .get({
+          index: indices.products,
+          type: type.products,
+          id: productId
+        })
+        .then(
+          result => {
+            if (!result.found) {
+              return '';
+            }
+            return this.Promise.resolve({
+              id: result._id,
+              ...result._source
             });
-        }
-        return '';
-      });
+          },
+          () => ''
+        );
     },
 
     /**
@@ -177,6 +175,15 @@ module.exports = {
           id: productId
         })
         .then(result => result);
+    },
+
+    /**
+     * get elastic search object
+     *
+     * @returns {Object} - Elastic Search object
+     */
+    async getElasticObject() {
+      return es;
     }
   }
 };

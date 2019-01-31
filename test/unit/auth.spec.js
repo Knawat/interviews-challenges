@@ -18,7 +18,7 @@ const test2 = {
 
 const registrationDetails = {
   name: 'testing User',
-  email: 'unit12@test.com',
+  email: `unit${Math.floor(Math.random() * 100)}@test.com`,
   password: 'unittest'
 };
 const rTest1 = {

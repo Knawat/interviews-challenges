@@ -58,9 +58,8 @@ class APIService extends Service {
               'POST register': 'auth.register',
               'GET products': 'product.list',
               'POST add-to-cart': 'product.add_to_cart',
-              'POST cart-summary': 'product.cart_summary',
-              'POST clear-cart': 'product.clear_cart',
-              'POST get-redis-hash-set': 'auth.redis_hash_set'
+              'GET cart-summary': 'product.cart_summary',
+              'POST clear-cart': 'product.clear_cart'
             },
 
             // Disable to call not-mapped actions
