@@ -1,0 +1,24 @@
+//Shortcodes included with WooCommerce
+https://docs.woocommerce.com/document/woocommerce-shortcodes/
+
+//WooCommerce Shortcodes – A Comprehensive Guide to Using Shortcodes
+https://www.logicinbound.com/woocommerce-shortcodes/
+
+//The Shortcode API
+https://codex.wordpress.org/Shortcode_API
+
+//How To Display WooCommerce Random Products From All Products?
+https://www.exeideas.com/2014/12/woocommerce-random-products.html
+
+//How To Create Your Own WordPress Shortcode - Part 1
+https://www.youtube.com/watch?v=9GwrmbC94Es
+
+//WordPress Plugin Development (Videos 1-6)
+https://www.youtube.com/watch?v=0l7JTie_6jM&list=PLriKzYyLb28kR_CPMz8uierDWC2y3znI2&index=1
+
+
+https://github.com/Tobias-Keller/woocommerce_random_products/blob/master/woocommerce_random_products/woocommerce_random_products.php
+
+//Plugin Readmes
+https://developer.wordpress.org/plugins/wordpress-org/how-your-readme-txt-works/
+https://wordpress.org/plugins/readme.txt
