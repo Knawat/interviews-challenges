@@ -1,22 +1,38 @@
-# Knawat is hiring
+[![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career
+# inverview-challenges-1
+This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
 
-## Open vacancies (Software Team)
+## Usage
+Start the project with `npm run dev` command. 
+After starting, open the http://localhost:3000/ URL in your browser. 
+On the welcome page you can test the generated services via API Gateway and check the nodes & services.
 
-- ~~[Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)~~
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- ~~[System Analyst (ERP)](http://smrtr.io/N-Rm)~~
+In the terminal, try the following commands:
+- `nodes` - List all connected nodes.
+- `actions` - List all registered service actions.
+- `call greeter.hello` - Call the `greeter.hello` action.
+- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Elastic APM, Jest, Kubernetes, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuff check
 
-## Hiring Process for technical positions
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skills, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+## Services
+- **api**: API Gateway services
+- **greeter**: Sample service with `hello` and `welcome` actions.
+
+
+## Useful links
+
+* Moleculer website: https://moleculer.services/
+* Moleculer Documentation: https://moleculer.services/docs/0.14/
+
+## NPM scripts
+
+- `npm run dev`: Start development mode (load all services locally with hot-reload & REPL)
+- `npm run start`: Start production mode (set `SERVICES` env variable to load certain services)
+- `npm run cli`: Start a CLI and connect to production. Don't forget to set production namespace with `--ns` argument in script
+- `npm run lint`: Run ESLint
+- `npm run ci`: Run continuous test mode with watching
+- `npm test`: Run tests & generate coverage report
+- `npm run dc:up`: Start the stack with Docker Compose
+- `npm run dc:down`: Stop the stack with Docker Compose
