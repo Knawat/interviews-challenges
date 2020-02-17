@@ -133,5 +133,11 @@ module.exports = {
 
       return true;
     },
+    getProductData() {
+      return esClient.search({
+        index: index.products,
+        body: { query: { match_all: {} } },
+      });
+    },
   },
 };

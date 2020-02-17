@@ -12,6 +12,7 @@ module.exports = {
         aliases: {
           "POST /register": "auth.register",
           "POST /login": "auth.login",
+          "GET  /products": "product.getProducts",
         },
         authentication: false,
         bodyParsers: {
