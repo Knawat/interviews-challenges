@@ -27,6 +27,18 @@ module.exports = {
         logging: true,
       },
     ],
+    onError(req, res, err) {
+      // Return with the error as JSON object
+      res.setHeader("Content-type", "application/json; charset=utf-8");
+      res.writeHead(err.code || 500);
+      const errResponse = {
+        success: "false",
+        message: err.message,
+        payload: {},
+      };
+      res.end(JSON.stringify(errResponse));
+      this.logResponse(req, res, err ? err.ctx : null);
+    },
     log4XXResponses: false,
     logRequestParams: "info",
     logResponseData: "info",

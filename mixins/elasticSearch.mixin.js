@@ -43,7 +43,7 @@ module.exports = {
               properties: {
                 name: { type: "text" },
                 email: { type: "text" },
-                userId: { type: "integer" },
+                userId: { type: "text" },
                 password: { type: "text" },
               },
             },
@@ -60,6 +60,16 @@ module.exports = {
         password: "123456",
       };
       return this.addUser(user.email, user.name, user.password, user.id);
+    },
+    getUserByEmail(email) {
+      return esClient.search({
+        index: index.users,
+        body: {
+          query: {
+            match_phrase: { email },
+          },
+        },
+      });
     },
   },
 };

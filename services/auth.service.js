@@ -1,6 +1,10 @@
 const { Service } = require("moleculer");
+const uuid = require("uuid");
+
+const { MoleculerClientError } = require("moleculer").Errors;
 const apiResponse = require("../mixins/apiResponse.mixin");
 const elasticSearch = require("../mixins/elasticSearch.mixin");
+const common = require("../mixins/common.mixin");
 
 class AuthService extends Service {
   constructor(broker) {
@@ -8,7 +12,7 @@ class AuthService extends Service {
 
     this.parseServiceSchema({
       name: "auth",
-      mixins: [apiResponse, elasticSearch],
+      mixins: [apiResponse, elasticSearch, common],
       actions: {
         /**
          * Check user with same email id exist
@@ -19,15 +23,55 @@ class AuthService extends Service {
           params: {
             name: { type: "string" },
             email: { type: "string" },
-            userId: { type: "number" },
             password: { type: "string" },
           },
-          handler() {
-            return this.success({}, "User registered successfully.");
+          handler(ctx) {
+            return this.getUserByEmail(ctx.params.email)
+              .then((userData) => {
+                if (userData.hits.hits.length > 0) {
+                  throw new MoleculerClientError(
+                    "Email id already in use.Please try with another.",
+                    409,
+                    null,
+                  );
+                }
+                return this.createUser(ctx.params);
+              })
+              .catch((error) => {
+                throw new MoleculerClientError(
+                  error.message,
+                  error.code || 500,
+                  null,
+                );
+              });
           },
         },
       },
-      methods: {},
+      methods: {
+        createUser(requestData) {
+          return this.Promise.resolve()
+            .then(async () => {
+              const passwordHash = await this.passwordHash(
+                requestData.password,
+              );
+              const userId = await uuid();
+              this.addUser(
+                requestData.email,
+                requestData.name,
+                passwordHash,
+                userId,
+              );
+            })
+            .then(() => this.success({}, "User registered successfully."))
+            .catch((error) => {
+              throw new MoleculerClientError(
+                error.message,
+                error.code || 500,
+                null,
+              );
+            });
+        },
+      },
       started() {
         this.isUserIndexExist()
           .then(async (isUserIndexExist) => {

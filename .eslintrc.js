@@ -12,7 +12,6 @@ module.exports = {
     ecmaVersion: "2017"
   },
   rules: {
-    "prettier/prettier": "error",
     indent: ["warn", 2],
     quotes: ["warn", "double"],
     semi: ["error", "always"],
