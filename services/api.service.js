@@ -11,6 +11,7 @@ module.exports = {
         path: "/api",
         aliases: {
           "POST /register": "auth.register",
+          "POST /login": "auth.login",
         },
         authentication: false,
         bodyParsers: {

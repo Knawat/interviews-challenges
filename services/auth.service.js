@@ -1,5 +1,7 @@
 const { Service } = require("moleculer");
 const uuid = require("uuid");
+const jwt = require("jsonwebtoken");
+const bcrypt = require("bcryptjs");
 
 const { MoleculerClientError } = require("moleculer").Errors;
 const apiResponse = require("../mixins/apiResponse.mixin");
@@ -22,13 +24,13 @@ class AuthService extends Service {
         register: {
           params: {
             name: { type: "string" },
-            email: { type: "string" },
+            email: { type: "email" },
             password: { type: "string" },
           },
           handler(ctx) {
             return this.getUserByEmail(ctx.params.email)
               .then((userData) => {
-                if (userData.hits.hits.length > 0) {
+                if (userData) {
                   throw new MoleculerClientError(
                     "Email id already in use.Please try with another.",
                     409,
@@ -46,13 +48,49 @@ class AuthService extends Service {
               });
           },
         },
+        login: {
+          params: {
+            email: { type: "email" },
+            password: { type: "string" },
+          },
+          handler(ctx) {
+            return this.getUserByEmail(ctx.params.email)
+              .then(async (userData) => {
+                const reqPassword = ctx.params.password;
+                const salt = bcrypt.genSaltSync(10);
+                if (userData && await this.validatePassword(reqPassword, userData.password)) {
+                  const authToken = await jwt.sign(
+                    { userId: userData.userId },
+                    salt,
+                  );
+                  return this.success(
+                    { auth_token: authToken },
+                    "Auth token generated successfully.",
+                  );
+                }
+                throw new MoleculerClientError(
+                  "Invalid Email password.",
+                  409,
+                  null,
+                );
+              })
+              .catch((error) => {
+                throw new MoleculerClientError(
+                  error.message,
+                  error.code || 500,
+                  null,
+                );
+              });
+          },
+        },
+
       },
       methods: {
         createUser(requestData) {
           return this.Promise.resolve()
             .then(async () => {
               const passwordHash = await this.passwordHash(
-                requestData.password,
+                requestData.password, salt,
               );
               const userId = await uuid();
               this.addUser(

@@ -62,14 +62,21 @@ module.exports = {
       return this.addUser(user.email, user.name, user.password, user.id);
     },
     getUserByEmail(email) {
-      return esClient.search({
-        index: index.users,
-        body: {
-          query: {
-            match_phrase: { email },
+      return esClient
+        .search({
+          index: index.users,
+          body: {
+            query: {
+              match_phrase: { email },
+            },
           },
-        },
-      });
+        })
+        .then(async (userRes) => {
+          const hits = userRes.hits.hits;
+          if (hits.length > 0) {
+            return hits[0]._source;
+          }
+        });
     },
   },
 };
