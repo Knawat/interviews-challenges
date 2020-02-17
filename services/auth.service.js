@@ -1,29 +1,15 @@
 "use strict";
+
 require('dotenv').config()
 
 const MESSAGE_CONSTANT = require("../lib/Constants");
-
+const Common = require("../mixins/common.mixin");
 const Joi = require("joi");
-
 
 module.exports = {
     name: "auth",
-
-	/**
-	 * Settings
-	 */
-    settings: {
-
-    },
-
-	/**
-	 * Dependencies
-	 */
-    dependencies: [],
-
-	/**
-	 * Actions
-	 */
+    mixins: [Common],
+    dependencies: ['es'],
     actions: {
         /**
          * Registration action.
@@ -68,7 +54,18 @@ module.exports = {
                     })
             }),
             handler: async function handler(ctx) {
-                return ctx.params;
+                return await ctx
+                    .call("es.registration", {
+                        email: ctx.params.email,
+                        password: ctx.params.password,
+                        name: ctx.params.name
+                    })
+                    .then(user => {
+                        return this.Promise.resolve({
+                            message: MESSAGE_CONSTANT.USER_ADDED,
+                            id: user.id
+                        });
+                    });
             }
         },
 
@@ -105,12 +102,22 @@ module.exports = {
                     })
             }),
             handler: async function handler(ctx) {
-                return ctx.params;
+                return await ctx
+                    .call("es.login", {
+                        email: ctx.params.email,
+                        password: ctx.params.password
+                    })
+                    .then(user => {
+                        return this.Promise.resolve({
+                            message: MESSAGE_CONSTANT.USER_LOGIN,
+                            user: user
+                        });
+                    });
             }
         },
 
         /**
-         * resolveToken action.
+         * verifyToken action.
          *
          * Required params:
          * 	- 'token'
@@ -133,43 +140,27 @@ module.exports = {
                     })
             }),
             handler: async function handler(ctx) {
-                return ctx.params;
+                return await this.verifyToken(
+                    ctx.params.token
+                ).then(async function (decoded) {
+                    if (decoded.userID) {
+                        return await ctx
+                            .call("es.fatch_user", {
+                                id: decoded.userID
+                            })
+                            .then(user => {
+                                return Promise.resolve(user);
+                            });
+                    } else {
+                        return Promise.reject({
+                            message: MESSAGE_CONSTANT.AUTH_FAIL
+                        });
+                    }
+                })
+                    .catch(err => {
+                        return Promise.reject(err);
+                    });
             }
         }
-    },
-
-	/**
-	 * Events
-	 */
-    events: {
-
-    },
-
-	/**
-	 * Methods
-	 */
-    methods: {
-
-    },
-
-	/**
-	 * Service created lifecycle event handler
-	 */
-    created() {
-
-    },
-
-	/**
-	 * Service started lifecycle event handler
-	 */
-    async started() {
-
-    },
-
-	/**
-	 * Service stopped lifecycle event handler
-	 */
-    async stopped() {
-
     }
 };

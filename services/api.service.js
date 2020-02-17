@@ -1,28 +1,14 @@
 "use strict";
 
-const ApiGateway = require("moleculer-web");
 require('dotenv').config()
-/**
- * @typedef {import('moleculer').Context} Context Moleculer's Context
- * @typedef {import('http').IncomingMessage} IncomingRequest Incoming HTTP Request
- * @typedef {import('http').ServerResponse} ServerResponse HTTP Server Response
- */
+
+const ApiGateway = require("moleculer-web");
 
 module.exports = {
 	name: "api",
 	mixins: [ApiGateway],
-
-	// More info about settings: https://moleculer.services/docs/0.14/moleculer-web.html
 	settings: {
-		// Exposed port
 		port: process.env.PORT || 3000,
-
-		// Exposed IP
-		ip: "0.0.0.0",
-
-		// Global Express middlewares. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Middlewares
-		use: [],
-
 		routes: [
 			{
 				path: "/api",
@@ -30,20 +16,14 @@ module.exports = {
 				whitelist: [
 					"auth.*"
 				],
-
-				// Enable authentication. Implement the logic into `authenticate` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authentication
 				authentication: true,
-
-				// Enable authorization. Implement the logic into `authorize` method. More info: https://moleculer.services/docs/0.14/moleculer-web.html#Authorization
 				authorization: true,
-
-				authAliases: true,
 				aliases: {
 					//registration
 					"POST auth/registration": "auth.registration",
 
 					//login
-					"POST auth/login": "auth.login",
+					"POST auth/login": "auth.login"
 				},
 
 				bodyParsers: {
@@ -69,53 +49,46 @@ module.exports = {
 					}
 				},
 
-				// Enable/disable logging
 				logging: true
 			}
 		],
 	},
 
 	methods: {
-
-		/**
-		 * Authenticate the request. It check the `Authorization` token value in the request header.
-		 * Check the token value & resolve the user by the token.
-		 * The resolved user will be available in `ctx.meta.user`
-		 *
-		 *
-		 * @param {Context} ctx
-		 * @param {Object} route
-		 * @param {IncomingRequest} req
-		 * @returns {Promise}
-		 */
 		async authenticate(ctx, route, req) {
-			// Read the token from header
-			const auth = req.headers["authorization"];
-			if (auth && auth.startsWith("Bearer")) {
-				const token = auth.slice(7);
-				if (token == "123456") {
-					return { id: 1, name: "John Doe" };
+			let auth = req.headers.authorization;
+			if (auth) {
+				let type = auth.split(" ")[0];
+				if ("Bearer" !== type)
+					return Promise.reject({
+						message: MESSAGE_CONSTANT.AUTH_FAIL
+					});
+				let token = auth.split(" ")[1];
+				if (token) {
+					return await ctx.call("auth.verifyToken", { token }).then(user => {
+						ctx.meta.auth = {
+							userId: user.id,
+							name: user.name,
+							email: user.email
+						};
+						return true;
+					});
 				} else {
-					throw new ApiGateway.Errors.UnAuthorizedError(ApiGateway.Errors.ERR_INVALID_TOKEN);
+					return Promise.reject({
+						message: MESSAGE_CONSTANT.AUTH_FAIL
+					});
 				}
 			} else {
 				return;
 			}
 		},
 
-		/**
-		 * Authorize the request. Check that the authenticated user has right to access the resource.
-		 *
-		 *
-		 * @param {Context} ctx
-		 * @param {Object} route
-		 * @param {IncomingRequest} req
-		 * @returns {Promise}
-		 */
 		async authorize(ctx, route, req) {
 			const user = ctx.meta.user;
 			if (req.$action.auth == "required" && !user) {
-				throw new ApiGateway.Errors.UnAuthorizedError("NO_RIGHTS");
+				return Promise.reject({
+					message: MESSAGE_CONSTANT.AUTH_FAIL
+				});
 			}
 		}
 

@@ -4,13 +4,14 @@ services:
   api:
     build:
       context: .
-    image: inverview-challenges-1
+    image: inverview-challenges
     env_file: docker-compose.env
     environment:
       SERVICES: api
       PORT: 3000
     depends_on:
       - nats
+      - auth
     networks:
       - internal
     ports:
@@ -19,12 +20,26 @@ services:
   auth:
     build:
       context: .
-    image: inverview-challenges-1
+    image: inverview-challenges
     env_file: docker-compose.env
     environment:
       SERVICES: auth
     depends_on:
       - nats
+      - es
+    networks:
+      - internal
+
+  es:
+    build:
+      context: .
+    image: inverview-challenges
+    env_file: docker-compose.env
+    environment:
+      SERVICES: es
+    depends_on:
+      - nats
+      - elasticsearch
     networks:
       - internal
 
@@ -32,6 +47,11 @@ services:
     image: nats:2
     networks:
       - internal
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.6.0
+    ports:
+      - 9200:9200
 
 networks:
   internal:
