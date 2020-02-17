@@ -1,5 +1,6 @@
 const { Service } = require("moleculer");
 const apiResponse = require("../mixins/apiResponse.mixin");
+const elasticSearch = require("../mixins/elasticSearch.mixin");
 
 class AuthService extends Service {
   constructor(broker) {
@@ -7,7 +8,7 @@ class AuthService extends Service {
 
     this.parseServiceSchema({
       name: "auth",
-      mixins: [apiResponse],
+      mixins: [apiResponse, elasticSearch],
       actions: {
         /**
          * Check user with same email id exist
@@ -25,6 +26,22 @@ class AuthService extends Service {
             return this.success({}, "User registered successfully.");
           },
         },
+      },
+      methods: {},
+      started() {
+        this.isUserIndexExist()
+          .then(async (isUserIndexExist) => {
+            if (!isUserIndexExist) {
+              await this.createUserIndex();
+              const userData = await this.addTestUserData();
+              this.logger.info(">>> User seeded", userData);
+            } else {
+              this.logger.info(">>> User index already exist");
+            }
+          })
+          .catch((error) => {
+            this.logger.error(">>> User seed error", error);
+          });
       },
     });
   }
