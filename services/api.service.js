@@ -9,7 +9,9 @@ module.exports = {
     routes: [
       {
         path: "/api",
-        aliases: {},
+        aliases: {
+          "POST /register": "auth.register",
+        },
         authentication: false,
         bodyParsers: {
           json: {
@@ -21,16 +23,13 @@ module.exports = {
             limit: "1MB",
           },
         },
-        mappingPolicy: "restrict", // Available values: "all", "restrict"
+        mappingPolicy: "restrict",
         logging: true,
       },
     ],
     log4XXResponses: false,
     logRequestParams: "info",
     logResponseData: "info",
-    assets: {
-      options: {},
-    },
   },
   methods: {},
 };
