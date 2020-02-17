@@ -2,8 +2,8 @@ const { Service } = require("moleculer");
 const uuid = require("uuid");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
-
 const { MoleculerClientError } = require("moleculer").Errors;
+
 const apiResponse = require("../mixins/apiResponse.mixin");
 const elasticSearch = require("../mixins/elasticSearch.mixin");
 const common = require("../mixins/common.mixin");

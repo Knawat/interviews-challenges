@@ -10,6 +10,7 @@ const esClient = new elasticsearch.Client({
 });
 const index = {
   users: "users",
+  products: "products",
 };
 
 module.exports = {
@@ -72,11 +73,65 @@ module.exports = {
           },
         })
         .then(async (userRes) => {
-          const hits = userRes.hits.hits;
+          const { hits } = userRes.hits;
           if (hits.length > 0) {
             return hits[0]._source;
           }
         });
+    },
+    isProductIndexExist() {
+      return esClient.indices.exists({
+        index: index.products,
+        body: {},
+      });
+    },
+    createProductsIndex() {
+      return esClient.indices.create({
+        index: index.products,
+        body: {
+          mappings: {
+            _doc: {
+              properties: {
+                name: { type: "text" },
+                productId: { type: "integer" },
+                price: { type: "integer" },
+              },
+            },
+          },
+        },
+        include_type_name: true,
+      });
+    },
+    addTestProducts(price, name, productId) {
+      return esClient.index({
+        index: index.products,
+        body: {
+          name,
+          price,
+          productId,
+        },
+      });
+    },
+    addTestProductsData() {
+      const products = [{
+        name: "My test product 1",
+        productId: 1,
+        price: 12,
+      }, {
+        name: "My test product 2",
+        productId: 2,
+        price: 120,
+      }, {
+        name: "My test product 3",
+        productId: 3,
+        price: 1200,
+      }];
+
+      products.forEach((product) => {
+        this.addTestProducts(product.price, product.name, product.id);
+      });
+
+      return true;
     },
   },
 };
