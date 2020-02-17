@@ -3,9 +3,8 @@ const crypto = require("crypto");
 
 module.exports = {
   methods: {
-    passwordHash(password) {
+    passwordHash(password, salt) {
       const shaPassword = this.sha256(password);
-      const salt = bcrypt.genSaltSync(10);
       return bcrypt.hashSync(shaPassword, salt);
     },
     sha256(password) {

@@ -12,6 +12,7 @@ class AuthService extends Service {
   constructor(broker) {
     super(broker);
 
+    const salt = bcrypt.genSaltSync(10);
     this.parseServiceSchema({
       name: "auth",
       mixins: [apiResponse, elasticSearch, common],
@@ -57,12 +58,8 @@ class AuthService extends Service {
             return this.getUserByEmail(ctx.params.email)
               .then(async (userData) => {
                 const reqPassword = ctx.params.password;
-                const salt = bcrypt.genSaltSync(10);
                 if (userData && await this.validatePassword(reqPassword, userData.password)) {
-                  const authToken = await jwt.sign(
-                    { userId: userData.userId },
-                    salt,
-                  );
+                  const authToken = await jwt.sign({ userId: userData.userId }, salt);
                   return this.success(
                     { auth_token: authToken },
                     "Auth token generated successfully.",
@@ -89,9 +86,7 @@ class AuthService extends Service {
         createUser(requestData) {
           return this.Promise.resolve()
             .then(async () => {
-              const passwordHash = await this.passwordHash(
-                requestData.password, salt,
-              );
+              const passwordHash = await this.passwordHash(requestData.password, salt);
               const userId = await uuid();
               this.addUser(
                 requestData.email,
