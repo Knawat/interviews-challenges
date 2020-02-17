@@ -16,13 +16,13 @@ services:
     ports:
       - "3000:3000"
 
-  welcome:
+  auth:
     build:
       context: .
     image: inverview-challenges-1
     env_file: docker-compose.env
     environment:
-      SERVICES: welcome
+      SERVICES: auth
     depends_on:
       - nats
     networks:

@@ -1,5 +1,5 @@
 "use strict";
-
+const JoiValidator = require("./lib/JoiValidator");
 /**
  * Moleculer ServiceBroker configuration file
  *
@@ -146,7 +146,7 @@ module.exports = {
 	},
 
 	// Enable action & event parameter validation. More info: https://moleculer.services/docs/0.14/validating.html
-	validator: true,
+	validator: new JoiValidator(),
 
 	errorHandler: null,
 
