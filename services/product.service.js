@@ -12,22 +12,25 @@ class ProductService extends Service {
       name: "product",
       mixins: [apiResponse, elasticSearch, common],
       actions: {
-        async getProducts() {
-          return this.getProductData()
-            .then(products => {
-              const productsDetails = [];
-              for (const product of products.hits.hits) {
-                productsDetails.push({ id: product._id, ...product._source });
-              }
-              return this.success(productsDetails);
-            })
-            .catch(error => {
-              throw new MoleculerClientError(
-                error.message,
-                error.code || 500,
-                null,
-              );
-          });
+        getProducts: {
+          cache: true,
+          async handler(ctx) {
+            return this.getProductData()
+              .then(products => {
+                const productsDetails = [];
+                for (const product of products.hits.hits) {
+                  productsDetails.push({ id: product._id, ...product._source });
+                }
+                return this.success(productsDetails);
+              })
+              .catch(error => {
+                throw new MoleculerClientError(
+                  error.message,
+                  error.code || 500,
+                  null,
+                );
+            });
+          }
         }
       },
       started() {

@@ -62,7 +62,14 @@ module.exports = {
 
   // Define a cacher.
   // More info: https://moleculer.services/docs/0.14/caching.html
-  cacher: null,
+  // TODO: Change host to "redis-server" with docker-compose
+  cacher: {
+    type: "Redis",
+    options: {
+      ttl: 30,
+      redis: { port: 6379, host: "127.0.0.1" },
+    },
+  },
 
   // Define a serializer.
   // Available values: "JSON", "Avro", "ProtoBuf", "MsgPack", "Notepack", "Thrift".
