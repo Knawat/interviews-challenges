@@ -21,6 +21,8 @@ describe("Test 'product' service", () => {
       await broker.call("product.getProducts", {})
         .then((getProductRes) => {
           expect(getProductRes.success).toEqual(true);
+        }).catch((error) => {
+          this.logger.error(">>> get products error:", error);
         });
     });
   });

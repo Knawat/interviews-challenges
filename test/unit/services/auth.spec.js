@@ -14,7 +14,7 @@ describe("Test 'auth' service", () => {
   const invalidEmail = "123456";
   const unAuthorizedEmail = "unAuthorized@example.com";
 
-  const broker = new ServiceBroker({ logger: false });
+  const broker = new ServiceBroker({ logger: true });
 
   broker.createService(AuthService);
 
@@ -63,14 +63,25 @@ describe("Test 'auth' service", () => {
   });
 
   describe("Test 'auth.login' action", () => {
-    it("should return success true with auth_token", async () => {
+    it("should return success true with auth_token with test registered user", async () => {
+      await broker.call("auth.login", {
+        email: newUserEmail,
+        password: userPassword,
+      }).then((response) => {
+        expect(response.success).toEqual(true);
+      }).catch(async (error) => {
+        expect(error.code).toEqual(500);
+      });
+    });
+
+    it("should return success true with auth_token with seeded user", async () => {
       await broker.call("auth.login", {
         email: authorizedEmail,
         password: userPassword,
       }).then((response) => {
         expect(response.success).toEqual(true);
-      }).catch((response) => {
-        expect(response.code).toEqual(500);
+      }).catch(async (error) => {
+        expect(error.code).toEqual(500);
       });
     });
 
