@@ -11,6 +11,7 @@ const esClient = new elasticsearch.Client({
 const index = {
   users: "users",
   products: "products",
+  cart: "cart",
 };
 
 module.exports = {
@@ -137,6 +138,61 @@ module.exports = {
       return esClient.search({
         index: index.products,
         body: { query: { match_all: {} } },
+      });
+    },
+    isCartIndexExist() {
+      return esClient.indices.exists({
+        index: index.cart,
+        body: {},
+      });
+    },
+    createCartIndex() {
+      return esClient.indices.create({
+        index: index.cart,
+        body: {
+          mappings: {
+            _doc: {
+              properties: {
+                cartId: { type: "integer" },
+                product: {
+                  properties: {
+                    productId: {
+                      type: "integer",
+                    },
+                    quantity: {
+                      type: "integer",
+                    },
+                  },
+                },
+                userId: { type: "integer" },
+              },
+            },
+          },
+        },
+        include_type_name: true,
+      });
+    },
+    addTestCartData() {
+      const cart = {
+        id: 1,
+        productId: 1,
+        quantity: 1,
+      };
+      return this.addProductToCart(cart.id, cart.productId, cart.quantity);
+    },
+    addProductToCart(cartId, productId, quantity) {
+      return esClient.index({
+        index: index.cart,
+        body: {
+          cartId,
+          product: [
+            {
+              productId,
+              quantity,
+            },
+          ],
+          userId: cartId,
+        },
       });
     },
   },

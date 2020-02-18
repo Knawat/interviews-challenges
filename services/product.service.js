@@ -3,14 +3,13 @@ const { MoleculerClientError } = require("moleculer").Errors;
 
 const apiResponse = require("../mixins/apiResponse.mixin");
 const elasticSearch = require("../mixins/elasticSearch.mixin");
-const common = require("../mixins/common.mixin");
 
 class ProductService extends Service {
   constructor(broker) {
     super(broker);
     this.parseServiceSchema({
       name: "product",
-      mixins: [apiResponse, elasticSearch, common],
+      mixins: [apiResponse, elasticSearch],
       actions: {
         getProducts: {
           cache: true,
