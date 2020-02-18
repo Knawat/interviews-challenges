@@ -6,7 +6,7 @@ header
         router-link(to="/") Knawat Shopping
       li
         button Cart
-        p {{$store.getters.cartCount}}
+        p(v-if="$store.getters.cartCount") {{$store.getters.cartCount}}
         ul
           li(v-for="item in $store.getters.cartItems")
             p {{item.product.name.en}} : {{item.quantity}}
