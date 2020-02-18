@@ -32,6 +32,7 @@ module.exports = {
         path: "/api/user",
         aliases: {
           "POST /cart": "cart.addToCart",
+          "GET /cart": "cart.getCartSummary",
         },
         authentication: true,
         bodyParsers: {

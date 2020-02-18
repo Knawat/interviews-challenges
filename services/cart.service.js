@@ -57,6 +57,20 @@ class CartService extends Service {
               });
           },
         },
+        getCartSummary: {
+          async handler(ctx) {
+            const { userId } = ctx.meta;
+            return this.getCartByUserId(userId)
+              .then((cartDetails) => this.success(cartDetails, "Cart retrieved successfully."))
+              .catch((error) => {
+                throw new MoleculerClientError(
+                  error.message,
+                  error.code || 500,
+                  null,
+                );
+              });
+          },
+        },
       },
       started() {
         this.isCartIndexExist()
