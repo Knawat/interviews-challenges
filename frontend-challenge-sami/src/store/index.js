@@ -25,6 +25,14 @@ export default new Vuex.Store({
       } else {
         exists.quantity++;
       }
+    },
+    REMOVE_CART_ITEM(state, sku) {
+      const item = state.items.find(entry => entry.product.sku === sku);
+      if (item.quantity > 1) {
+        item.quantity--;
+      } else {
+        state.items = state.items.filter(entry => entry.product.sku !== sku);
+      }
     }
   },
   actions: {},

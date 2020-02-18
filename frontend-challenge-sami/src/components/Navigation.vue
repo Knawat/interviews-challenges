@@ -7,7 +7,9 @@ header
       li
         button Cart
         ul
-          li(v-for="item in this.$store.getters.cartItems") {{item.product.name.en}} : {{item.quantity}}
+          li(v-for="item in this.$store.getters.cartItems")
+            p {{item.product.name.en}} : {{item.quantity}}
+            button(@click="$store.commit('REMOVE_CART_ITEM', item.product.sku)") Remove
 </template>
 
 <script>
