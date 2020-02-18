@@ -1,9 +1,10 @@
 "use strict";
 
-require('dotenv').config()
+require("dotenv").config();
 
 const ApiGateway = require("moleculer-web");
 const { MoleculerError } = require("moleculer").Errors;
+const MESSAGE_CONSTANT = require("../lib/Constants");
 
 module.exports = {
 	name: "api",
@@ -64,7 +65,7 @@ module.exports = {
 			if (!req.$endpoint.action.auth) {
 				return;
 			}
-			if (req.$endpoint.action.auth === 'Bearer') {
+			if (req.$endpoint.action.auth === "Bearer") {
 				let auth = req.headers.authorization;
 				if (auth) {
 					let type = auth.split(" ")[0];
