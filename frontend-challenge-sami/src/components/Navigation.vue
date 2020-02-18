@@ -1,11 +1,11 @@
 <template lang="pug">
 header
-    nav
+  nav
     ul
-        li
-            router-link(to="/") Knawat Shopping
-        li
-            button Cart
+      li
+        router-link(to="/") Knawat Shopping
+      li
+        button Cart
 </template>
 
 <script>
