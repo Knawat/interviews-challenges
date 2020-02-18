@@ -31,7 +31,7 @@ class AuthService extends Service {
           handler(ctx) {
             return this.getUserByEmail(ctx.params.email)
               .then((userData) => {
-                if (userData) {
+                if (Object.keys(userData).length > 0) {
                   throw new MoleculerClientError(
                     "Email id already in use.Please try with another.",
                     409,
@@ -97,7 +97,8 @@ class AuthService extends Service {
           return this.Promise.resolve()
             .then(async () => {
               const passwordHash = await this.passwordHash(requestData.password, salt);
-              const userId = await uuid();
+              const uuidWithHyphen = await uuid();
+              const userId = uuidWithHyphen.toString().replace(/-/g, "");
               this.addUser(
                 requestData.email,
                 requestData.name,

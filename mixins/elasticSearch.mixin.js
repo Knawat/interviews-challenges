@@ -78,6 +78,7 @@ module.exports = {
           if (hits.length > 0) {
             return hits[0]._source;
           }
+          return {};
         });
     },
     isProductIndexExist() {
@@ -153,7 +154,7 @@ module.exports = {
           mappings: {
             _doc: {
               properties: {
-                cartId: { type: "integer" },
+                cartId: { type: "text" },
                 product: {
                   properties: {
                     productId: {
@@ -164,7 +165,7 @@ module.exports = {
                     },
                   },
                 },
-                userId: { type: "integer" },
+                userId: { type: "text" },
               },
             },
           },
@@ -193,6 +194,38 @@ module.exports = {
           ],
           userId: cartId,
         },
+      });
+    },
+    updateQuantity(userId, docId, updateProductData) {
+      return esClient.update({
+        index: index.cart,
+        id: docId,
+        body: {
+          doc: {
+            cartId: userId,
+            product: updateProductData,
+            userId,
+          },
+        },
+      });
+    },
+    getCartByUserId(userId) {
+      return esClient.search({
+        index: index.cart,
+        body: {
+          query: {
+            match_phrase: {
+              userId: userId
+            }
+          }
+        },
+      }).then(async (cartRes) => {
+        const { hits } = cartRes.hits;
+        if (hits.length > 0) {
+          const cartDoc = hits[0];
+          return { id: cartDoc._id, ...cartDoc._source};
+        }
+        return {};
       });
     },
   },

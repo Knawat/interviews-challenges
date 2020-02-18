@@ -1,4 +1,5 @@
 const { Service } = require("moleculer");
+const { MoleculerClientError } = require("moleculer").Errors;
 
 const apiResponse = require("../mixins/apiResponse.mixin");
 const elasticSearch = require("../mixins/elasticSearch.mixin");
@@ -10,18 +11,50 @@ class CartService extends Service {
       name: "cart",
       mixins: [apiResponse, elasticSearch],
       actions: {
+        /**
+          * Check user is authenticated
+          * If user is authenticated use user id from token
+          * Add product to existing cart if product not exist
+          * Update quantity only if product in cart exist
+         */
         addToCart: {
-          // Check user is authenticated
-          // If user is authenticated use user id from token
-          // Add product to existing cart if product not exist
-          // Update quantity only if product in cart exist
           params: {
             productId: { type: "number" },
             quantity: { type: "number" },
           },
           async handler(ctx) {
-            this.logger.info(">>> log userId", ctx.meta.userId);
-            return this.success({}, "Product added to cart successfully.");
+            const { userId } = ctx.meta;
+            return this.getCartByUserId(userId)
+              .then((cartRes) => {
+                const { productId, quantity } = ctx.params;
+                if (Object.keys(cartRes).length > 0) {
+                  const dbProduct = cartRes.product;
+                  dbProduct.forEach((element) => {
+                    if (element.productId === productId) {
+                      element.quantity += quantity;
+                    }
+                  });
+                  const found = dbProduct.some((el) => el.productId === productId);
+                  if (!found) dbProduct.push({ productId, quantity });
+                  return this.updateQuantity(
+                    userId,
+                    cartRes.id,
+                    dbProduct,
+                  ).then(() => this.success({}, "Product added to cart successfully."));
+                }
+                return this.addProductToCart(
+                  userId,
+                  productId,
+                  quantity,
+                ).then(() => this.success({}, "Product added to cart successfully."));
+              })
+              .catch((error) => {
+                throw new MoleculerClientError(
+                  error.message,
+                  error.code || 500,
+                  null,
+                );
+              });
           },
         },
       },
