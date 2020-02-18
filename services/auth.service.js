@@ -80,7 +80,17 @@ class AuthService extends Service {
               });
           },
         },
-
+        /**
+         * verify jwt auth token
+         */
+        verifyToken: {
+          params: {
+            authToken: { type: "string" },
+          },
+          handler(ctx) {
+            return jwt.verify(ctx.params.authToken, salt);
+          },
+        },
       },
       methods: {
         createUser(requestData) {

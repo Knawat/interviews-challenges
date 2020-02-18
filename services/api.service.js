@@ -33,7 +33,7 @@ module.exports = {
         aliases: {
           "POST /cart": "cart.addToCart",
         },
-        authentication: false,
+        authentication: true,
         bodyParsers: {
           json: {
             strict: false,
@@ -64,6 +64,27 @@ module.exports = {
     logRequestParams: "info",
     logResponseData: "info",
   },
-  methods: {},
-
+  methods: {
+    async authenticate(ctx, route, req, res) {
+      const auth = req.headers.authorization;
+      if (auth && auth.startsWith("Bearer")) {
+        const authToken = auth.slice(7);
+        const token = await ctx.call("auth.verifyToken", { authToken });
+        if (token.userId) {
+          ctx.meta.userId = token.userId;
+          return Promise.resolve(ctx);
+        }
+        return Promise.reject(
+          new ApiGateway.Errors.UnAuthorizedError(
+            ApiGateway.Errors.ERR_INVALID_TOKEN,
+          ),
+        );
+      }
+      return Promise.reject(
+        new ApiGateway.Errors.UnAuthorizedError(
+          ApiGateway.Errors.ERR_NO_TOKEN,
+        ),
+      );
+    },
+  },
 };

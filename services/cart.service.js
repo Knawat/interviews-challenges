@@ -19,7 +19,8 @@ class CartService extends Service {
             productId: { type: "number" },
             quantity: { type: "number" },
           },
-          async handler() {
+          async handler(ctx) {
+            this.logger.info(">>> log userId", ctx.meta.userId);
             return this.success({}, "Product added to cart successfully.");
           },
         },
