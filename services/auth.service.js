@@ -58,7 +58,7 @@ class AuthService extends Service {
             return this.getUserByEmail(ctx.params.email)
               .then(async (userData) => {
                 const reqPassword = ctx.params.password;
-                if (userData && await this.validatePassword(reqPassword, userData.password)) {
+                if (Object.keys(userData).length > 0 && await this.validatePassword(reqPassword, userData.password)) {
                   const authToken = await jwt.sign({ userId: userData.userId }, salt);
                   return this.success(
                     { auth_token: authToken },

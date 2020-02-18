@@ -63,9 +63,6 @@ module.exports = {
       };
       return this.addUser(user.email, user.name, user.password, user.id);
     },
-    deleteUserIndex() {
-      return esClient.indices.delete({index: index.users});
-    },
     getUserByEmail(email) {
       return esClient
         .search({
