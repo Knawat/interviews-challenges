@@ -6,11 +6,11 @@ const { MoleculerError } = require("moleculer").Errors;
 const MESSAGE_CONSTANT = require("../lib/Constants");
 const Common = require("../mixins/common.mixin");
 const Joi = require("joi");
+const Elasticsearch = require("../mixins/elasticsearch.mixin");
 
 module.exports = {
 	name: "auth",
-	mixins: [Common],
-	dependencies: ["elasticSearchClient"],
+	mixins: [Common, Elasticsearch],
 	actions: {
 		/**
          * Registration action.
@@ -49,12 +49,7 @@ module.exports = {
 					})
 			}),
 			handler: async function handler(ctx) {
-				return await ctx
-					.call("elasticSearchClient.registration", {
-						email: ctx.params.email,
-						password: ctx.params.password,
-						name: ctx.params.name
-					})
+				return await this.registration(ctx.params)
 					.then(user => {
 						return Promise.resolve({
 							message: MESSAGE_CONSTANT.USER_ADDED,
@@ -93,11 +88,7 @@ module.exports = {
 					})
 			}),
 			handler: async function handler(ctx) {
-				return await ctx
-					.call("elasticSearchClient.login", {
-						email: ctx.params.email,
-						password: ctx.params.password
-					})
+				return await this.login(ctx.params)
 					.then(user => {
 						return Promise.resolve({
 							message: MESSAGE_CONSTANT.USER_LOGIN,
@@ -129,17 +120,11 @@ module.exports = {
 					})
 			}),
 			handler: async function handler(ctx) {
-				return await this.verifyToken(
+				let userID = await this.verifyToken(
 					ctx.params.token
 				).then(async function (decoded) {
 					if (decoded.userID) {
-						return await ctx
-							.call("elasticSearchClient.fatch_user", {
-								id: decoded.userID
-							})
-							.then(user => {
-								return Promise.resolve(user);
-							});
+						return decoded.userID;
 					} else {
 						throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
 					}
@@ -147,7 +132,59 @@ module.exports = {
 					.catch(err => {
 						throw new MoleculerError(err.message || MESSAGE_CONSTANT.SOMETHING_WRONG, 401);
 					});
+				if (userID) {
+					return await this.fatch_user({ id: userID })
+						.then(user => {
+							console.log(user);
+							return Promise.resolve(user);
+						});
+				} else {
+					throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
+				}
 			}
+		}
+	},
+	async started() {
+		try {
+			const elasticClient = this.getEsObject();
+
+			//userseed
+			await elasticClient.indices
+				.exists({
+					index: "users"
+				})
+				.then(async (res) => {
+					if (!res) {
+						await elasticClient.indices.create({
+							index: "users",
+							body: {
+								mappings: {
+									properties: {
+										name: { type: "text" },
+										email: { type: "keyword" },
+										password: { type: "keyword" }
+									}
+								}
+							}
+						});
+						await elasticClient
+							.index({
+								index: "users",
+								type: "_doc",
+								body: {
+									name: "Divya Kanak",
+									email: "divya.kanak@tatvasoft.com",
+									password: this.hashPassword("123456789")
+								}
+							})
+							.catch(() => {
+								throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+							});
+					}
+				});
+		}
+		catch (err) {
+			throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
 		}
 	}
 };

@@ -3,23 +3,75 @@
 require("dotenv").config();
 
 const Common = require("../mixins/common.mixin");
+const Elasticsearch = require("../mixins/elasticsearch.mixin");
+const { MoleculerError } = require("moleculer").Errors;
+const products = require("../lib/product.json");
+const MESSAGE_CONSTANT = require("../lib/Constants");
 
 module.exports = {
 	name: "product",
-	mixins: [Common],
-	dependencies: ["elasticSearchClient"],
+	mixins: [Common, Elasticsearch],
 	actions: {
 		list: {
 			rest: {
 				method: "GET",
 				path: "/list"
 			},
+			cache: {
+				keys: ["products"],
+				ttl: 60 * 60 * 1
+			},
 			auth: "Bearer",
-			handler: function handler(ctx) {
-				return ctx.call("elasticSearchClient.products").then(products => {
+			handler: async function handler() {
+				return await this.getProducts().then(products => {
 					return Promise.resolve(products);
 				});
 			}
+		}
+	},
+	async started() {
+		try {
+			const elasticClient = this.getEsObject();
+
+			//productseed
+			await elasticClient.indices
+				.exists({
+					index: "products"
+				})
+				.then(async res => {
+					if (!res) {
+						await elasticClient.indices.create({
+							index: "products",
+							body: {
+								mappings: {
+									properties: {
+										name: { type: "text" },
+										sku: { type: "keyword" },
+										category: { type: "text" }
+									}
+								}
+							}
+						});
+						await this.asyncForEach(products, async product => {
+							await elasticClient
+								.index({
+									index: "products",
+									type: "_doc",
+									body: {
+										name: product.name,
+										sku: product.sku,
+										category: product.category
+									}
+								})
+								.catch(() => {
+									throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+								});
+						});
+					}
+				});
+		}
+		catch (err) {
+			throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
 		}
 	}
 };
