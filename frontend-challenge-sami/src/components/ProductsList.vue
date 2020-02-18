@@ -4,7 +4,7 @@ section.products-list
     h2 {{'product ' + product.sku}}
     button(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
 
-  pagination(:total="this.total" @next="getNextPage" @prev="getPreviousPage")
+  pagination(v-if="products.length" :total="total" @next="getNextPage" @prev="getPreviousPage")
 </template>
 
 <script>

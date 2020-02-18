@@ -1,7 +1,7 @@
 <template lang="pug">
 div
   h1 Explore our products list
-  products-list
+  products-list(v-if="$store.getters.isAuthorized")
 </template>
 
 <script>

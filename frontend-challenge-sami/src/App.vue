@@ -35,6 +35,7 @@ export default {
       } = data || { channel: { token: null } };
 
       localStorage.setItem("token", token);
+      this.$store.commit("SET_AUTHORIZED", token);
     }
   }
 };

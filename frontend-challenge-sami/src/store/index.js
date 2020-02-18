@@ -5,6 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
+    authorized: false,
     items: [] // { product, quantity }
   },
   getters: {
@@ -17,6 +18,9 @@ export default new Vuex.Store({
       }, 0);
 
       return count;
+    },
+    isAuthorized: ({ authorized }) => {
+      return Boolean(authorized);
     }
   },
   mutations: {
@@ -40,6 +44,9 @@ export default new Vuex.Store({
       } else {
         state.items = state.items.filter(entry => entry.product.sku !== sku);
       }
+    },
+    SET_AUTHORIZED(state, payload) {
+      state.authorized = payload;
     }
   },
   actions: {},
