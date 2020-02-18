@@ -1,5 +1,5 @@
 <template lang="pug">
-main
+div
   h1 Explore our products list
   products-list
 </template>
