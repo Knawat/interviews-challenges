@@ -2,6 +2,7 @@
 
 require('dotenv').config();
 
+const { MoleculerError } = require("moleculer").Errors;
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -52,6 +53,18 @@ module.exports = {
                     resolve(res);
                 });
             });
+        },
+        asyncForEach: async function (array, callback, thisArg) {
+            const promiseArray = [];
+            for (let i = 0; i < array.length; i += 1) {
+                if (i in array) {
+                    const p = this.Promise.resolve(array[i]).then(currentValue =>
+                        callback.call(thisArg || this, currentValue, i, array)
+                    );
+                    promiseArray.push(p);
+                }
+            }
+            await this.Promise.all(promiseArray);
         }
     }
 };

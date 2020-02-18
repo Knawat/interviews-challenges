@@ -2,6 +2,7 @@
 
 require('dotenv').config()
 
+const { MoleculerError } = require("moleculer").Errors;
 const MESSAGE_CONSTANT = require("../lib/Constants");
 const Common = require("../mixins/common.mixin");
 const Joi = require("joi");
@@ -9,7 +10,7 @@ const Joi = require("joi");
 module.exports = {
     name: "auth",
     mixins: [Common],
-    dependencies: ['es'],
+    dependencies: ['elasticSearchClient'],
     actions: {
         /**
          * Registration action.
@@ -33,35 +34,29 @@ module.exports = {
                     .min(2)
                     .max(30)
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.NAME
-                        };
+                        return MESSAGE_CONSTANT.NAME
                     }),
                 email: Joi.string()
                     .required()
                     .email({ minDomainAtoms: 2 })
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.EMAIL
-                        };
+                        return MESSAGE_CONSTANT.EMAIL
                     }),
                 password: Joi.string()
                     .required()
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.PASSWORD
-                        };
+                        return MESSAGE_CONSTANT.PASSWORD
                     })
             }),
             handler: async function handler(ctx) {
                 return await ctx
-                    .call("es.registration", {
+                    .call("elasticSearchClient.registration", {
                         email: ctx.params.email,
                         password: ctx.params.password,
                         name: ctx.params.name
                     })
                     .then(user => {
-                        return this.Promise.resolve({
+                        return Promise.resolve({
                             message: MESSAGE_CONSTANT.USER_ADDED,
                             id: user.id
                         });
@@ -89,26 +84,22 @@ module.exports = {
                     .email({ minDomainAtoms: 2 })
                     .required()
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.EMAIL
-                        };
+                        return MESSAGE_CONSTANT.EMAIL
                     }),
                 password: Joi.string()
                     .required()
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.PASSWORD
-                        };
+                        return MESSAGE_CONSTANT.PASSWORD
                     })
             }),
             handler: async function handler(ctx) {
                 return await ctx
-                    .call("es.login", {
+                    .call("elasticSearchClient.login", {
                         email: ctx.params.email,
                         password: ctx.params.password
                     })
                     .then(user => {
-                        return this.Promise.resolve({
+                        return Promise.resolve({
                             message: MESSAGE_CONSTANT.USER_LOGIN,
                             user: user
                         });
@@ -134,9 +125,7 @@ module.exports = {
                 token: Joi.string()
                     .required()
                     .error(() => {
-                        return {
-                            message: MESSAGE_CONSTANT.TOKEN
-                        };
+                        return MESSAGE_CONSTANT.TOKEN
                     })
             }),
             handler: async function handler(ctx) {
@@ -145,20 +134,18 @@ module.exports = {
                 ).then(async function (decoded) {
                     if (decoded.userID) {
                         return await ctx
-                            .call("es.fatch_user", {
+                            .call("elasticSearchClient.fatch_user", {
                                 id: decoded.userID
                             })
                             .then(user => {
                                 return Promise.resolve(user);
                             });
                     } else {
-                        return Promise.reject({
-                            message: MESSAGE_CONSTANT.AUTH_FAIL
-                        });
+                        throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
                     }
                 })
                     .catch(err => {
-                        return Promise.reject(err);
+                        throw new MoleculerError(err.message || MESSAGE_CONSTANT.SOMETHING_WRONG, 401);
                     });
             }
         }

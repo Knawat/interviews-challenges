@@ -3,6 +3,7 @@
 require('dotenv').config()
 
 const ApiGateway = require("moleculer-web");
+const { MoleculerError } = require("moleculer").Errors;
 
 module.exports = {
 	name: "api",
@@ -14,16 +15,18 @@ module.exports = {
 				path: "/api",
 
 				whitelist: [
-					"auth.*"
+					"auth.*", "product.*"
 				],
 				authentication: true,
-				authorization: true,
 				aliases: {
 					//registration
 					"POST auth/registration": "auth.registration",
 
 					//login
-					"POST auth/login": "auth.login"
+					"POST auth/login": "auth.login",
+
+					//product
+					"GET product/list": "product.list"
 				},
 
 				bodyParsers: {
@@ -42,11 +45,10 @@ module.exports = {
 					res.writeHead(err.code || 500);
 					if ("ValidationError" == err.name) {
 						res.write(JSON.stringify({ error: { message: err.data[0].message } }));
-						res.end();
 					} else {
-						res.write(JSON.stringify({ error: err.message }));
-						res.end();
+						res.write(JSON.stringify({ error: { message: err.message } }));
 					}
+					res.end();
 				},
 
 				logging: true
@@ -56,41 +58,34 @@ module.exports = {
 
 	methods: {
 		async authenticate(ctx, route, req) {
-			let auth = req.headers.authorization;
-			if (auth) {
-				let type = auth.split(" ")[0];
-				if ("Bearer" !== type)
-					return Promise.reject({
-						message: MESSAGE_CONSTANT.AUTH_FAIL
-					});
-				let token = auth.split(" ")[1];
-				if (token) {
-					return await ctx.call("auth.verifyToken", { token }).then(user => {
-						ctx.meta.auth = {
-							userId: user.id,
-							name: user.name,
-							email: user.email
-						};
-						return true;
-					});
-				} else {
-					return Promise.reject({
-						message: MESSAGE_CONSTANT.AUTH_FAIL
-					});
-				}
-			} else {
+			if (!req.$endpoint.action.auth) {
 				return;
 			}
-		},
-
-		async authorize(ctx, route, req) {
-			const user = ctx.meta.user;
-			if (req.$action.auth == "required" && !user) {
-				return Promise.reject({
-					message: MESSAGE_CONSTANT.AUTH_FAIL
-				});
+			if (req.$endpoint.action.auth === 'Bearer') {
+				let auth = req.headers.authorization;
+				if (auth) {
+					let type = auth.split(" ")[0];
+					if ("Bearer" !== type)
+						throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
+					let token = auth.split(" ")[1];
+					if (token) {
+						return await ctx.call("auth.verifyToken", { token }).then(user => {
+							ctx.meta.auth = {
+								userId: user.id,
+								name: user.name,
+								email: user.email
+							};
+							return true;
+						});
+					} else {
+						throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
+					}
+				} else {
+					throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
+				}
+			} else {
+				throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
 			}
 		}
-
 	}
 };

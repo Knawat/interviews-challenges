@@ -2,9 +2,9 @@
 
 require('dotenv').config()
 
+const { MoleculerError } = require("moleculer").Errors;
 const Elasticsearch = require("elasticsearch");
 const MESSAGE_CONSTANT = require("../lib/Constants");
-const MoleculerError = require("moleculer").Errors.MoleculerError;
 const Common = require("./common.mixin");
 const elasticClient = new Elasticsearch.Client({
     host: process.env.ELASTICSEARCH_HOST
@@ -34,9 +34,7 @@ module.exports = {
                 })
                 .then(result => {
                     if (result.hits.total.value > 0) {
-                        return Promise.reject({
-                            message: MESSAGE_CONSTANT.EMAIL_EXIST
-                        });
+                        throw new MoleculerError(MESSAGE_CONSTANT.EMAIL_EXIST, 409);
                     }
                     else {
                         return elasticClient
@@ -55,7 +53,7 @@ module.exports = {
                                 });
                             })
                             .catch(err => {
-                                throw new MoleculerError(err);
+                                throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
                             });
                     }
                 });
@@ -77,18 +75,14 @@ module.exports = {
                 })
                 .then(async result => {
                     if (result.hits.total.value === 0) {
-                        return Promise.reject({
-                            message: MESSAGE_CONSTANT.USER_NOT_EXIST
-                        });
+                        throw new MoleculerError(MESSAGE_CONSTANT.USER_NOT_EXIST, 404);
                     } else {
                         var passwordIsValid = await this.comparePassword(
                             result.hits.hits[0]._source.password,
                             data.password
                         );
                         if (!passwordIsValid)
-                            return Promise.reject({
-                                message: MESSAGE_CONSTANT.INVALID_CRED
-                            });
+                            throw new MoleculerError(MESSAGE_CONSTANT.INVALID_CRED, 401);
                         return await this.generateToken({
                             id: result.hits.hits[0]._id
                         }).then(function (token) {
@@ -120,9 +114,7 @@ module.exports = {
                 })
                 .then(async (result) => {
                     if (result.hits.total.value === 0) {
-                        return Promise.reject({
-                            message: MESSAGE_CONSTANT.AUTH_FAIL
-                        });
+                        throw new MoleculerError(MESSAGE_CONSTANT.USER_NOT_EXIST, 404);
                     }
                     else {
                         return Promise.resolve({
@@ -135,10 +127,39 @@ module.exports = {
                     }
                 })
                 .catch(err => {
-                    return Promise.reject({
-                        message: MESSAGE_CONSTANT.AUTH_FAIL
+                    throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+                });
+        },
+
+        getProducts: async function () {
+            return await elasticClient
+                .search({
+                    index: "products",
+                    type: "_doc",
+                    body: {
+                        query: {
+                            match_all: {}
+                        }
+                    }
+                })
+                .then(result => {
+                    if (result.hits.total === 0) {
+                        return Promise.resolve({
+                            products: []
+                        });
+                    }
+                    const products = result.hits.hits.map(product => ({
+                        id: product._id,
+                        ...product._source
+                    }));
+                    return Promise.resolve({
+                        products: products
                     });
+                })
+                .catch(err => {
+                    throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
                 });
         }
+
     }
 };
