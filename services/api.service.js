@@ -27,13 +27,13 @@ module.exports = {
 					"POST auth/login": "auth.login",
 
 					//product
-					"GET product/list": "product.list",
+					"GET products": "product.list",
 
 					//cart
-					"POST cart/add_to_cart": "cart.add_to_cart",
+					"POST cart": "cart.add_to_cart",
 
 					//cart
-					"GET cart/details": "cart.details"
+					"GET cart": "cart.details"
 				},
 
 				bodyParsers: {

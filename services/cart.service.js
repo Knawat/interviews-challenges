@@ -62,7 +62,6 @@ module.exports = {
 			},
 			auth: "Bearer",
 			async handler(ctx) {
-				console.log(ctx.meta.auth.userId);
 				return ctx
 					.call("redisClient.cart_details", {
 						userId: ctx.meta.auth.userId
