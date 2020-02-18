@@ -5,11 +5,19 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    items: []
+    items: [], // { product, quantity }
+    itemsCount: 0
   },
   getters: {
     cartItems: ({ items }) => {
       return items;
+    },
+    cartCount: ({ items }) => {
+      const count = items.reduce((total, item) => {
+        return (total += item.quantity);
+      }, 0);
+
+      return count;
     }
   },
   mutations: {
