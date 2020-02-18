@@ -2,6 +2,7 @@
 section.products-list
   article.products-list__product(v-for="product in products" :key="product.sku")
     h2 {{'product ' + product.sku}}
+    button(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
 
   pagination(:total="this.total" @next="getNextPage" @prev="getPreviousPage")
 </template>
