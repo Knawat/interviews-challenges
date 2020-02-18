@@ -35,6 +35,11 @@ module.exports = {
                 return this.getProducts();
             }
         },
+        fatch_product: {
+            handler(ctx) {
+                return this.fatch_product(ctx.params);
+            }
+        }
     },
 
     async started() {

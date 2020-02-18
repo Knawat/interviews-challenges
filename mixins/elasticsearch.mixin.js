@@ -159,7 +159,19 @@ module.exports = {
                 .catch(err => {
                     throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
                 });
-        }
+        },
 
+        fatch_product: async function (data) {
+            return await elasticClient
+                .exists({
+                    index: "products",
+                    type: "_doc",
+                    id: data.id
+                })
+                .then(result => result)
+                .catch(err => {
+                    throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+                });
+        }
     }
 };

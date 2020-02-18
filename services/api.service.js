@@ -15,7 +15,7 @@ module.exports = {
 				path: "/api",
 
 				whitelist: [
-					"auth.*", "product.*"
+					"auth.*", "product.*", "cart.*"
 				],
 				authentication: true,
 				aliases: {
@@ -26,7 +26,10 @@ module.exports = {
 					"POST auth/login": "auth.login",
 
 					//product
-					"GET product/list": "product.list"
+					"GET product/list": "product.list",
+
+					//cart
+					"POST cart/add_to_cart": "cart.add_to_cart"
 				},
 
 				bodyParsers: {
@@ -71,9 +74,9 @@ module.exports = {
 					if (token) {
 						return await ctx.call("auth.verifyToken", { token }).then(user => {
 							ctx.meta.auth = {
-								userId: user.id,
-								name: user.name,
-								email: user.email
+								userId: user.user.id,
+								name: user.user.name,
+								email: user.user.email
 							};
 							return true;
 						});
