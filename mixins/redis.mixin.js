@@ -62,7 +62,7 @@ module.exports = {
 			return await this.hget("productCart", data.userId).then(async (res, error) => {
 				if (error) throw new MoleculerError(error, 500);
 				if (res) cart = JSON.parse(res);
-				cart[data.productId] = data.quantity;
+				cart[data.productId] = cart[data.productId] ? ((+cart[data.productId]) + (+data.quantity)) : +data.quantity;
 				await this.hset("productCart", data.userId, JSON.stringify(cart)).then(async (res, error) => {
 					if (error) throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
 					return Promise.resolve(res);
