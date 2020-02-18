@@ -36,6 +36,11 @@ module.exports = {
 				return this.getProducts();
 			}
 		},
+		product_exists: {
+			handler(ctx) {
+				return this.product_exists(ctx.params);
+			}
+		},
 		fatch_product: {
 			handler(ctx) {
 				return this.fatch_product(ctx.params);

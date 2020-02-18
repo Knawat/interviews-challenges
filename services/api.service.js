@@ -30,7 +30,10 @@ module.exports = {
 					"GET product/list": "product.list",
 
 					//cart
-					"POST cart/add_to_cart": "cart.add_to_cart"
+					"POST cart/add_to_cart": "cart.add_to_cart",
+
+					//cart
+					"GET cart/details": "cart.details"
 				},
 
 				bodyParsers: {

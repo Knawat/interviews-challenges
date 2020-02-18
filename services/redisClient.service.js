@@ -10,6 +10,11 @@ module.exports = {
 			async handler(ctx) {
 				return await this.addToCart(ctx.params);
 			}
+		},
+		cart_details: {
+			async handler(ctx) {
+				return await this.cartDetails(ctx.params);
+			}
 		}
 	}
 };
