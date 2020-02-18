@@ -5,7 +5,7 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    authorized: false,
+    authorized: localStorage.getItem("token"),
     items: [] // { product, quantity }
   },
   getters: {
