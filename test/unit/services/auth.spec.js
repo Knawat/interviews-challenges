@@ -3,7 +3,7 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const AuthService = require("../../../services/auth.service");
-// const elasticSearch = require("../../../mixins/__MOCKS__/elasticSearch.mixin");
+// const elasticSearch = require("../../../mixins/elasticSearch.mixin");
 
 
 describe("Test 'auth' service", () => {
@@ -36,6 +36,8 @@ describe("Test 'auth' service", () => {
         password: userPassword,
       }).then((response) => {
         expect(response.success).toEqual(true);
+      }).catch((err) => {
+        expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
 
@@ -67,6 +69,8 @@ describe("Test 'auth' service", () => {
         password: userPassword,
       }).then((response) => {
         expect(response.success).toEqual(true);
+      }).catch((response) => {
+        expect(response.code).toEqual(500);
       });
     });
 
