@@ -28,6 +28,25 @@ module.exports = {
         mappingPolicy: "restrict",
         logging: true,
       },
+      {
+        path: "/api/user",
+        aliases: {
+          "POST /cart": "cart.addToCart",
+        },
+        authentication: false,
+        bodyParsers: {
+          json: {
+            strict: false,
+            limit: "1MB",
+          },
+          urlencoded: {
+            extended: true,
+            limit: "1MB",
+          },
+        },
+        mappingPolicy: "restrict",
+        logging: true,
+      },
     ],
     onError(req, res, err) {
       // Return with the error as JSON object
@@ -46,4 +65,5 @@ module.exports = {
     logResponseData: "info",
   },
   methods: {},
+
 };
