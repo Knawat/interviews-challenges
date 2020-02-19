@@ -24,7 +24,7 @@ export default {
 <style lang="stylus" scoped>
 .cart
   position absolute
-  right 80px
+  right 8%
   top 55px
   background $blue
   max-width 290px
