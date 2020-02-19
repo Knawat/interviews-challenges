@@ -2,7 +2,7 @@
 section
   ul.products-list
     li(v-for="product in products" :key="product.sku"): Product(:product="product")
-  pagination(v-if="products.length" :total="total" @next="getNextPage" @prev="getPreviousPage")
+  pagination(v-if="products.length" :currentPage="currentPage" :total="total" :paginating="fetching" @next="getNextPage" @prev="getPreviousPage")
 </template>
 
 <script>
@@ -18,7 +18,8 @@ export default {
   data: () => ({
     products: [],
     total: 0,
-    currentPage: 1
+    currentPage: 1,
+    fetching: true
   }),
   mounted() {
     this.getProducts();
@@ -41,12 +42,15 @@ export default {
 
       this.products = products;
       this.total = total;
+      this.fetching = false;
     },
     getNextPage() {
+      this.fetching = true;
       this.currentPage++;
       this.getProducts();
     },
     getPreviousPage() {
+      this.fetching = true;
       this.currentPage--;
       this.getProducts();
     }
