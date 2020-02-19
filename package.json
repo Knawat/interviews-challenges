@@ -7,7 +7,7 @@
     "start": "moleculer-runner",
     "cli": "moleculer connect NATS",
     "ci": "jest --watch",
-    "test": "jest --coverage",
+    "test": "set ELASTICSEARCH_HOST=http://localhost:9200&& set REDIS_HOST=localhost&& jest --coverage",
     "lint": "eslint . --ext .js --fix",
     "dc:up": "docker-compose up --build -d",
     "dc:logs": "docker-compose logs -f",

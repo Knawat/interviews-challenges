@@ -50,6 +50,10 @@ npm start
 # Run unit tests
 npm run test
 
+NOTE :
+- I haven't mocked elasticsearch and redis for unit test so, please make sure to keep docker up during unit test run.
+- Also, I have added actions like seeder to pre-load data and haven't written unit test for that so, it will affect overall coverage.
+
 # Run ESLint
 npm run lint
 
@@ -79,7 +83,7 @@ npm run dc:down
 -   Using docker compose scale command to scale service (https://docs.docker.com/compose/reference/scale/). for example,
 
 ```bash
-1. docker-compose scale api=2 auth=2
+1. docker-compose scale auth=2
 2. docker-compose scale product=2
 3. docker-compose scale cart=5
 ```
