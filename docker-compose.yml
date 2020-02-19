@@ -1,11 +1,12 @@
-version: "3.3"
+version: "2"
 
 services:
 
   api:
     build:
       context: .
-    image: interview-challenge-knawat
+    image: interview-challenge
+    restart: always
     env_file: .env
     environment:
       SERVICES: api
@@ -17,19 +18,95 @@ services:
       - "traefik.enable=true"
       - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
       - "traefik.http.services.api-gw.loadbalancer.server.port=3000"
-    networks:
-      - internal
+    links:
+      - redis
+      - nats
+      - elasticsearch
+    depends_on:
+      - redis
+      - nats
+      - elasticsearch
+      
+  auth:
+    build:
+      context: .
+    image: interviews-challenge
+    restart: always
+    container_name: interviews-challenge-auth
+    env_file: .env
+    environment:
+      SERVICES: auth
+    labels:
+      - "traefik.enable=false"
+    links:
+      - redis
+      - nats
+      - elasticsearch
+    depends_on:
+      - redis
+      - nats
+      - elasticsearch
+
+  cart:
+    build:
+      context: .
+    image: interviews-challenge
+    restart: always
+    container_name: interviews-challenge-cart
+    env_file: .env
+    environment:
+      SERVICES: cart
+    labels:
+      - "traefik.enable=false"
+    links:
+      - redis
+      - nats
+      - elasticsearch
+    depends_on:
+      - redis
+      - nats
+      - elasticsearch
+
+  product:
+    build:
+      context: .
+    image: interviews-challenge
+    restart: always
+    container_name: interviews-challenge-product
+    env_file: .env
+    environment:
+      SERVICES: product
+    labels:
+      - "traefik.enable=false"
+    links:
+      - redis
+      - nats
+      - elasticsearch
+    depends_on:
+      - redis
+      - nats
+      - elasticsearch
 
 
   nats:
     image: nats:2
-    networks:
-      - internal
 
   redis:
     image: redis:alpine
-    networks:
-      - internal
+    
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:6.5.4
+    environment:
+      - cluster.name=docker-cluster
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    ports:
+      - 9200:9200
+
 
   traefik:
     image: traefik:v2.1
@@ -42,6 +119,3 @@ services:
       - 3001:8080
     volumes:
       - /var/run/docker.sock:/var/run/docker.sock:ro
-    networks:
-      - internal
-      - default
