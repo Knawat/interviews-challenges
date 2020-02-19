@@ -49,11 +49,14 @@ npm start
 
 # Run unit tests
 npm run test
+```
 
-NOTE :
-- I haven't mocked elasticsearch and redis for unit test so, please make sure to keep docker up during unit test run.
-- Also, I have added actions like seeder to pre-load data and haven't written unit test for that so, it will affect overall coverage.
+> NOTE :
 
+-   I haven't mocked elasticsearch and redis for unit test so, please make sure to keep docker up during unit test run.
+-   Also, I have added actions like seeder to pre-load data and haven't written unit test for that so, it will affect overall coverage.
+
+```bash
 # Run ESLint
 npm run lint
 
