@@ -27,11 +27,15 @@ export default {
   right 80px
   top 55px
   background $blue
-  max-height 80vh
   max-width 290px
   padding 1rem
   transition all ease 200ms
   border-radius 0.4rem
+
+  &__items
+    max-height 40vh
+    overflow-y scroll
+    margin-bottom 2rem
 
   &__item
     margin-bottom 1rem
@@ -48,7 +52,7 @@ export default {
 
   &__item-thumb
     height 3rem
-    flex 1 0 20%
+    flex 0 0 20%
 
   &__item-image
     width 100%

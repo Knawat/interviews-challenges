@@ -12,6 +12,7 @@ header.header
             p(v-if="$store.getters.cartCount").nav-menu__cart-count {{$store.getters.cartCount}}
           
           mini-cart(v-show="showCart")
+          .dimmer(v-show="showCart" @click="showCart = false")
 </template>
 
 <script>
@@ -29,6 +30,12 @@ export default {
 </script>
 
 <style lang="stylus" scoped>
+.dimmer
+  position absolute
+  top 0
+  left 0
+  bottom 0
+  right 0
 .header
   background $grey
   padding: 1.2rem 0
