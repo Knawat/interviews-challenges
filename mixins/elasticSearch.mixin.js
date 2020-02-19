@@ -229,7 +229,7 @@ module.exports = {
       });
     },
     seedUser(){
-      this.isUserIndexExist()
+      return this.isUserIndexExist()
       .then(async (isUserIndexExist) => {
         if (!isUserIndexExist) {
           await this.createUserIndex();
@@ -245,7 +245,7 @@ module.exports = {
       });
     },
     seedProduct(){
-      this.isProductIndexExist()
+      return this.isProductIndexExist()
       .then(async (isProductIndexExist) => {
         if (!isProductIndexExist) {
           await this.createProductsIndex();
@@ -261,7 +261,7 @@ module.exports = {
       });
     },
     seedCart(){
-      this.isCartIndexExist()
+      return this.isCartIndexExist()
       .then(async (isCartIndexExist) => {
         if (!isCartIndexExist) {
           await this.createCartIndex();
