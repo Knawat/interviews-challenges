@@ -4,7 +4,7 @@ article.product
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   .product__info
     h2.product__title {{'product ' + product.name.en}}
-  button.product__cart-btn(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
+  button.product__add-cart-btn(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
 </template>
 
 <script>
@@ -43,7 +43,7 @@ export default {
     line-height 1.2
     font-size 1rem
 
-  &__cart-btn
+  &__add-cart-btn
     position absolute
     top 0
     right 0
