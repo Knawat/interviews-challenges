@@ -194,8 +194,8 @@ module.exports = {
 					}
 				})
 				.then(result => {
-					if (result.hits.total === 0) {
-						throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+					if (result.hits.total.value === 0) {
+						return false;
 					}
 					return {
 						id: result.hits.hits[0]._id,

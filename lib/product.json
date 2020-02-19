@@ -1,50 +1,60 @@
 [
 	{
+		"id": 1,
 		"name": "Frying pan/skillet",
 		"sku": "FS123",
 		"category": "Cooking Equipment"
 	},
 	{
+		"id": 2,
 		"name": "Saucepans",
 		"sku": "SAC156",
 		"category": "Cooking Equipment"
 	},
 	{
+		"id": 3,
 		"name": "Chef’s knife",
 		"sku": "CK147",
 		"category": "Food Preparation Equipment"
 	},
 	{
+		"id": 4,
 		"name": "Chopping/cutting board",
 		"sku": "CCB156",
 		"category": "Food Preparation Equipment"
 	},
 	{
+		"id": 5,
 		"name": "Pasta fork",
 		"sku": "PSF78",
 		"category": "Serving Equipment"
 	},
 	{
+		"id": 6,
 		"name": "Pizza cutter",
 		"sku": "PIZC98",
 		"category": "Serving Equipment"
 	},
 	{
+		"id": 7,
 		"name": "Bottle opener",
 		"sku": "BOPR456",
 		"category": "Serving Equipment"
 	},
 	{
+		"id": 8,
 		"name": "Plastic wrap/clingfilm",
 		"sku": "PWC258",
 		"category": "Miscellaneous Equipment"
 	},
 	{
+		"id": 9,
 		"name": "Kitchen tool organizer",
 		"sku": "KTO147",
 		"category": "Miscellaneous Equipment"
 	},
 	{
+		"id": 10,
 		"name": "Blender",
 		"sku": "BLD963",
 		"category": "Food Preparation Equipment"

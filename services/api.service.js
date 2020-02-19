@@ -28,6 +28,7 @@ module.exports = {
 
 					//product
 					"GET products": "product.list",
+					"GET products/:id": "product.fatch_product",
 
 					//cart
 					"POST cart": "cart.add_to_cart",

@@ -171,6 +171,7 @@ module.exports = {
 							.index({
 								index: "users",
 								type: "_doc",
+								id: 1,
 								body: {
 									name: "Divya Kanak",
 									email: "divya.kanak@tatvasoft.com",

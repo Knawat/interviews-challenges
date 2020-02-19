@@ -27,6 +27,25 @@ module.exports = {
 					return Promise.resolve(products);
 				});
 			}
+		},
+
+		fatch_product: {
+			rest: {
+				method: "GET",
+				path: "/products/:id"
+			},
+			handler: async function handler(ctx) {
+				return await this.fatch_product({ id: ctx.params.id })
+					.then(product => {
+						if (!product) {
+							throw new MoleculerError(MESSAGE_CONSTANT.PRODUCT_NOT_EXIST, 404);
+						}
+						console.log(product);
+						return Promise.resolve({
+							product: product
+						});
+					});
+			}
 		}
 	},
 	async started() {
@@ -57,6 +76,7 @@ module.exports = {
 								.index({
 									index: "products",
 									type: "_doc",
+									id: product.id,
 									body: {
 										name: product.name,
 										sku: product.sku,

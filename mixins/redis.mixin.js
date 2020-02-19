@@ -10,14 +10,12 @@ const redisClient = redis.createClient(
 	process.env.REDIS_PORT,
 	process.env.REDIS_HOST
 );
-redisClient.on("connect", function () {
-	console.log("Redis client connected");
-});
-redisClient.on("error", function (error) {
-	console.log(error);
+redisClient.on("error", function () {
 	throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
 });
-
+redisClient.on("connect", function () {
+	//console.log("Redis client connected");
+});
 module.exports = {
 	name: "redis",
 	mixins: [Common],
