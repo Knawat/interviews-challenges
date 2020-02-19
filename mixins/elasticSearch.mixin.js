@@ -131,7 +131,7 @@ module.exports = {
       }];
 
       products.forEach((product) => {
-        this.addTestProducts(product.price, product.name, product.id);
+        this.addTestProducts(product.price, product.name, product.productId);
       });
 
       return true;
