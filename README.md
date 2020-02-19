@@ -1,38 +1,74 @@
-[![Moleculer](https://badgen.net/badge/Powered%20by/Moleculer/0e83cd)](https://moleculer.services)
+## Interview Challenges
 
-# inverview-challenges-1
-This is a [Moleculer](https://moleculer.services/)-based microservices project. Generated with the [Moleculer CLI](https://moleculer.services/docs/0.14/moleculer-cli.html).
+This project will provide services for below functionality.
 
-## Usage
-Start the project with `npm run dev` command. 
-After starting, open the http://localhost:3000/ URL in your browser. 
-On the welcome page you can test the generated services via API Gateway and check the nodes & services.
+## FRAMEWORK:
 
-In the terminal, try the following commands:
-- `nodes` - List all connected nodes.
-- `actions` - List all registered service actions.
-- `call greeter.hello` - Call the `greeter.hello` action.
-- `call greeter.welcome --name John` - Call the `greeter.welcome` action with the `name` parameter.
+-   [Moleculer](https://moleculer.services/)
 
+## Functionality:
 
+-   User can login & register.
+-   User can add product in the cart.
+-   User can get his cart details
 
-## Services
-- **api**: API Gateway services
-- **greeter**: Sample service with `hello` and `welcome` actions.
+## DATABASE
 
+-   [Elasticsearch](https://www.elastic.co/)
 
-## Useful links
+## TRANSPORTER
 
-* Moleculer website: https://moleculer.services/
-* Moleculer Documentation: https://moleculer.services/docs/0.14/
+-   [NATs](https://nats.io/)
 
-## NPM scripts
+## CACHER
 
-- `npm run dev`: Start development mode (load all services locally with hot-reload & REPL)
-- `npm run start`: Start production mode (set `SERVICES` env variable to load certain services)
-- `npm run cli`: Start a CLI and connect to production. Don't forget to set production namespace with `--ns` argument in script
-- `npm run lint`: Run ESLint
-- `npm run ci`: Run continuous test mode with watching
-- `npm test`: Run tests & generate coverage report
-- `npm run dc:up`: Start the stack with Docker Compose
-- `npm run dc:down`: Stop the stack with Docker Compose
+-   [REDIS](https://redis.io/)
+
+## EXTRATOOL
+
+-   [Docker](https://www.docker.com/)
+
+## Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start developing with REPL
+npm run dev
+
+# PostmanCollection
+
+https://www.getpostman.com/collections/733f6d1b45ffb27fb1b8
+
+# Run seeder
+GET - http://localhost:3000/api/seeder
+
+# Start production
+npm start
+
+# Run unit tests
+npm run test
+
+# Run ESLint
+npm run lint
+
+## Run at Docker
+
+### environment (production)
+
+- `cp .env.example .env`
+-  make changes into .env
+
+### environment (Development)
+
+1.  npm run dc:up
+2.  Open the http://docker-ip:3000 or http://localhost:3000
+
+### How to scale services?
+ - Using docker compose scale command to scale service. for example,
+ 1. docker-compose scale api=2
+ 2. docker-compose scale auth=2
+ 3. docker-compose scale product=2
+ 4. docker-compose scale cart=5
+```

@@ -127,7 +127,7 @@ module.exports = {
 					}
 				})
 				.catch(() => {
-					throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+					throw new MoleculerError(MESSAGE_CONSTANT.USER_NOT_EXIST, 500);
 				});
 		},
 
