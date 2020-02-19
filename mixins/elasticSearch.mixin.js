@@ -56,7 +56,7 @@ module.exports = {
         id: 1,
         name: "test user",
         email: "test@example.com",
-        password: "123456",
+        password: "$2a$10$v3rl0dmCK2B2V/Cgk1xsTuwKu/79dWDDIpi6t6.Z3oC2l96G/OGOu",
       };
       return this.addUser(user.email, user.name, user.password, user.id);
     },
