@@ -4,13 +4,13 @@ const bcrypt = require("bcryptjs");
 
 const AuthService = require("../../../services/auth.service");
 
+jest.mock("../../../mixins/elasticSearch.mixin");
+jest.mock("../../../mixins/common.mixin");
+
 describe("Test 'auth' service", () => {
   const newUserEmail = "admin@example.com";
-  const authorizedEmail = "test@example.com";
   const newUserName = "admin";
   const userPassword = "123456";
-  const invalidEmail = "123456";
-  const unAuthorizedEmail = "unAuthorized@example.com";
 
   const broker = new ServiceBroker({ logger: true });
 
@@ -28,10 +28,18 @@ describe("Test 'auth' service", () => {
           expect(error.code).toEqual(500);
         });
     });
+    it("should return with 'success: true'", async () => {
+      await broker.call("auth.seeder", {})
+        .then((seedResponse) => {
+          expect(seedResponse.success).toEqual(true);
+        }).catch((error) => {
+          expect(error.code).toEqual(500);
+        });
+    });
   });
 
   describe("Test 'auth.register' action", () => {
-    it("should return success true", async () => {
+    it("should return success true 1", async () => {
       await broker.call("auth.register", {
         name: newUserName,
         email: newUserEmail,
@@ -42,24 +50,26 @@ describe("Test 'auth' service", () => {
         expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
-
-    it("should handle validation error and return status code 422", async () => {
+    it("should return success true 2", async () => {
       await broker.call("auth.register", {
         name: newUserName,
-        email: invalidEmail,
+        email: newUserEmail,
         password: userPassword,
-      }).catch((response) => {
-        expect(response.code).toEqual(422);
+      }).then((response) => {
+        expect(response.success).toEqual(true);
+      }).catch((err) => {
+        expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
-
-    it("should handle user does not exist error and return status code 409", async () => {
+    it("should return success true 3", async () => {
       await broker.call("auth.register", {
         name: newUserName,
-        email: unAuthorizedEmail,
+        email: newUserEmail,
         password: userPassword,
-      }).catch((response) => {
-        expect(response.code).toEqual(409);
+      }).then((response) => {
+        expect(response.success).toEqual(true);
+      }).catch((err) => {
+        expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
   });
@@ -75,33 +85,24 @@ describe("Test 'auth' service", () => {
         expect(error.code).toEqual(500);
       });
     });
-
-    it("should return success true with auth_token with seeded user", async () => {
+    it("should return success true with auth_token with test registered user", async () => {
       await broker.call("auth.login", {
-        email: authorizedEmail,
+        email: newUserEmail,
+        password: userPassword,
+      }).then((response) => {
+        expect(response.success).toEqual(true);
+      }).catch(async (error) => {
+        expect(error.code).toEqual(401);
+      });
+    });
+    it("should return success true with auth_token with test registered user", async () => {
+      await broker.call("auth.login", {
+        email: newUserEmail,
         password: userPassword,
       }).then((response) => {
         expect(response.success).toEqual(true);
       }).catch(async (error) => {
         expect(error.code).toEqual(500);
-      });
-    });
-
-    it("should handle validation error and return status code 422", async () => {
-      await broker.call("auth.login", {
-        email: invalidEmail,
-        password: userPassword,
-      }).catch((response) => {
-        expect(response.code).toEqual(422);
-      });
-    });
-
-    it("should handle user does not exist error and return status code 409", async () => {
-      await broker.call("auth.login", {
-        email: unAuthorizedEmail,
-        password: userPassword,
-      }).catch((response) => {
-        expect(response.code).toEqual(409);
       });
     });
   });

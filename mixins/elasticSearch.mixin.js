@@ -9,9 +9,9 @@ const esClient = new elasticsearch.Client({
   apiVersion: esVersion,
 });
 const index = {
-  users: "users_knw",
-  products: "products_knw",
-  cart: "cart_knw",
+  users: "users",
+  products: "products",
+  cart: "cart",
 };
 
 module.exports = {

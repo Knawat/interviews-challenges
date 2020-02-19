@@ -66,7 +66,7 @@ module.exports = {
     logResponseData: "info",
   },
   methods: {
-    async authenticate(ctx, route, req, res) {
+    async authenticate(ctx, route, req) {
       const auth = req.headers.authorization;
       if (auth && auth.startsWith("Bearer")) {
         const authToken = auth.slice(7);

@@ -1,232 +1,187 @@
-const elasticsearch = require("elasticsearch");
-
-const esHost = process.env.ELASTIC_HOST;
-const esLog = process.env.ELASTIC_LOG;
-const esVersion = process.env.ELASTIC_VERSION;
-const esClient = new elasticsearch.Client({
-  host: esHost,
-  log: esLog,
-  apiVersion: esVersion,
-});
-const index = {
-  users: "users",
-  products: "products",
-  cart: "cart",
-};
-
 module.exports = {
   methods: {
-    esClient() {
-      return esClient;
-    },
-    addUser(email, name, password, userId) {
-      return esClient.index({
-        index: index.users,
-        body: {
-          name,
-          email,
-          password,
-          userId,
-        },
-      });
-    },
-    isUserIndexExist() {
-      return esClient.indices.exists({
-        index: index.users,
-        body: {},
-      });
-    },
-    createUserIndex() {
-      return esClient.indices.create({
-        index: index.users,
-        body: {
-          mappings: {
-            _doc: {
-              properties: {
-                name: { type: "text" },
-                email: { type: "text" },
-                userId: { type: "text" },
-                password: { type: "text" },
-              },
-            },
-          },
-        },
-        include_type_name: true,
-      });
-    },
-    addTestUserData() {
-      const user = {
-        id: 1,
+    addUser: jest.fn().mockImplementationOnce(() => Promise.resolve({
+      _index: "cart",
+      _type: "_doc",
+      _id: "XD_cXHAB5PPR9KMWU2hT",
+      _version: 1,
+      result: "created",
+      _shards: {
+        total: 2,
+        successful: 1,
+        failed: 0,
+      },
+      _seq_no: 19,
+      _primary_term: 2,
+    }))
+      .mockImplementationOnce(() => Promise.resolve({}))
+      .mockImplementationOnce(() => Promise.reject(new Error())),
+    getUserByEmail: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve({
+        id: "0Yx1WHABsuG6wtO60i-u",
         name: "test user",
         email: "test@example.com",
         password: "123456",
-      };
-      return this.addUser(user.email, user.name, user.password, user.id);
-    },
-    getUserByEmail(email) {
-      return esClient
-        .search({
-          index: index.users,
-          body: {
-            query: {
-              match_phrase: { email },
-            },
-          },
-        })
-        .then(async (userRes) => {
-          const { hits } = userRes.hits;
-          if (hits.length > 0) {
-            return hits[0]._source;
-          }
-          return {};
-        });
-    },
-    isProductIndexExist() {
-      return esClient.indices.exists({
-        index: index.products,
-        body: {},
-      });
-    },
-    createProductsIndex() {
-      return esClient.indices.create({
-        index: index.products,
-        body: {
-          mappings: {
-            _doc: {
-              properties: {
-                name: { type: "text" },
-                productId: { type: "integer" },
-                price: { type: "integer" },
-              },
-            },
-          },
+        userId: 1,
+      }))
+      .mockImplementationOnce(() => Promise.resolve({}))
+      .mockImplementationOnce(() => Promise.reject({ message: "Email id already in use.Please try with another." }))
+      .mockImplementationOnce(() => Promise.resolve({
+        id: "0Yx1WHABsuG6wtO60i-u",
+        name: "test user",
+        email: "admin@example.com",
+        password: "123456",
+        userId: 1,
+      }))
+      .mockImplementationOnce(() => Promise.resolve({}))
+      .mockImplementationOnce(() => Promise.reject({})),
+    getProductData: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve({
+        took: 2,
+        timed_out: false,
+        _shards: {
+          total: 1,
+          successful: 1,
+          skipped: 0,
+          failed: 0,
         },
-        include_type_name: true,
-      });
-    },
-    addTestProducts(price, name, productId) {
-      return esClient.index({
-        index: index.products,
-        body: {
-          name,
-          price,
-          productId,
-        },
-      });
-    },
-    addTestProductsData() {
-      const products = [{
-        name: "My test product 1",
-        productId: 1,
-        price: 12,
-      }, {
-        name: "My test product 2",
-        productId: 2,
-        price: 120,
-      }, {
-        name: "My test product 3",
-        productId: 3,
-        price: 1200,
-      }];
-
-      products.forEach((product) => {
-        this.addTestProducts(product.price, product.name, product.id);
-      });
-
-      return true;
-    },
-    getProductData() {
-      return esClient.search({
-        index: index.products,
-        body: { query: { match_all: {} } },
-      });
-    },
-    isCartIndexExist() {
-      return esClient.indices.exists({
-        index: index.cart,
-        body: {},
-      });
-    },
-    createCartIndex() {
-      return esClient.indices.create({
-        index: index.cart,
-        body: {
-          mappings: {
-            _doc: {
-              properties: {
-                cartId: { type: "text" },
-                product: {
-                  properties: {
-                    productId: {
-                      type: "integer",
-                    },
-                    quantity: {
-                      type: "integer",
-                    },
-                  },
-                },
-                userId: { type: "text" },
-              },
-            },
+        hits: {
+          total: {
+            value: 3,
+            relation: "eq",
           },
-        },
-        include_type_name: true,
-      });
-    },
-    addTestCartData() {
-      const cart = {
-        id: 1,
-        productId: 1,
-        quantity: 1,
-      };
-      return this.addProductToCart(cart.id, cart.productId, cart.quantity);
-    },
-    addProductToCart(cartId, productId, quantity) {
-      return esClient.index({
-        index: index.cart,
-        body: {
-          cartId,
-          product: [
+          max_score: 1.0,
+          hits: [
             {
-              productId,
-              quantity,
+              _index: "products",
+              _type: "_doc",
+              _id: "cN5MNHAB-xUzzAcp_WNS",
+              _score: 1.0,
+              _source: {
+                name: "2 lt Milk bottel",
+                productId: 1,
+                price: 120,
+              },
+            },
+            {
+              _index: "products",
+              _type: "_doc",
+              _id: "5N5NNHAB-xUzzAcpt2NC",
+              _score: 1.0,
+              _source: {
+                name: "1 lt water bottel",
+                productId: 2,
+                price: 12,
+              },
+            },
+            {
+              _index: "products",
+              _type: "_doc",
+              _id: "WN5ONHAB-xUzzAcpfmT_",
+              _score: 1.0,
+              _source: {
+                name: "3 lt sunflower oil",
+                productId: 3,
+                price: 1200,
+              },
             },
           ],
-          userId: cartId,
         },
-      });
-    },
-    updateQuantity(userId, docId, updateProductData) {
-      return esClient.update({
-        index: index.cart,
-        id: docId,
-        body: {
-          doc: {
-            cartId: userId,
-            product: updateProductData,
-            userId,
+      }))
+      .mockImplementationOnce(() => Promise.reject({})),
+
+    addProductToCart: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve({})),
+    updateQuantity: jest.fn().mockImplementationOnce(() => Promise.resolve({
+      _index: "cart",
+      _type: "_doc",
+      _id: "uYu1V3ABsuG6wtO6vjmD",
+      _version: 14,
+      result: "updated",
+      _shards: {
+        total: 2,
+        successful: 1,
+        failed: 0,
+      },
+      _seq_no: 18,
+      _primary_term: 2,
+    })),
+    getCartByUserId: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve({
+        took: 3,
+        timed_out: false,
+        _shards: {
+          total: 1,
+          successful: 1,
+          skipped: 0,
+          failed: 0,
+        },
+        hits: {
+          total: {
+            value: 1,
+            relation: "eq",
           },
+          max_score: 0.6931472,
+          hits: [
+            {
+              _index: "cart",
+              _type: "_doc",
+              _id: "uYu1V3ABsuG6wtO6vjmD",
+              _score: 0.6931472,
+              _source: {
+                cartId: 1,
+                product: [
+                  {
+                    quantity: 31,
+                    productId: 1,
+                  },
+                ],
+                userId: 1,
+              },
+            },
+          ],
         },
-      });
-    },
-    getCartByUserId(userId) {
-      return esClient.search({
-        index: index.cart,
-        body: {
-          query: {
-            match_phrase: {
-              userId: userId
-            }
-          }
-        },
-      }).then(async (cartRes) => {
-        const { hits } = cartRes.hits;
-        if (hits.length > 0) {
-          const cartDoc = hits[0];
-          return { id: cartDoc._id, ...cartDoc._source};
-        }
-        return {};
-      });
-    },
+      }))
+      .mockImplementationOnce(() => Promise.reject({}))
+      .mockImplementationOnce(() => Promise.resolve({
+        id: "uYu1V3ABsuG6wtO6vjmD",
+        cartId: 1,
+        product: [
+          {
+            quantity: 31,
+            productId: 1,
+          },
+        ],
+        userId: 1,
+      }))
+      .mockImplementationOnce(() => Promise.resolve({
+        id: "uYu1V3ABsuG6wtO6vjmD",
+        cartId: 1,
+        product: [
+          {
+            quantity: 31,
+            productId: 1,
+          },
+        ],
+        userId: 1,
+      }))
+      .mockImplementationOnce(() => Promise.resolve({}))
+      .mockImplementationOnce(() => Promise.reject({})),
+    seedUser: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve(true))
+      .mockImplementationOnce(() => Promise.reject({ code: 500 })),
+    seedProduct: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve(true))
+      .mockImplementationOnce(() => Promise.reject({ code: 500 })),
+    seedCart: jest
+      .fn()
+      .mockImplementationOnce(() => Promise.resolve(true))
+      .mockImplementationOnce(() => Promise.reject({ code: 500 })),
   },
 };

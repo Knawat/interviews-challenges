@@ -1,7 +1,8 @@
-
 const { ServiceBroker } = require("moleculer");
 
 const ProductService = require("../../../services/product.service");
+
+jest.mock("../../../mixins/elasticSearch.mixin");
 
 describe("Test 'product' service", () => {
   const broker = new ServiceBroker({ logger: true });
@@ -12,11 +13,23 @@ describe("Test 'product' service", () => {
 
   describe("Test 'product.getProducts' action", () => {
     it("should return with 'success: true'", async () => {
-      await broker.call("product.getProducts", {})
+      await broker
+        .call("product.getProducts", {})
         .then((getProductRes) => {
           expect(getProductRes.success).toEqual(true);
-        }).catch((error) => {
-          this.logger.error(">>> get products error:", error);
+        })
+        .catch((error) => {
+          console.log(">>> get products error:", error);
+        });
+    });
+    it("should return with 'success: false'", async () => {
+      await broker
+        .call("product.getProducts", {})
+        .then((getProductRes) => {
+          expect(getProductRes.success).toEqual(false);
+        })
+        .catch((error) => {
+          console.log(">>> get products error:", error);
         });
     });
   });
