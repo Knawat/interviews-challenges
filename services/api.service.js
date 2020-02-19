@@ -73,7 +73,7 @@ module.exports = {
         const token = await ctx.call("auth.verifyToken", { authToken });
         if (token.userId) {
           ctx.meta.userId = token.userId;
-          return Promise.resolve(ctx);
+          return true;
         }
         return Promise.reject(
           new ApiGateway.Errors.UnAuthorizedError(
