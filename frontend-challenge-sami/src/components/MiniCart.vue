@@ -31,6 +31,7 @@ export default {
   padding 1rem
   transition all ease 200ms
   border-radius 0.4rem
+  z-index 9
 
   &__items
     max-height 40vh
