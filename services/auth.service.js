@@ -67,7 +67,7 @@ class AuthService extends Service {
                 }
                 throw new MoleculerClientError(
                   "Invalid Email password.",
-                  409,
+                  401,
                   null,
                 );
               })
@@ -90,6 +90,24 @@ class AuthService extends Service {
           handler(ctx) {
             return jwt.verify(ctx.params.authToken, salt);
           },
+        },
+        /**
+         * seeder
+         */
+        seeder() {
+          const userSeeded = this.seedUser();
+          const seedProduct = this.seedProduct();
+          const seedCart = this.seedCart();
+
+          return Promise.all([userSeeded, seedProduct, seedCart])
+            .then(() => this.success({}, "Test data Seeded successfully."))
+            .catch((error) => {
+              throw new MoleculerClientError(
+                error.message,
+                error.code || 500,
+                null,
+              );
+            });
         },
       },
       methods: {
@@ -115,21 +133,6 @@ class AuthService extends Service {
               );
             });
         },
-      },
-      started() {
-        this.isUserIndexExist()
-          .then(async (isUserIndexExist) => {
-            if (!isUserIndexExist) {
-              await this.createUserIndex();
-              const userData = await this.addTestUserData();
-              this.logger.info(">>> User seeded", userData);
-            } else {
-              this.logger.info(">>> User index already exist");
-            }
-          })
-          .catch((error) => {
-            this.logger.error(">>> User seed error", error);
-          });
       },
     });
   }

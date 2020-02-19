@@ -72,21 +72,6 @@ class CartService extends Service {
           },
         },
       },
-      started() {
-        this.isCartIndexExist()
-          .then(async (isCartIndexExist) => {
-            if (!isCartIndexExist) {
-              await this.createCartIndex();
-              const cartData = await this.addTestCartData();
-              this.logger.info(">>> Cart seeded", cartData);
-            } else {
-              this.logger.info(">>> Cart index already exist");
-            }
-          })
-          .catch((error) => {
-            this.logger.error(">>> Cart seed error", error);
-          });
-      },
     });
   }
 }

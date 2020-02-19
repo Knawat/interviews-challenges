@@ -9,9 +9,9 @@ const esClient = new elasticsearch.Client({
   apiVersion: esVersion,
 });
 const index = {
-  users: "users",
-  products: "products",
-  cart: "cart",
+  users: "users_knw",
+  products: "products_knw",
+  cart: "cart_knw",
 };
 
 module.exports = {
@@ -229,6 +229,54 @@ module.exports = {
           return { id: cartDoc._id, ...cartDoc._source};
         }
         return {};
+      });
+    },
+    seedUser(){
+      this.isUserIndexExist()
+      .then(async (isUserIndexExist) => {
+        if (!isUserIndexExist) {
+          await this.createUserIndex();
+          const userData = await this.addTestUserData();
+          this.logger.info(">>> User seeded", userData);
+        } else {
+          this.logger.info(">>> User index already exist");
+        }
+        return Promise.resolve(true);
+      })
+      .catch((error) => {
+        this.logger.error(">>> User seed error", error);
+      });
+    },
+    seedProduct(){
+      this.isProductIndexExist()
+      .then(async (isProductIndexExist) => {
+        if (!isProductIndexExist) {
+          await this.createProductsIndex();
+          const product = await this.addTestProductsData();
+          this.logger.info(">>> Product seeded", product);
+        } else {
+          this.logger.info(">>> Product index already exist");
+        }
+        return Promise.resolve(true);
+      })
+      .catch((error) => {
+        this.logger.error(">>> Product seed error", error);
+      });
+    },
+    seedCart(){
+      this.isCartIndexExist()
+      .then(async (isCartIndexExist) => {
+        if (!isCartIndexExist) {
+          await this.createCartIndex();
+          const cartData = await this.addTestCartData();
+          this.logger.info(">>> Cart seeded", cartData);
+        } else {
+          this.logger.info(">>> Cart index already exist");
+        }
+        return Promise.resolve(true);
+      })
+      .catch((error) => {
+        this.logger.error(">>> Cart seed error", error);
       });
     },
   },

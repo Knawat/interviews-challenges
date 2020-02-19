@@ -3,8 +3,6 @@ const jwt = require("jsonwebtoken");
 const bcrypt = require("bcryptjs");
 
 const AuthService = require("../../../services/auth.service");
-// const elasticSearch = require("../../../mixins/elasticSearch.mixin");
-
 
 describe("Test 'auth' service", () => {
   const newUserEmail = "admin@example.com";
@@ -21,10 +19,14 @@ describe("Test 'auth' service", () => {
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
 
-  describe("Test on 'service started' seed action", () => {
-    it("should add a test user", async () => {
-      // await elasticSearch.methods.deleteUserIndex();
-      expect(broker.start("auth.started")).resolves.toBeUndefined();
+  describe("Test on seed action", () => {
+    it("should return with 'success: true'", async () => {
+      await broker.call("auth.seeder", {})
+        .then((seedResponse) => {
+          expect(seedResponse.success).toEqual(true);
+        }).catch((error) => {
+          expect(error.code).toEqual(500);
+        });
     });
   });
 

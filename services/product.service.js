@@ -32,21 +32,6 @@ class ProductService extends Service {
           }
         }
       },
-      started() {
-        this.isProductIndexExist()
-          .then(async (isProductIndexExist) => {
-            if (!isProductIndexExist) {
-              await this.createProductsIndex();
-              const product = await this.addTestProductsData();
-              this.logger.info(">>> Product seeded", product);
-            } else {
-              this.logger.info(">>> Product index already exist");
-            }
-          })
-          .catch((error) => {
-            this.logger.error(">>> Product seed error", error);
-          });
-      },
     });
   }
 }

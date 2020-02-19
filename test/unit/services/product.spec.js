@@ -10,12 +10,6 @@ describe("Test 'product' service", () => {
   beforeAll(() => broker.start());
   afterAll(() => broker.stop());
 
-  describe("Test 'product.started' action", () => {
-    it("should return with 'success: true'", () => {
-      expect(broker.start()).resolves.toBeUndefined();
-    });
-  });
-
   describe("Test 'product.getProducts' action", () => {
     it("should return with 'success: true'", async () => {
       await broker.call("product.getProducts", {})

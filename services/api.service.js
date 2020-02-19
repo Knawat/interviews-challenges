@@ -12,6 +12,7 @@ module.exports = {
           "POST /register": "auth.register",
           "POST /login": "auth.login",
           "GET  /products": "product.getProducts",
+          "GET  /seed": "auth.seeder",
         },
         authentication: false,
         bodyParsers: {
