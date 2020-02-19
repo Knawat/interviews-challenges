@@ -20,6 +20,9 @@ module.exports = {
 				],
 				authentication: true,
 				aliases: {
+					//seeder
+					"GET seeder": "auth.seeder",
+
 					//registration
 					"POST auth/registration": "auth.registration",
 

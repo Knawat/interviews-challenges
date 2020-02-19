@@ -142,50 +142,74 @@ module.exports = {
 					throw new MoleculerError(MESSAGE_CONSTANT.AUTH_FAIL, 401);
 				}
 			}
-		}
-	},
-	async started() {
-		try {
-			const elasticClient = this.getEsObject();
+		},
 
-			//userseed
-			await elasticClient.indices
-				.exists({
-					index: "users"
-				})
-				.then(async (res) => {
-					if (!res) {
-						await elasticClient.indices.create({
-							index: "users",
-							body: {
-								mappings: {
-									properties: {
-										name: { type: "text" },
-										email: { type: "keyword" },
-										password: { type: "keyword" }
+		/**
+         * seeder action.
+         *
+         *
+         * @param {any} ctx
+         * @returns
+         */
+		seeder: {
+			rest: {
+				method: "GET",
+				path: "/seeder"
+			},
+			handler: async function handler(ctx) {
+				try {
+					const elasticClient = this.getEsObject();
+					//userseed
+					await elasticClient.indices
+						.exists({
+							index: "users"
+						})
+						.then(async (res) => {
+							if (!res) {
+								await elasticClient.indices.create({
+									index: "users",
+									body: {
+										mappings: {
+											properties: {
+												name: { type: "text" },
+												email: { type: "keyword" },
+												password: { type: "keyword" }
+											}
+										}
 									}
-								}
+								}).then(async (res) => {
+									await elasticClient
+										.index({
+											index: res.index,
+											type: "_doc",
+											id: 1,
+											body: {
+												name: "Divya Kanak",
+												email: "divya.kanak@tatvasoft.com",
+												password: this.hashPassword("123456789")
+											}
+										})
+										.catch(() => {
+											throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+										});
+								}).catch(() => {
+									throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+								});
 							}
+						}).catch(() => {
+							throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
 						});
-						await elasticClient
-							.index({
-								index: "users",
-								type: "_doc",
-								id: 1,
-								body: {
-									name: "Divya Kanak",
-									email: "divya.kanak@tatvasoft.com",
-									password: this.hashPassword("123456789")
-								}
-							})
-							.catch(() => {
-								throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
-							});
-					}
-				});
-		}
-		catch (err) {
-			throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+
+					return await ctx
+						.call("product.seeder")
+						.then(() => {
+							return { message: "Seeder running successful." }
+						});
+				}
+				catch (err) {
+					throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+				}
+			}
 		}
 	}
 };

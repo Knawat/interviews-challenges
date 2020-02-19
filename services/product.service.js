@@ -46,52 +46,59 @@ module.exports = {
 						});
 					});
 			}
-		}
-	},
-	async started() {
-		try {
-			const elasticClient = this.getEsObject();
+		},
 
-			//productseed
-			await elasticClient.indices
-				.exists({
-					index: "products"
-				})
-				.then(async res => {
-					if (!res) {
-						await elasticClient.indices.create({
-							index: "products",
-							body: {
-								mappings: {
-									properties: {
-										name: { type: "text" },
-										sku: { type: "keyword" },
-										category: { type: "text" }
+		seeder: {
+			rest: {
+				method: "GET",
+				path: "/seeder"
+			},
+			handler: async function handler() {
+				try {
+					const elasticClient = this.getEsObject();
+
+					//productseed
+					await elasticClient.indices
+						.exists({
+							index: "products"
+						})
+						.then(async res => {
+							if (!res) {
+								await elasticClient.indices.create({
+									index: "products",
+									body: {
+										mappings: {
+											properties: {
+												name: { type: "text" },
+												sku: { type: "keyword" },
+												category: { type: "text" }
+											}
+										}
 									}
-								}
+								});
+								await this.asyncForEach(products, async product => {
+									await elasticClient
+										.index({
+											index: "products",
+											type: "_doc",
+											id: product.id,
+											body: {
+												name: product.name,
+												sku: product.sku,
+												category: product.category
+											}
+										})
+										.catch(() => {
+											throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+										});
+								});
 							}
 						});
-						await this.asyncForEach(products, async product => {
-							await elasticClient
-								.index({
-									index: "products",
-									type: "_doc",
-									id: product.id,
-									body: {
-										name: product.name,
-										sku: product.sku,
-										category: product.category
-									}
-								})
-								.catch(() => {
-									throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
-								});
-						});
-					}
-				});
-		}
-		catch (err) {
-			throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+				}
+				catch (err) {
+					throw new MoleculerError(MESSAGE_CONSTANT.SOMETHING_WRONG, 500);
+				}
+			}
 		}
 	}
 };
