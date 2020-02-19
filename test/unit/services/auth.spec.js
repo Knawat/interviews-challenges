@@ -28,18 +28,16 @@ describe("Test 'auth' service", () => {
           expect(error.code).toEqual(500);
         });
     });
-    it("should return with 'success: true'", async () => {
+    it("should return with 'error: 500'", async () => {
       await broker.call("auth.seeder", {})
-        .then((seedResponse) => {
-          expect(seedResponse.success).toEqual(true);
-        }).catch((error) => {
+        .catch((error) => {
           expect(error.code).toEqual(500);
         });
     });
   });
 
   describe("Test 'auth.register' action", () => {
-    it("should return success true 1", async () => {
+    it("should return success true", async () => {
       await broker.call("auth.register", {
         name: newUserName,
         email: newUserEmail,
@@ -50,7 +48,7 @@ describe("Test 'auth' service", () => {
         expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
-    it("should return success true 2", async () => {
+    it("should return success true ", async () => {
       await broker.call("auth.register", {
         name: newUserName,
         email: newUserEmail,
@@ -61,13 +59,11 @@ describe("Test 'auth' service", () => {
         expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
     });
-    it("should return success true 3", async () => {
+    it("should return Error : Email id already exist", async () => {
       await broker.call("auth.register", {
         name: newUserName,
         email: newUserEmail,
         password: userPassword,
-      }).then((response) => {
-        expect(response.success).toEqual(true);
       }).catch((err) => {
         expect(err.message).toEqual("Email id already in use.Please try with another.");
       });
@@ -85,7 +81,7 @@ describe("Test 'auth' service", () => {
         expect(error.code).toEqual(500);
       });
     });
-    it("should return success true with auth_token with test registered user", async () => {
+    it("should return error code 401", async () => {
       await broker.call("auth.login", {
         email: newUserEmail,
         password: userPassword,
@@ -95,7 +91,7 @@ describe("Test 'auth' service", () => {
         expect(error.code).toEqual(401);
       });
     });
-    it("should return success true with auth_token with test registered user", async () => {
+    it("should return error code 500", async () => {
       await broker.call("auth.login", {
         email: newUserEmail,
         password: userPassword,

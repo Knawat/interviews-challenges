@@ -18,6 +18,7 @@ module.exports = {
     "no-var": ["error"],
     "no-console": ["off"],
     "no-unused-vars": ["warn"],
-    "no-mixed-spaces-and-tabs": ["warn"]
+    "no-mixed-spaces-and-tabs": ["warn"],
+    "prefer-promise-reject-errors": ["off"]
   }
 };

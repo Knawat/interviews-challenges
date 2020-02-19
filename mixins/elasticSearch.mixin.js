@@ -51,7 +51,6 @@ module.exports = {
             },
           },
         },
-        include_type_name: true,
       });
     },
     addTestUserData() {
@@ -104,7 +103,6 @@ module.exports = {
             },
           },
         },
-        include_type_name: true,
       });
     },
     addTestProducts(price, name, productId) {
@@ -173,7 +171,6 @@ module.exports = {
             },
           },
         },
-        include_type_name: true,
       });
     },
     addTestCartData() {

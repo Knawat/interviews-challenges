@@ -22,13 +22,11 @@ describe("Test 'product' service", () => {
           console.log(">>> get products error:", error);
         });
     });
-    it("should return with 'success: false'", async () => {
+    it("should return with 'error: 500'", async () => {
       await broker
         .call("product.getProducts", {})
-        .then((getProductRes) => {
-          expect(getProductRes.success).toEqual(false);
-        })
         .catch((error) => {
+          expect(error.code).toEqual(500);
           console.log(">>> get products error:", error);
         });
     });
