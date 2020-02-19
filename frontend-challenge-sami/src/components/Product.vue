@@ -1,10 +1,15 @@
 <template lang="pug">
-article.product
+article.product(@mouseover="hovered = true" @mouseleave="hovered = false")
+  button.product__add-cart-btn.product__add-cart-btn--mobile(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
   .product__image-wrapper
+
+    transition(name="fade")
+      .product__overlay(v-show="hovered")
+        .product__dimmer
+        button.product__add-cart-btn(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   .product__info
     h2.product__title {{'product ' + product.name.en}}
-  button.product__add-cart-btn(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
 </template>
 
 <script>
@@ -15,7 +20,10 @@ export default {
       type: Object,
       required: true
     }
-  }
+  },
+  data: () => ({
+    hovered: false
+  })
 };
 </script>
 
@@ -27,6 +35,7 @@ export default {
 
   &__image-wrapper
     height 440px
+    position relative
 
   &__image
     max-height 100%
@@ -45,9 +54,43 @@ export default {
 
   &__add-cart-btn
     position absolute
-    top 0
-    right 0
+    top 50%
+    left 50%
+    transform translate3d(-50%, -50%, 0)
     background: $green
-    padding 0.5rem
+    padding 1rem 1.5rem
     border-radius 0.2rem
+    font-size 1rem
+    font-weight bold
+
+    &--mobile
+      top 0
+      right 0
+      background: $green
+      padding 0.5rem
+      transform none
+      left auto
+      z-index 9
+      @media only screen and (min-width: 961px)
+        display none
+
+  &__overlay
+    @media only screen and (max-width: 960px)
+      display none
+
+  &__dimmer
+    position absolute
+    top 0
+    left 0
+    right 0
+    bottom 0
+    background black
+    opacity 0.1
+
+.fade-enter-active, .fade-leave-active {
+  transition: opacity .3s;
+}
+.fade-enter, .fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
 </style>
