@@ -41,13 +41,11 @@ module.exports = {
         index: index.users,
         body: {
           mappings: {
-            _doc: {
-              properties: {
-                name: { type: "text" },
-                email: { type: "text" },
-                userId: { type: "text" },
-                password: { type: "text" },
-              },
+            properties: {
+              name: { type: "text" },
+              email: { type: "text" },
+              userId: { type: "text" },
+              password: { type: "text" },
             },
           },
         },
@@ -94,12 +92,10 @@ module.exports = {
         index: index.products,
         body: {
           mappings: {
-            _doc: {
-              properties: {
-                name: { type: "text" },
-                productId: { type: "integer" },
-                price: { type: "integer" },
-              },
+            properties: {
+              name: { type: "text" },
+              productId: { type: "integer" },
+              price: { type: "integer" },
             },
           },
         },
@@ -153,21 +149,19 @@ module.exports = {
         index: index.cart,
         body: {
           mappings: {
-            _doc: {
-              properties: {
-                cartId: { type: "text" },
-                product: {
-                  properties: {
-                    productId: {
-                      type: "integer",
-                    },
-                    quantity: {
-                      type: "integer",
-                    },
+            properties: {
+              cartId: { type: "text" },
+              product: {
+                properties: {
+                  productId: {
+                    type: "integer",
+                  },
+                  quantity: {
+                    type: "integer",
                   },
                 },
-                userId: { type: "text" },
               },
+              userId: { type: "text" },
             },
           },
         },
