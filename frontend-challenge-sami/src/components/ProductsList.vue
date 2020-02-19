@@ -53,3 +53,16 @@ export default {
   }
 };
 </script>
+
+<style lang="stylus" scoped>
+$card-width=300px
+$column-gap=20px
+$grid-max-width=($card-width * 2) + $column-gap
+
+.products-list
+  display grid
+  grid-template-columns repeat(auto-fit, minmax($card-width, 1fr))
+  max-width $grid-max-width
+  margin 0 auto
+  grid-column-gap $column-gap
+</style>

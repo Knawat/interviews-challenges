@@ -1,7 +1,7 @@
 <template lang="pug">
 div#app
   navigation
-  main
+  main.main
     router-view
 </template>
 
@@ -45,4 +45,7 @@ export default {
 #app
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
+
+.main
+  padding-top 2rem
 </style>
