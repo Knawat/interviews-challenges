@@ -29,7 +29,8 @@ export default {
   background $blue
   max-width 290px
   padding 1rem
-  transition all ease 200ms
+  transition all ease-out 200ms
+  transform-origin top
   border-radius 0.4rem
   z-index 9
 
