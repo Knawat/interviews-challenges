@@ -3,6 +3,10 @@
   h1.page-title Cart
   section
     ul
+      li(v-if="!$store.getters.cartItems[0]")
+        p Your cart is empty.
+        router-link.cta(to="/") Shop now!
+  
       li.cart-item(v-for="item in $store.getters.cartItems")
         .cart-item__image-wrapper
           img.cart-item__image(:src="item.product.images[0] ? item.product.images[0] : null" :alt="item.product.name.en")
@@ -95,4 +99,13 @@ export default {
     height: 24px
     @media only screen and (max-width: 960px)
       width: 20px
+
+.cta
+  display: inline-block
+  font-size: 16px
+  background: $orange
+  padding: 8px 16px
+  text-align: center
+  color: $dim-grey
+  margin-top: 1.2rem
 </style>
