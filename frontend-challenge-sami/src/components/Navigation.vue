@@ -25,7 +25,12 @@ export default {
   },
   data: () => ({
     showCart: false
-  })
+  }),
+  watch: {
+    $route() {
+      this.showCart = false;
+    }
+  }
 };
 </script>
 
