@@ -1,12 +1,12 @@
 <template lang="pug">
-nav.pagination(aria-label="Pagination Navigation")
+nav.pagination(aria-label="pagination")
   ul.pagination__list
     li.pagination__item
-      button(@click="$emit('prev')" :disabled="currentPage === 1 || paginating")
+      button(@click="$emit('prev')" :disabled="isPreviousDisabled" :aria-disabled="isPreviousDisabled")
         svg.pagination__arrow(viewBox="0 0 24 24" :class="{'pagination__arrow--disabled': currentPage === 1}")
           path(fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
     li.pagination__item
-      button(@click="$emit('next')" :disabled="currentPage === numberOfPages || paginating")
+      button(@click="$emit('next')" :disabled="isNextDisabled" :aria-disabled="isNextDisabled")
         svg.pagination__arrow(viewBox="0 0 24 24" :class="{'pagination__arrow--disabled': currentPage === numberOfPages}")
           path(fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z")
 </template>
@@ -35,6 +35,17 @@ export default {
   computed: {
     numberOfPages() {
       return Math.ceil(this.total / this.limit);
+    },
+    isPreviousDisabled() {
+      if (this.currentPage === 1 || this.paginating) return true;
+
+      return false;
+    },
+    isNextDisabled() {
+      if (this.currentPage === this.numberOfPages || this.paginating)
+        return true;
+
+      return false;
     }
   }
 };
