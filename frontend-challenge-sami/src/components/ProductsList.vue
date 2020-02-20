@@ -68,6 +68,7 @@ export default {
       this.fetching = true;
       this.currentPage--;
       this.fetchProducts();
+      this.scrollToTop();
     },
     scrollToTop() {
       window.scrollTo(0, 0);
