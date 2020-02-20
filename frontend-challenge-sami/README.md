@@ -1,6 +1,9 @@
 # frontend-challenge-sami
 
 ## Project setup
+Set up environment variables with demo store credentials
+VUE_APP_CONSUMER_KEY=
+VUE_APP_CONSUMER_SECRET=
 ```
 npm install
 ```
