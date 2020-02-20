@@ -37,15 +37,15 @@ export default {
 
 <style lang="stylus" scoped>
 .header
-  background $grey
-  padding: 1.2rem 0
+  padding: 1.5rem 0
+  background-color $silver
 
 .nav-menu
   display flex
   justify-content space-between
 
   &__logo
-    font-size 1.4rem
+    font-size 1.2rem
     font-weight bold
     color $dim-grey
 
@@ -54,7 +54,7 @@ export default {
     &:hover
       svg
         path
-          fill $orange
+          fill lighten($dim-grey, 20%)
           transition 100ms ease
 
   &__cart-count

@@ -60,9 +60,9 @@ export default {
 
 <style lang="stylus" scoped>
 $card-width=300px
-$column-gap=20px
+$column-gap=50px
 $grid-max-width=($card-width * 2) + $column-gap
-$row-gap=2 * $column-gap
+$row-gap=1.5 * $column-gap
 
 .products-list
   display grid
