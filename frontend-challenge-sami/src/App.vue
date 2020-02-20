@@ -14,7 +14,9 @@ export default {
     Navigation
   },
   mounted() {
-    if (!localStorage.getItem("token")) this.authorize();
+    if (!this.$store.getters.isAuthorized) {
+      this.authorize();
+    }
   },
   methods: {
     async authorize() {
@@ -34,8 +36,7 @@ export default {
         channel: { token }
       } = data || { channel: { token: null } };
 
-      localStorage.setItem("token", token);
-      this.$store.commit("SET_AUTHORIZED", token);
+      this.$store.commit("SET_TOKEN", token);
     }
   }
 };
@@ -47,6 +48,7 @@ export default {
   -moz-osx-font-smoothing grayscale
   display flex
   flex-direction column
+  height 100%
 
 .main
   padding-top 2rem

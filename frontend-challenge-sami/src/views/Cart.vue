@@ -3,11 +3,11 @@
   h1.page-title Cart
   section
     ul
-      li(v-if="!$store.getters.cartItems[0]")
+      li(v-if="$store.getters.isEmptyCart")
         p Your cart is empty.
         router-link.cta(to="/") Shop now!
   
-      li.cart-item(v-for="item in $store.getters.cartItems")
+      li.cart-item(v-for="item in $store.getters.getCartItems")
         .cart-item__image-wrapper
           img.cart-item__image(:src="item.product.images[0] ? item.product.images[0] : null" :alt="item.product.name.en")
         .cart-item__body

@@ -1,9 +1,9 @@
 <template lang="pug">
 .cart
   ul.cart__items
-    li(v-if="!$store.getters.cartItems[0]"): p Cart is empty
+    li(v-if="$store.getters.isEmptyCart"): p Cart is empty
     
-    li.cart__item(v-for="item in $store.getters.cartItems")
+    li.cart__item(v-for="item in $store.getters.getCartItems")
       .cart__item-thumb
         img.cart__item-image(:src="item.product.images[0] ? item.product.images[0] : null" :alt='item.product.name.en')
       .cart__item-details
@@ -11,7 +11,7 @@
         p.cart__item-quantity Quantity: {{item.quantity}}
         button.cart__item-remove(@click="$store.commit('REMOVE_CART_ITEM', item.product.sku)") Remove
   
-  .cart__actions(v-if="$store.getters.cartItems[0]")
+  .cart__actions(v-if="!$store.getters.isEmptyCart")
     router-link.cart__link(to="#") Checkout
     router-link.cart__link(to="/cart") View Cart
 </template>
