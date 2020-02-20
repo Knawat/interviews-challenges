@@ -34,12 +34,14 @@ export default {
     Product,
     ContentLoader
   },
-  data: () => ({
-    products: [],
-    total: 0,
-    currentPage: 1,
-    fetching: true
-  }),
+  data() {
+    return {
+      products: [],
+      total: 0,
+      currentPage: this.$route.query.page || 1,
+      fetching: true
+    };
+  },
   mounted() {
     this.fetchProducts();
   },
