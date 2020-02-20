@@ -10,6 +10,8 @@ article.product(@mouseover="hovered = true" @mouseleave="hovered = false")
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   .product__info
     h2.product__title {{'product ' + product.name.en}}
+    .product__sizes
+      strong.product__size(v-for="size in getProductSizes(product)" :key="size") {{size}}
 </template>
 
 <script>
@@ -28,6 +30,22 @@ export default {
     addCartItem(product) {
       this.$store.commit("ADD_CART_ITEM", product);
       this.$store.commit("SAVE_CART");
+    },
+    getProductSizes(product) {
+      const attributes = product.attributes;
+      const getSizeAttr = attr => {
+        if (attr.name && attr.name.en) {
+          return attr.name.en === "Size";
+        }
+
+        return {};
+      };
+
+      const { options: localizedOptions } = (attributes &&
+        attributes.find(attr => getSizeAttr(attr))) || { localizedOptions: [] };
+      const options = localizedOptions.map(op => op.en);
+
+      return options;
     }
   }
 };
@@ -96,6 +114,14 @@ export default {
     bottom 0
     background black
     opacity 0.6
+
+  &__sizes
+    margin-top 0.4rem
+
+  &__size
+    margin-right 0.6rem
+    color lighten($dim-grey, 40%)
+    font-size: 0.9rem
 
 .fade-enter-active, .fade-leave-active
   transition: opacity .3s
