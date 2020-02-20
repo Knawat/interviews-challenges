@@ -68,6 +68,9 @@ export default {
     border-radius 0.2rem
     font-size 1rem
     font-weight bold
+    transition transform ease 200ms
+    &:active, &:focus
+      transform translate3d(-50%, -50%, 0) scale(1.1, 1.1)
 
     &--mobile
       top 0

@@ -76,7 +76,7 @@ export default {
   &__quantity
     border: 2px solid $grey
     padding: 4px 8px
-    min-width: 35px
+    min-width: 3rem
     min-height: 35px
     display: flex
     justify-content: center
@@ -122,6 +122,7 @@ export default {
   color: $dim-grey
   margin-top: 1.2rem
   border-radius: 0.2rem
+  font-weight bold
   &:hover
     background: lighten($orange, 20%)
 </style>

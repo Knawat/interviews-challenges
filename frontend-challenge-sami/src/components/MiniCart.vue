@@ -107,4 +107,6 @@ export default {
       transition all 200ms ease
       &:hover
         color lighten($maroon, 20%)
+      &:active
+        transform scale(1.1)
 </style>
