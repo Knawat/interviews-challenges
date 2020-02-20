@@ -82,6 +82,9 @@ export default {
     padding: 0 12px
     min-width: 35px
     min-height: 35px
+    &:hover
+      background: lighten($pink, 20%)
+
     @media only screen and (max-width: 960px)
       min-width: 20px
       min-height: 28px
