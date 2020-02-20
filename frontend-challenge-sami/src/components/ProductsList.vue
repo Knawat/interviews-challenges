@@ -12,7 +12,7 @@ section
   
   pagination(
     v-if="products.length"
-    :currentPage="currentPage"
+    :currentPage="+currentPage"
     :total="total"
     :paginating="fetching"
     @next="getNextPage"
