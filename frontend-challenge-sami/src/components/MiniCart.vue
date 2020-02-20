@@ -33,7 +33,7 @@ export default {
   transition all ease-out 100ms
   transform-origin top
   border-radius 0.2rem
-  z-index 9
+  z-index 99
   box-shadow: 3px 2px 4px -2px rgba(0,0,0,0.45);
 
   &__items
