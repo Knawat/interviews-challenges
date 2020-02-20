@@ -5,48 +5,60 @@ Vue.use(Vuex);
 
 export default new Vuex.Store({
   state: {
-    authorized: localStorage.getItem("token"),
-    items: [] // { product, quantity }
+    token: localStorage.getItem("token"),
+    cartItems: [] // { product: Object, quantity: Number }
   },
   getters: {
-    cartItems: ({ items }) => {
-      return items;
+    isAuthorized: ({ token }) => {
+      return Boolean(token);
     },
-    cartCount: ({ items }) => {
-      const count = items.reduce((total, item) => {
+
+    getCartItems: ({ cartItems }) => {
+      return cartItems;
+    },
+    getCartCount: ({ cartItems }) => {
+      const count = cartItems.reduce((total, item) => {
         return (total += item.quantity);
       }, 0);
 
       return count;
     },
-    isAuthorized: ({ authorized }) => {
-      return Boolean(authorized);
+    isEmptyCart: ({ cartItems }) => {
+      if (cartItems[0]) return false;
+
+      return true;
     }
   },
   mutations: {
-    ADD_CART_ITEM({ items }, product) {
+    SET_TOKEN(state, token) {
+      localStorage.setItem("token", token);
+      state.token = token;
+    },
+    ADD_CART_ITEM({ cartItems }, product) {
       const { sku } = product;
-      const exists = items.find(entry => entry.product.sku === sku);
+      const exists = cartItems.find(item => item.product.sku === sku);
 
       if (!exists) {
-        items.push({
+        cartItems.push({
           product,
           quantity: 1
         });
-      } else {
-        exists.quantity++;
+
+        return;
       }
+      exists.quantity++;
     },
     REMOVE_CART_ITEM(state, sku) {
-      const item = state.items.find(entry => entry.product.sku === sku);
-      if (item.quantity > 1) {
-        item.quantity--;
-      } else {
-        state.items = state.items.filter(entry => entry.product.sku !== sku);
+      const item = state.cartItems.find(item => item.product.sku === sku);
+
+      if (item.quantity === 1) {
+        state.cartItems = state.cartItems.filter(
+          item => item.product.sku !== sku
+        );
+
+        return;
       }
-    },
-    SET_AUTHORIZED(state, payload) {
-      state.authorized = payload;
+      item.quantity--;
     }
   },
   actions: {},

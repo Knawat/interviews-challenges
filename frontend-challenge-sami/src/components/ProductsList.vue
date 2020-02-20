@@ -2,16 +2,27 @@
 section
   ul.products-list
     template(v-if="fetching")
-      li(v-for="n in 6")
-        content-loader(height="400")
-        content-loader(height="40")
+      li(v-for="n in 6" :key="n")
+        content-loader(:height="400")
+        content-loader(:height="40")
+    
     template(v-else)
-      li(v-for="product in products" :key="product.sku"): Product(:product="product")
-  pagination(v-if="products.length" :currentPage="currentPage" :total="total" :paginating="fetching" @next="getNextPage" @prev="getPreviousPage")
+      li(v-for="product in products" :key="product.sku")
+        Product(:product="product")
+  
+  pagination(
+    v-if="products.length"
+    :currentPage="currentPage"
+    :total="total"
+    :paginating="fetching"
+    @next="getNextPage"
+    @prev="getPreviousPage"
+    )
 </template>
 
 <script>
 import { ContentLoader } from "vue-content-loader";
+import { LIST_PRODUCTS } from "@/api/endpoints";
 
 import Pagination from "@/components/Pagination";
 import Product from "@/components/Product";
@@ -30,37 +41,40 @@ export default {
     fetching: true
   }),
   mounted() {
-    this.getProducts();
+    this.fetchProducts();
   },
   methods: {
-    async getProducts() {
-      const response = await fetch(
-        `/api/catalog/products?page=${this.currentPage}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
+    async fetchProducts() {
+      try {
+        const { products, total } = await this.$api(LIST_PRODUCTS, {
+          page: this.currentPage
+        });
 
-      const data = await response.json();
-      const { products, total } = data || { products: [], total: 0 };
-
-      this.products = products;
-      this.total = total;
-      this.fetching = false;
+        this.products = products;
+        this.total = total;
+      } catch (err) {
+        this.products = [];
+        this.total = 0;
+        console.log(err);
+      } finally {
+        this.fetching = false;
+      }
     },
     getNextPage() {
-      this.fetching = true;
       this.currentPage++;
-      this.getProducts();
+      this.refetch();
     },
     getPreviousPage() {
-      this.fetching = true;
       this.currentPage--;
-      this.getProducts();
+      this.refetch();
+    },
+    scrollToTop() {
+      window.scrollTo(0, 0);
+    },
+    refetch() {
+      this.fetching = true;
+      this.fetchProducts();
+      this.scrollToTop();
     }
   }
 };
