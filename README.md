@@ -18,12 +18,19 @@ This project developed based on Moleculer framwork with REDIS caching, Elasticse
 
 3. `npm run dev` Start with development environment
 
+4. `http://localhost:3000/api/seed` Run this endpoint to create an index in elasticsearch and add some test data. If it respond with `No Living connections` error That means elasticsearch services are not ready yet or configurations in .env are not valid.
+
+5. Please use Postman Collection for further testing
+
 ## Run in Docker
 
 1. `cp .env.ignore .env` and make desired changes into .env
 
 2.  `docker-compose up -d --build` (Run this command to pull images and start all the services in docker container)
-3.  `http://localhost:3000/` Hit in postman as per endpoints mentioned in the post man collection 
+
+3. `http://localhost:3000/api/seed` Run this endpoint to create an index in elasticsearch and add some test data. If it respond with `No Living connections` error it means elasticsearch services are not ready yet. So please try after some time.
+
+4. Please use Postman Collection for further testing
 
 
 ## Postman Collection
