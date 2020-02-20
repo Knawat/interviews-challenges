@@ -46,7 +46,7 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const { products, total } = await getProducts();
+        const { products, total } = await getProducts(this.currentPage);
 
         this.products = products;
         this.total = total;
@@ -62,11 +62,15 @@ export default {
       this.fetching = true;
       this.currentPage++;
       this.fetchProducts();
+      this.scrollToTop();
     },
     getPreviousPage() {
       this.fetching = true;
       this.currentPage--;
       this.fetchProducts();
+    },
+    scrollToTop() {
+      window.scrollTo(0, 0);
     }
   }
 };
