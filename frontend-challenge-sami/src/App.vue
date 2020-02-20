@@ -45,9 +45,11 @@ export default {
 #app
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
-  background-color $grey
-  height 100%
+  display flex
+  flex-direction column
 
 .main
   padding-top 2rem
+  background-color $grey
+  flex 1
 </style>
