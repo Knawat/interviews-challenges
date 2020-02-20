@@ -47,7 +47,7 @@ export default {
     async fetchProducts() {
       try {
         const { products, total } = await this.$api(LIST_PRODUCTS, {
-          page: this.currentPage
+          page: this.$route.query.page || this.currentPage
         });
 
         this.products = products;
@@ -73,6 +73,7 @@ export default {
     },
     refetch() {
       this.fetching = true;
+      this.$router.push(`?page=${this.currentPage}`);
       this.fetchProducts();
       this.scrollToTop();
     }
