@@ -10,9 +10,10 @@
         p.cart__item-title {{item.product.name.en}}
         p.cart__item-quantity Quantity: {{item.quantity}}
         button.cart__item-remove(@click="$store.commit('REMOVE_CART_ITEM', item.product.sku)") Remove
-    
-  router-link.cart__link(v-if="$store.getters.cartItems[0]" to="#") Checkout
-  router-link.cart__link(v-if="$store.getters.cartItems[0]" to="/cart") View Cart
+  
+  .cart__actions(v-if="$store.getters.cartItems[0]")
+    router-link.cart__link(to="#") Checkout
+    router-link.cart__link(to="/cart") View Cart
 </template>
 
 <script>
@@ -26,17 +27,19 @@ export default {
   position absolute
   right 8%
   top 55px
-  background $blue
-  max-width 290px
+  background #fff
+  width 280px
   padding 1rem
-  transition all ease 200ms
-  border-radius 0.4rem
-  z-index 9
+  transition all ease-out 100ms
+  transform-origin top
+  border-radius 0.2rem
+  z-index 99
+  box-shadow: 3px 2px 4px -2px rgba(0,0,0,0.45);
 
   &__items
     max-height 40vh
     overflow-y scroll
-    margin-bottom 2rem
+    // margin-bottom 2rem
 
   &__item
     margin-bottom 1rem
@@ -65,13 +68,18 @@ export default {
 
   &__item-quantity
     font-size 0.6rem
-    color lighten($dim-grey, 0.8)
+    color $dim-grey
     margin-bottom 0.4rem
 
   &__item-remove
     padding 0.4rem
     background $pink
     border-radius 0.2rem
+    &:hover
+      background lighten($pink, 20%)
+
+  &__actions
+    margin-top 2rem
 
   &__link
     font-size: 16px
@@ -80,6 +88,10 @@ export default {
     padding: 8px 16px
     text-align: center
     color: $dim-grey
+    border-radius: 0.2rem
+    font-weight bold
+    &:hover
+      background lighten($orange, 20%)
     &:not(:last-child)
       margin-bottom 0.8rem
 </style>

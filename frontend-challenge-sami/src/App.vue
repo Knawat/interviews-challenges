@@ -45,6 +45,8 @@ export default {
 #app
   -webkit-font-smoothing antialiased
   -moz-osx-font-smoothing grayscale
+  background-color $grey
+  height 100%
 
 .main
   padding-top 2rem
