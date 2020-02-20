@@ -234,9 +234,6 @@ module.exports = {
         }
         return Promise.resolve(true);
       })
-      .catch((error) => {
-        this.logger.error(">>> User seed error", error);
-      });
     },
     seedProduct(){
       return this.isProductIndexExist()
@@ -250,9 +247,6 @@ module.exports = {
         }
         return Promise.resolve(true);
       })
-      .catch((error) => {
-        this.logger.error(">>> Product seed error", error);
-      });
     },
     seedCart(){
       return this.isCartIndexExist()
@@ -266,9 +260,6 @@ module.exports = {
         }
         return Promise.resolve(true);
       })
-      .catch((error) => {
-        this.logger.error(">>> Cart seed error", error);
-      });
     },
   },
 };
