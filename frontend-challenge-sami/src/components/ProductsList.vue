@@ -22,7 +22,7 @@ section
 
 <script>
 import { ContentLoader } from "vue-content-loader";
-import { getProducts } from "@/services/get_products";
+import { LIST_PRODUCTS } from "@/api/endpoints";
 
 import Pagination from "@/components/Pagination";
 import Product from "@/components/Product";
@@ -46,7 +46,9 @@ export default {
   methods: {
     async fetchProducts() {
       try {
-        const { products, total } = await getProducts(this.currentPage);
+        const { products, total } = await this.$api(LIST_PRODUCTS, {
+          page: this.currentPage
+        });
 
         this.products = products;
         this.total = total;
@@ -59,19 +61,20 @@ export default {
       }
     },
     getNextPage() {
-      this.fetching = true;
       this.currentPage++;
-      this.fetchProducts();
-      this.scrollToTop();
+      this.refetch();
     },
     getPreviousPage() {
-      this.fetching = true;
       this.currentPage--;
-      this.fetchProducts();
-      this.scrollToTop();
+      this.refetch();
     },
     scrollToTop() {
       window.scrollTo(0, 0);
+    },
+    refetch() {
+      this.fetching = true;
+      this.fetchProducts();
+      this.scrollToTop();
     }
   }
 };
