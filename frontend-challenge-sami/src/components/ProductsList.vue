@@ -22,6 +22,7 @@ section
 
 <script>
 import { ContentLoader } from "vue-content-loader";
+import { getProducts } from "@/services/get_products";
 
 import Pagination from "@/components/Pagination";
 import Product from "@/components/Product";
@@ -40,37 +41,32 @@ export default {
     fetching: true
   }),
   mounted() {
-    this.getProducts();
+    this.fetchProducts();
   },
   methods: {
-    async getProducts() {
-      const response = await fetch(
-        `/api/catalog/products?page=${this.currentPage}`,
-        {
-          method: "GET",
-          headers: {
-            "Content-Type": "application/json",
-            Authorization: `Bearer ${localStorage.getItem("token")}`
-          }
-        }
-      );
+    async fetchProducts() {
+      try {
+        const { products, total } = await getProducts();
 
-      const data = await response.json();
-      const { products, total } = data || { products: [], total: 0 };
-
-      this.products = products;
-      this.total = total;
-      this.fetching = false;
+        this.products = products;
+        this.total = total;
+      } catch (err) {
+        this.products = [];
+        this.total = 0;
+        console.log(err);
+      } finally {
+        this.fetching = false;
+      }
     },
     getNextPage() {
       this.fetching = true;
       this.currentPage++;
-      this.getProducts();
+      this.fetchProducts();
     },
     getPreviousPage() {
       this.fetching = true;
       this.currentPage--;
-      this.getProducts();
+      this.fetchProducts();
     }
   }
 };

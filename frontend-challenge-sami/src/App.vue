@@ -6,6 +6,7 @@ div#app
 </template>
 
 <script>
+import { getToken } from "@/services/token";
 import Navigation from "@/components/Navigation";
 
 export default {
@@ -20,23 +21,12 @@ export default {
   },
   methods: {
     async authorize() {
-      const response = await fetch("/api/token", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json"
-        },
-        body: JSON.stringify({
-          consumerKey: process.env.VUE_APP_CONSUMER_KEY,
-          consumerSecret: process.env.VUE_APP_CONSUMER_SECRET
-        })
-      });
-      const data = await response.json();
-
-      const {
-        channel: { token }
-      } = data || { channel: { token: null } };
-
-      this.$store.commit("SET_TOKEN", token);
+      try {
+        const token = await getToken();
+        this.$store.commit("SET_TOKEN", token);
+      } catch (err) {
+        console.log(err);
+      }
     }
   }
 };
