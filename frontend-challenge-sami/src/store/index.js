@@ -2,11 +2,12 @@ import Vue from "vue";
 import Vuex from "vuex";
 
 Vue.use(Vuex);
+const cachedCart = localStorage.getItem("cart");
 
 export default new Vuex.Store({
   state: {
     token: localStorage.getItem("token"),
-    cartItems: [] // { product: Object, quantity: Number }
+    cartItems: cachedCart ? JSON.parse(cachedCart) : [] // { product: Object, quantity: Number }
   },
   getters: {
     isAuthorized: ({ token }) => {
@@ -47,6 +48,7 @@ export default new Vuex.Store({
         return;
       }
       exists.quantity++;
+      localStorage.setItem("cart", JSON.stringify(cartItems));
     },
     REMOVE_CART_ITEM(state, sku) {
       const item = state.cartItems.find(item => item.product.sku === sku);
@@ -59,6 +61,7 @@ export default new Vuex.Store({
         return;
       }
       item.quantity--;
+      localStorage.setItem("cart", JSON.stringify(state.cartItems));
     }
   },
   actions: {},
