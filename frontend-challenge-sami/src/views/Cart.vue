@@ -7,7 +7,7 @@
         p Your cart is empty.
         router-link.cta(to="/") Shop now!
   
-      li.cart-item(v-for="item in $store.getters.getCartItems")
+      li.cart-item(v-for="item in $store.getters.getCartItems" :key="item.product.sku")
         .cart-item__image-wrapper
           img.cart-item__image(:src="item.product.images[0] ? item.product.images[0] : null" :alt="item.product.name.en")
         .cart-item__body

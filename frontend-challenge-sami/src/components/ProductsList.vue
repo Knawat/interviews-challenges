@@ -2,12 +2,22 @@
 section
   ul.products-list
     template(v-if="fetching")
-      li(v-for="n in 6")
-        content-loader(height="400")
-        content-loader(height="40")
+      li(v-for="n in 6" :key="n")
+        content-loader(:height="400")
+        content-loader(:height="40")
+    
     template(v-else)
-      li(v-for="product in products" :key="product.sku"): Product(:product="product")
-  pagination(v-if="products.length" :currentPage="currentPage" :total="total" :paginating="fetching" @next="getNextPage" @prev="getPreviousPage")
+      li(v-for="product in products" :key="product.sku")
+        Product(:product="product")
+  
+  pagination(
+    v-if="products.length"
+    :currentPage="currentPage"
+    :total="total"
+    :paginating="fetching"
+    @next="getNextPage"
+    @prev="getPreviousPage"
+    )
 </template>
 
 <script>

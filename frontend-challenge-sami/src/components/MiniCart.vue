@@ -3,7 +3,7 @@
   ul.cart__items
     li(v-if="$store.getters.isEmptyCart"): p Cart is empty
     
-    li.cart__item(v-for="item in $store.getters.getCartItems")
+    li.cart__item(v-for="item in $store.getters.getCartItems" :key="item.product.sku")
       .cart__item-thumb
         img.cart__item-image(:src="item.product.images[0] ? item.product.images[0] : null" :alt='item.product.name.en')
       .cart__item-details
