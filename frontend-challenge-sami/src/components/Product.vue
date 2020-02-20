@@ -63,19 +63,20 @@ export default {
     top 50%
     left 50%
     transform translate3d(-50%, -50%, 0)
-    background: $green
-    padding 1rem 1.5rem
+    background: $orange
+    padding 0.8rem 1.5rem
     border-radius 0.2rem
     font-size 1rem
     font-weight bold
     transition transform ease 200ms
     &:active, &:focus
-      transform translate3d(-50%, -50%, 0) scale(1.1, 1.1)
+      transform translate3d(-50%, -50%, 0) scale(1.2, 1.2)
+    &:hover
+      background lighten($orange, 20%)
 
     &--mobile
       top 0
       right 0
-      background: $green
       padding 0.5rem
       transform none
       left auto
@@ -94,7 +95,7 @@ export default {
     right 0
     bottom 0
     background black
-    opacity 0.1
+    opacity 0.6
 
 .fade-enter-active, .fade-leave-active
   transition: opacity .3s
