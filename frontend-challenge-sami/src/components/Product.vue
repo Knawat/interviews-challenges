@@ -1,12 +1,12 @@
 <template lang="pug">
 article.product(@mouseover="hovered = true" @mouseleave="hovered = false")
-  button.product__add-cart-btn.product__add-cart-btn--mobile(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
+  button.product__add-cart-btn.product__add-cart-btn--mobile(@click="addCartItem(product)") Add to cart
   .product__image-wrapper
 
     transition(name="fade")
       .product__overlay(v-show="hovered")
         .product__dimmer
-        button.product__add-cart-btn(@click="$store.commit('ADD_CART_ITEM', product)") Add to cart
+        button.product__add-cart-btn(@click="addCartItem(product)") Add to cart
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   .product__info
     h2.product__title {{'product ' + product.name.en}}
@@ -23,7 +23,13 @@ export default {
   },
   data: () => ({
     hovered: false
-  })
+  }),
+  methods: {
+    addCartItem(product) {
+      this.$store.commit("ADD_CART_ITEM", product);
+      this.$store.commit("SAVE_CART");
+    }
+  }
 };
 </script>
 

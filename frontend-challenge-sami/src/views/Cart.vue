@@ -15,7 +15,7 @@
 
           .cart-item__actions
             button.cart-item__quantity-button.cart-item__quantity-button--remove(
-              @click="$store.commit('REMOVE_CART_ITEM', item.product.sku)"
+              @click="removeCartItem(item.product.sku)"
               )
               svg.cart-item__quantity-shape(viewBox='0 0 24 24')
                 path(fill='#fff', d='M19,13H5V11H19V13Z')
@@ -23,7 +23,7 @@
             p.cart-item__quantity {{item.quantity}}
 
             button.cart-item__quantity-button.cart-item__quantity-button--add(
-              @click="$store.commit('ADD_CART_ITEM', item.product)"
+              @click="addCartItem(item.product)"
               )
               svg.cart-item__quantity-shape(viewBox='0 0 24 24')
                 path(fill='#fff', d='M19,13H13V19H11V13H5V11H11V5H13V11H19V13Z')
@@ -31,7 +31,17 @@
 
 <script>
 export default {
-  name: "Cart"
+  name: "Cart",
+  methods: {
+    removeCartItem(sku) {
+      this.$store.commit("REMOVE_CART_ITEM", sku);
+      this.$store.commit("SAVE_CART");
+    },
+    addCartItem(product) {
+      this.$store.commit("ADD_CART_ITEM", product);
+      this.$store.commit("SAVE_CART");
+    }
+  }
 };
 </script>
 
@@ -111,4 +121,7 @@ export default {
   text-align: center
   color: $dim-grey
   margin-top: 1.2rem
+  border-radius: 0.2rem
+  &:hover
+    background: lighten($orange, 20%)
 </style>

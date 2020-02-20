@@ -48,7 +48,6 @@ export default new Vuex.Store({
         return;
       }
       exists.quantity++;
-      localStorage.setItem("cart", JSON.stringify(cartItems));
     },
     REMOVE_CART_ITEM(state, sku) {
       const item = state.cartItems.find(item => item.product.sku === sku);
@@ -61,7 +60,9 @@ export default new Vuex.Store({
         return;
       }
       item.quantity--;
-      localStorage.setItem("cart", JSON.stringify(state.cartItems));
+    },
+    SAVE_CART({ cartItems }) {
+      localStorage.setItem("cart", JSON.stringify(cartItems));
     }
   },
   actions: {},

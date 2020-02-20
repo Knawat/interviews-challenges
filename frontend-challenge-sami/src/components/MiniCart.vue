@@ -10,7 +10,7 @@
         p.cart__item-title {{item.product.name.en}}
         .cart__item-footer
           p.cart__item-quantity Quantity: {{item.quantity}}
-          button.cart__item-remove(@click="$store.commit('REMOVE_CART_ITEM', item.product.sku)") Remove
+          button.cart__item-remove(@click="removeCartItem(item.product.sku)") Remove
   
   .cart__actions(v-if="!$store.getters.isEmptyCart")
     router-link.cart__link(to="#") Checkout
@@ -19,7 +19,13 @@
 
 <script>
 export default {
-  name: "MiniCart"
+  name: "MiniCart",
+  methods: {
+    removeCartItem(sku) {
+      this.$store.commit("REMOVE_CART_ITEM", sku);
+      this.$store.commit("SAVE_CART");
+    }
+  }
 };
 </script>
 
