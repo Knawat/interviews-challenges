@@ -77,6 +77,14 @@ export default {
       this.fetchProducts();
       this.scrollToTop();
     }
+  },
+  watch: {
+    $route(to) {
+      if (!to.query.page) {
+        this.currentPage = 1;
+        this.refetch();
+      }
+    }
   }
 };
 </script>
