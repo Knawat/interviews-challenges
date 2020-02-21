@@ -1,12 +1,12 @@
 <template lang="pug">
-article.product(tabindex="0")
+article.product(tabindex="0" ref="product")
   button.product__add-cart-btn.product__add-cart-btn--mobile(@click="addCartItem(product)") Add to cart
   
   .product__image-wrapper
     transition(name="fade")
       .product__overlay
         .product__dimmer
-        button.product__add-cart-btn.button(@click="addCartItem(product)" tabindex="0") Add to cart
+        button.product__add-cart-btn.button(@click="addCartItem(product)" tabindex="0" ref="addBtn") Add to cart
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   
   .product__info
@@ -31,6 +31,10 @@ export default {
     addCartItem(product) {
       this.$store.commit("ADD_CART_ITEM", product);
       this.$store.commit("SAVE_CART");
+
+
+      this.$refs.product.blur();
+      this.$refs.addBtn.blur();
     },
     getProductSizes(product) {
       const attributes = product.attributes;
@@ -64,8 +68,7 @@ export default {
   &__overlay
     opacity 0
 
-  &:hover
-    outline none
+  &:hover, &:focus-within
     .product__overlay
       opacity 1
       transition all 250ms ease
