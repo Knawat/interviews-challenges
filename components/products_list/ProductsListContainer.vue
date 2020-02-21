@@ -5,7 +5,7 @@
         <VmProducts :product="product"></VmProducts>
       </div>
     </template>
-    <div class="section" v-if="products != undefined && products.length === 0">
+    <div class="section" v-if="!products || products.length === 0">
       <p>{{ noProductLabel }}</p>
     </div>
   </div>

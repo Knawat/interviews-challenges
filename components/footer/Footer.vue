@@ -1,7 +1,5 @@
 <template>
-  <div class="footer">
-    <div class="columns container"></div>
-  </div>
+  <div class="footer"></div>
 </template>
 
 <script>
@@ -13,6 +11,7 @@ export default {
 <style lang="scss" scoped>
 .footer {
   background: #b9e2fc;
+
   color: black;
 }
 </style>

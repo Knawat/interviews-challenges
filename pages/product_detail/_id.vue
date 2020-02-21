@@ -19,11 +19,8 @@
           <div class="card-content__text">
             <p class="price">
               {{
-              getFormatedCurrency(product.variations[0].sale_price)
+              formatcurrency(product.variations[0].sale_price)
               }}
-              {{
-              parseFloat(product.variations[0].sale_price).toFixed(2)
-              }} $
             </p>
           </div>
           <div class="card-content__text">
@@ -92,7 +89,7 @@
 </template>
 
 <script>
-import knawatAPI from "@/.vscode/packages/KnawatAPI.js";
+import knawatAPI from "@/packages/KnawatAPI.js";
 export default {
   name: "productdetail-id",
 
@@ -106,13 +103,7 @@ export default {
       removeFromCartLabel: "Remove from cart",
       product: {},
       selected: 1,
-      quantityArray: [],
-      currencyFormatter: new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        minimumFractionDigits: 0,
-        maximumFractionDigits: 2
-      })
+      quantityArray: []
     };
   },
 
@@ -180,9 +171,6 @@ export default {
         data == undefined ? (data = attr.en + ", ") : (data += attr.en + ", ");
       });
       return data.slice(0, data.length - 2);
-    },
-    getFormatedCurrency(value) {
-      return this.currencyFormatter.format(value);
     }
   }
 };

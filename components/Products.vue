@@ -24,9 +24,8 @@
             <span class="title is-4">
               <strong>
                 <strike>
-                  $
                   {{
-                  parseFloat(product.variations[0].market_price).toFixed(2)
+                  formatcurrency(product.variations[0].market_price).toFixed(2)
                   }}
                 </strike>
               </strong>
@@ -36,9 +35,8 @@
         <p class="is-pulled-right">
           <span class="title is-4">
             <strong>
-              $
               {{
-              parseFloat(product.variations[0].sale_price).toFixed(2)
+              formatcurrency(product.variations[0].sale_price)
               }}
             </strong>
           </span>

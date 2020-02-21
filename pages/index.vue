@@ -10,7 +10,7 @@
 </template>
 
 <script>
-import knawatAPI from "@/.vscode/packages/KnawatAPI.js";
+import knawatAPI from "@/packages/KnawatAPI.js";
 import VmProductsList from "@/components/products_list/ProductsListContainer";
 import VmHero from "@/components/hero/Hero";
 

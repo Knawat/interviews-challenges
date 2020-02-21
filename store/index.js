@@ -10,11 +10,7 @@ export const state = () => ({
   }
 });
 export const getters = {
-  productsAdded: state => {
-    if (state.products || state.products.length == 0) {
-      return [];
-    }
-
+  getproductsAdded: state => {
     return state.products;
   },
   isProductAddedIncart: state => {
@@ -63,11 +59,6 @@ export const mutations = {
     if (productIndex !== -1) {
       state.products.splice(productIndex, 1);
     }
-    // for (var i = 0; i < state.products.length; i++) {
-    //   if (state.products[i].sku == product.sku) {
-    //     state.products.splice(i, 1);
-    //   }
-    // }
     if (localStorage) {
       localStorage["products"] = JSON.stringify(state.products);
     }
@@ -90,10 +81,5 @@ export const mutations = {
     if (product) {
       product.quantity = data.quantity;
     }
-    // state.products.forEach(el => {
-    //   if (data.id === el.id) {
-    //     el.quantity = data.quantity;
-    //   }
-    // });
   }
 };
