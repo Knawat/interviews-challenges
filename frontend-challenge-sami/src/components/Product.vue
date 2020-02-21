@@ -57,11 +57,14 @@ export default {
   display flex
   flex-direction column
   position relative
+  outline none
+  &::-moz-focus-inner
+    border 0
 
   &__overlay
     opacity 0
 
-  &:hover, &:focus-within
+  &:hover
     outline none
     .product__overlay
       opacity 1
