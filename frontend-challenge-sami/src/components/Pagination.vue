@@ -2,11 +2,22 @@
 nav.pagination(aria-label="pagination")
   ul.pagination__list
     li.pagination__item
-      button(@click="$emit('prev')" :disabled="isPreviousDisabled" :aria-disabled="isPreviousDisabled")
+      button(
+        @click="$emit('prev')"
+        :disabled="isPreviousDisabled"
+        aria-label="previous page button"
+        :aria-disabled="isPreviousDisabled"
+        )
         svg.pagination__arrow(viewBox="0 0 24 24" :class="{'pagination__arrow--disabled': currentPage === 1}")
           path(fill="currentColor" d="M15.41,16.58L10.83,12L15.41,7.41L14,6L8,12L14,18L15.41,16.58Z")
+    
     li.pagination__item
-      button(@click="$emit('next')" :disabled="isNextDisabled" :aria-disabled="isNextDisabled")
+      button(
+        @click="$emit('next')"
+        :disabled="isNextDisabled"
+        aria-label="next page button"
+        :aria-disabled="isNextDisabled"
+        )
         svg.pagination__arrow(viewBox="0 0 24 24" :class="{'pagination__arrow--disabled': currentPage === numberOfPages}")
           path(fill="currentColor" d="M8.59,16.58L13.17,12L8.59,7.41L10,6L16,12L10,18L8.59,16.58Z")
 </template>
@@ -65,8 +76,8 @@ export default {
   &__arrow
     width 2.5rem
     height 2.5rem
-    color $turquoise
+    color $secondary
     &--disabled
-      color $dim-grey
+      color $primary
       cursor not-allowed
 </style>

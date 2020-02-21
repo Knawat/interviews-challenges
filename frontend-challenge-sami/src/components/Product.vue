@@ -1,13 +1,14 @@
 <template lang="pug">
-article.product(@mouseover="hovered = true" @mouseleave="hovered = false")
+article.product(tabindex="0")
   button.product__add-cart-btn.product__add-cart-btn--mobile(@click="addCartItem(product)") Add to cart
+  
   .product__image-wrapper
-
     transition(name="fade")
-      .product__overlay(v-show="hovered")
+      .product__overlay
         .product__dimmer
-        button.product__add-cart-btn(@click="addCartItem(product)") Add to cart
+        button.product__add-cart-btn.button(@click="addCartItem(product)" tabindex="0") Add to cart
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
+  
   .product__info
     h2.product__title {{'product ' + product.name.en}}
     .product__sizes
@@ -57,6 +58,15 @@ export default {
   flex-direction column
   position relative
 
+  &__overlay
+    opacity 0
+
+  &:hover, &:focus-within
+    outline none
+    .product__overlay
+      opacity 1
+      transition all 250ms ease
+
   &__image-wrapper
     height 440px
     position relative
@@ -72,7 +82,7 @@ export default {
     margin-top auto
 
   &__title
-    color $dim-grey
+    color $primary
     line-height 1.2
     font-size 1rem
 
@@ -81,16 +91,13 @@ export default {
     top 50%
     left 50%
     transform translate3d(-50%, -50%, 0)
-    background: $orange
     padding 0.8rem 1.5rem
-    border-radius 0.2rem
-    font-size 1rem
-    font-weight bold
-    transition transform ease 200ms
+    transition all ease 200ms
+    outline none
     &:active, &:focus
       transform translate3d(-50%, -50%, 0) scale(1.2, 1.2)
-    &:hover
-      background lighten($orange, 20%)
+    &::-moz-focus-inner
+      border 0
 
     &--mobile
       top 0
@@ -101,10 +108,6 @@ export default {
       z-index 9
       @media only screen and (min-width: 961px)
         display none
-
-  &__overlay
-    @media only screen and (max-width: 960px)
-      display none
 
   &__dimmer
     position absolute
@@ -120,12 +123,6 @@ export default {
 
   &__size
     margin-right 0.6rem
-    color lighten($dim-grey, 40%)
+    color lighten($primary, 40%)
     font-size: 0.9rem
-
-.fade-enter-active, .fade-leave-active
-  transition: opacity .3s
-
-.fade-enter, .fade-leave-to
-  opacity: 0
 </style>
