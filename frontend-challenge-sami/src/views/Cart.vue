@@ -5,7 +5,7 @@
     ul
       li(v-if="$store.getters.isEmptyCart")
         p Your cart is empty.
-        router-link.cta(to="/") Shop now!
+        router-link.cart__cta.button(to="/") Shop now!
   
       li.cart-item(v-for="item in $store.getters.getCartItems" :key="item.product.sku")
         .cart-item__image-wrapper
@@ -113,16 +113,7 @@ export default {
     @media only screen and (max-width: 960px)
       width: 20px
 
-.cta
+.cart__cta
   display: inline-block
-  font-size: 16px
-  background: $secondary
-  padding: 8px 16px
-  text-align: center
-  color: $primary
   margin-top: 1.2rem
-  border-radius: $border-radius
-  font-weight bold
-  &:hover
-    background: lighten($secondary, 20%)
 </style>
