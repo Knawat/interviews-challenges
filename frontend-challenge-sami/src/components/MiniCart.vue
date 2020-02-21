@@ -13,8 +13,8 @@
           button.cart__item-remove(@click="removeCartItem(item.product.sku)") Remove
   
   .cart__actions(v-if="!$store.getters.isEmptyCart")
-    router-link.cart__link(to="#") Checkout
-    router-link.cart__link(to="/cart") View Cart
+    router-link.cart__link.button(to="#") Checkout
+    router-link.cart__link.button(to="/cart") View Cart
 </template>
 
 <script>
@@ -39,7 +39,7 @@ export default {
   padding 1rem
   transition all ease-out 100ms
   transform-origin top
-  border-radius 0.2rem
+  border-radius $border-radius
   z-index 99
   box-shadow: 3px 2px 4px -2px rgba(0,0,0,0.45)
 
@@ -51,16 +51,6 @@ export default {
     margin-top 2rem
 
   &__link
-    font-size: 16px
-    background: $secondary
-    display: block
-    padding: 8px 16px
-    text-align: center
-    color: $primary
-    border-radius: 0.2rem
-    font-weight bold
-    &:hover
-      background lighten($secondary, 20%)
     &:not(:last-child)
       margin-bottom 0.8rem
 
@@ -101,7 +91,7 @@ export default {
       margin-bottom 0.4rem
 
     &-remove
-      border-radius 0.2rem
+      border-radius $border-radius
       font-weight bold
       color $maroon
       transition all 200ms ease

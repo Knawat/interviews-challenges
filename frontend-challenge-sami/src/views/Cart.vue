@@ -121,7 +121,7 @@ export default {
   text-align: center
   color: $primary
   margin-top: 1.2rem
-  border-radius: 0.2rem
+  border-radius: $border-radius
   font-weight bold
   &:hover
     background: lighten($secondary, 20%)
