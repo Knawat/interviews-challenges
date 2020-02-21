@@ -65,8 +65,8 @@ export default {
   &__arrow
     width 2.5rem
     height 2.5rem
-    color $turquoise
+    color $secondary
     &--disabled
-      color $dim-grey
+      color $primary
       cursor not-allowed
 </style>

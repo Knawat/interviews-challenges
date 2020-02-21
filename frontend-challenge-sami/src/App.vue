@@ -59,7 +59,7 @@ export default {
 
 .main
   padding-top 2rem
-  background-color $grey
+  background-color $page-bg
   flex 1
 
 .auth-loader
@@ -69,7 +69,7 @@ export default {
   transform translateX(-50%)
   display inline-flex
   align-items center
-  color $dark-green
+  color $success
   font-size 0.8rem
   text-transform uppercase
   &__text

@@ -52,15 +52,15 @@ export default {
 
   &__link
     font-size: 16px
-    background: $orange
+    background: $secondary
     display: block
     padding: 8px 16px
     text-align: center
-    color: $dim-grey
+    color: $primary
     border-radius: 0.2rem
     font-weight bold
     &:hover
-      background lighten($orange, 20%)
+      background lighten($secondary, 20%)
     &:not(:last-child)
       margin-bottom 0.8rem
 
@@ -75,7 +75,7 @@ export default {
 
     &-title
       font-size 0.8rem
-      color $dim-grey
+      color $primary
       margin-bottom 0.4rem
 
     &-thumb
@@ -97,7 +97,7 @@ export default {
 
     &-quantity
       font-size 0.6rem
-      color $dim-grey
+      color $primary
       margin-bottom 0.4rem
 
     &-remove

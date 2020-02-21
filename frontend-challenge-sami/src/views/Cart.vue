@@ -66,7 +66,7 @@ export default {
   &__title
     font-size 1rem
     margin-top 1rem
-    color $dim-grey
+    color $primary
 
   &__actions
     display: flex
@@ -74,30 +74,30 @@ export default {
     margin-top 1.6rem
 
   &__quantity
-    border: 2px solid $grey
-    padding: 4px 8px
+    border: 2px solid $silver
+    padding: 0.2rem 0.5rem
     min-width: 3rem
-    min-height: 35px
+    min-height: 2.2rem
     display: flex
     justify-content: center
     align-items: center
-    margin: 0 3px
+    margin: 0 1px
     @media only screen and (max-width: 960px)
-      min-height: 25px
+      min-height: 1.6rem
 
   &__quantity-button
-    background: $pink
+    background: $secondary
     display: block
     min-height: 35px
-    padding: 0 12px
-    min-width: 35px
-    min-height: 35px
+    padding: 0 0.5rem
+    min-width: 3rem
+    min-height: 2.2rem
     &:hover
-      background: lighten($pink, 20%)
+      background: lighten($secondary, 20%)
 
     @media only screen and (max-width: 960px)
-      min-width: 20px
-      min-height: 28px
+      min-width: 1.2rem
+      min-height: 1.6rem
 
     &--add
       border-top-right-radius: 30px
@@ -116,13 +116,13 @@ export default {
 .cta
   display: inline-block
   font-size: 16px
-  background: $orange
+  background: $secondary
   padding: 8px 16px
   text-align: center
-  color: $dim-grey
+  color: $primary
   margin-top: 1.2rem
   border-radius: 0.2rem
   font-weight bold
   &:hover
-    background: lighten($orange, 20%)
+    background: lighten($secondary, 20%)
 </style>

@@ -72,7 +72,7 @@ export default {
     margin-top auto
 
   &__title
-    color $dim-grey
+    color $primary
     line-height 1.2
     font-size 1rem
 
@@ -81,7 +81,7 @@ export default {
     top 50%
     left 50%
     transform translate3d(-50%, -50%, 0)
-    background: $orange
+    background: $secondary
     padding 0.8rem 1.5rem
     border-radius 0.2rem
     font-size 1rem
@@ -90,7 +90,7 @@ export default {
     &:active, &:focus
       transform translate3d(-50%, -50%, 0) scale(1.2, 1.2)
     &:hover
-      background lighten($orange, 20%)
+      background lighten($secondary, 20%)
 
     &--mobile
       top 0
@@ -120,7 +120,7 @@ export default {
 
   &__size
     margin-right 0.6rem
-    color lighten($dim-grey, 40%)
+    color lighten($primary, 40%)
     font-size: 0.9rem
 
 .fade-enter-active, .fade-leave-active

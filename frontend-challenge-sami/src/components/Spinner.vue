@@ -20,8 +20,8 @@ export default {
   width: 1rem
   height: 1rem
   border-radius: 50%
-  border: 2px solid $dark-green
-  border-color: $dark-green transparent $dark-green transparent
+  border: 2px solid $success
+  border-color: $success transparent $success transparent
   animation: lds-dual-ring 1.2s linear infinite
 
 @keyframes lds-dual-ring
