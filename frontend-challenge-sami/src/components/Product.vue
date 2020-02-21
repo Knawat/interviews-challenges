@@ -11,6 +11,8 @@ article.product(tabindex="0" ref="product")
   
   .product__info
     h2.product__title {{'product ' + product.name.en}}
+    .product__price
+      strong {{ getProductPrice(product) | appendCurrency }}
     .product__sizes
       strong.product__size(v-for="size in getProductSizes(product)" :key="size") {{size}}
 </template>
@@ -32,7 +34,6 @@ export default {
       this.$store.commit("ADD_CART_ITEM", product);
       this.$store.commit("SAVE_CART");
 
-
       this.$refs.product.blur();
       this.$refs.addBtn.blur();
     },
@@ -51,6 +52,12 @@ export default {
       const options = localizedOptions.map(op => op.en);
 
       return options;
+    },
+    getProductPrice(product) {
+      const variations = product.variations;
+      const price = variations[0] && variations[0].sale_price;
+
+      return price.toFixed(2);
     }
   }
 };
@@ -58,77 +65,86 @@ export default {
 
 <style lang="stylus" scoped>
 .product
-  display flex
-  flex-direction column
-  position relative
-  outline none
+  display: flex
+  flex-direction: column
+  position: relative
+  outline: none
+
   &::-moz-focus-inner
-    border 0
+    border: 0
 
   &__overlay
-    opacity 0
+    opacity: 0
 
   &:hover, &:focus-within
     .product__overlay
-      opacity 1
-      transition all 250ms ease
+      opacity: 1
+      transition: all 250ms ease
 
   &__image-wrapper
-    height 440px
-    position relative
+    height: 440px
+    position: relative
 
   &__image
-    max-height 100%
-    width 100%
-    height 100%
-    object-fit cover
+    max-height: 100%
+    width: 100%
+    height: 100%
+    object-fit: cover
 
   &__info
-    padding-top 1rem
-    margin-top auto
+    padding-top: 1rem
+    margin-top: auto
 
   &__title
-    color $primary
-    line-height 1.2
-    font-size 1rem
+    color: $primary
+    line-height: 1.2
+    font-size: 1rem
 
   &__add-cart-btn
-    position absolute
-    top 50%
-    left 50%
-    transform translate3d(-50%, -50%, 0)
-    padding 0.8rem 1.5rem
-    transition all ease 200ms
-    outline none
+    position: absolute
+    top: 50%
+    left: 50%
+    transform: translate3d(-50%, -50%, 0)
+    padding: 0.8rem 1.5rem
+    transition: all ease 200ms
+    outline: none
+
     &:active, &:focus
-      transform translate3d(-50%, -50%, 0) scale(1.2, 1.2)
+      transform: translate3d(-50%, -50%, 0) scale(1.2, 1.2)
+
     &::-moz-focus-inner
-      border 0
+      border: 0
 
     &--mobile
-      top 0
-      right 0
-      padding 0.5rem
-      transform none
-      left auto
-      z-index 9
+      top: 0
+      right: 0
+      padding: 0.5rem
+      transform: none
+      left: auto
+      z-index: 9
+
       @media only screen and (min-width: 961px)
-        display none
+        display: none
 
   &__dimmer
-    position absolute
-    top 0
-    left 0
-    right 0
-    bottom 0
-    background black
-    opacity 0.6
+    position: absolute
+    top: 0
+    left: 0
+    right: 0
+    bottom: 0
+    background: black
+    opacity: 0.6
 
   &__sizes
-    margin-top 0.4rem
+    margin-top: 0.2rem
 
   &__size
-    margin-right 0.6rem
-    color lighten($primary, 40%)
+    margin-right: 0.6rem
+    color: lighten($primary, 40%)
+    font-size: 0.9rem
+
+  &__price
+    margin-top: 0.4rem
+    color: lighten($primary, 40%)
     font-size: 0.9rem
 </style>
