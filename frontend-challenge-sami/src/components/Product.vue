@@ -1,12 +1,12 @@
 <template lang="pug">
-article.product
+article.product(tabindex="0")
   button.product__add-cart-btn.product__add-cart-btn--mobile(@click="addCartItem(product)") Add to cart
   
   .product__image-wrapper
     transition(name="fade")
       .product__overlay
         .product__dimmer
-        button.product__add-cart-btn.button(@click="addCartItem(product)") Add to cart
+        button.product__add-cart-btn.button(@click="addCartItem(product)" tabindex="0") Add to cart
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   
   .product__info
@@ -61,7 +61,8 @@ export default {
   &__overlay
     opacity 0
 
-  &:hover
+  &:hover, &:focus-within
+    outline none
     .product__overlay
       opacity 1
       transition all 250ms ease
@@ -92,8 +93,11 @@ export default {
     transform translate3d(-50%, -50%, 0)
     padding 0.8rem 1.5rem
     transition all ease 200ms
+    outline none
     &:active, &:focus
       transform translate3d(-50%, -50%, 0) scale(1.2, 1.2)
+    &::-moz-focus-inner
+      border 0
 
     &--mobile
       top 0
