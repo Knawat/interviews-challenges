@@ -12,12 +12,14 @@ article.product(tabindex="0" ref="product")
   .product__info
     h2.product__title {{'product ' + product.name.en}}
     .product__price
-      strong {{ getProductPrice(product) | appendCurrency }}
+      strong {{ price | appendCurrency }}
     .product__sizes
-      strong.product__size(v-for="size in getProductSizes(product)" :key="size") {{size}}
+      strong.product__size(v-for="size in sizes" :key="size") {{size}}
 </template>
 
 <script>
+import { getProductPrice, getProductSizes } from "@/utils.js";
+
 export default {
   name: "Product",
   props: {
@@ -26,9 +28,13 @@ export default {
       required: true
     }
   },
-  data: () => ({
-    hovered: false
-  }),
+  data() {
+    return {
+      hovered: false,
+      price: getProductPrice(this.product),
+      sizes: getProductSizes(this.product)
+    };
+  },
   methods: {
     addCartItem(product) {
       this.$store.commit("ADD_CART_ITEM", product);
@@ -36,28 +42,6 @@ export default {
 
       this.$refs.product.blur();
       this.$refs.addBtn.blur();
-    },
-    getProductSizes(product) {
-      const attributes = product.attributes;
-      const getSizeAttr = attr => {
-        if (attr.name && attr.name.en) {
-          return attr.name.en === "Size";
-        }
-
-        return {};
-      };
-
-      const { options: localizedOptions } = (attributes &&
-        attributes.find(attr => getSizeAttr(attr))) || { localizedOptions: [] };
-      const options = localizedOptions.map(op => op.en);
-
-      return options;
-    },
-    getProductPrice(product) {
-      const variations = product.variations;
-      const price = variations[0] && variations[0].sale_price;
-
-      return price.toFixed(2);
     }
   }
 };

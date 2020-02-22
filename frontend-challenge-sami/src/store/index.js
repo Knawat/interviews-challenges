@@ -1,6 +1,9 @@
 import Vue from "vue";
 import Vuex from "vuex";
 
+import { getProductPrice } from "@/utils";
+import { getProductWeight } from "@/utils";
+
 Vue.use(Vuex);
 const cachedCart = localStorage.getItem("cart");
 
@@ -28,6 +31,26 @@ export default new Vuex.Store({
       if (cartItems[0]) return false;
 
       return true;
+    },
+    getCartPrice: ({ cartItems }) => {
+      const totalPrice = cartItems.reduce((total, item) => {
+        const itemPrice = +getProductPrice(item.product) * item.quantity;
+        total += +itemPrice.toFixed(2);
+
+        return total;
+      }, 0);
+
+      return `$ ${totalPrice.toFixed(2)}`;
+    },
+    getCartWeight: ({ cartItems }) => {
+      const totalWeight = cartItems.reduce((total, item) => {
+        const itemWeight = +getProductWeight(item.product) * item.quantity;
+        total += itemWeight;
+
+        return total.toFixed(2);
+      }, 0);
+
+      return `${totalWeight} KG`;
     }
   },
   mutations: {
