@@ -1,6 +1,6 @@
 <template lang="pug">
 article.product(tabindex="0" ref="product")
-  button.product__add-cart-btn.product__add-cart-btn--mobile(@click="addCartItem(product)") Add to cart
+  button.product__add-cart-btn.product__add-cart-btn--mobile.button(@click="addCartItem(product)") Add to cart
   
   .product__image-wrapper
     transition(name="fade")
