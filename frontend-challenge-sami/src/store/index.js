@@ -34,8 +34,9 @@ export default new Vuex.Store({
     },
     getCartPrice: ({ cartItems }) => {
       const totalPrice = cartItems.reduce((total, item) => {
-        const itemPrice = +getProductPrice(item.product) * item.quantity;
-        total += +itemPrice.toFixed(2);
+        const productPrice = Number(getProductPrice(item.product));
+        const itemPrice = productPrice * item.quantity;
+        total += +itemPrice;
 
         return total;
       }, 0);
@@ -44,8 +45,9 @@ export default new Vuex.Store({
     },
     getCartWeight: ({ cartItems }) => {
       const totalWeight = cartItems.reduce((total, item) => {
-        const itemWeight = +getProductWeight(item.product) * item.quantity;
-        total += +itemWeight.toFixed(2);
+        const productWeight = Number(getProductWeight(item.product));
+        const itemWeight = productWeight * item.quantity;
+        total += +itemWeight;
 
         return total;
       }, 0);
