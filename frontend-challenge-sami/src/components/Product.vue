@@ -10,7 +10,7 @@ article.product(tabindex="0" ref="product")
     img.product__image(:src="product.images[0] ? product.images[0] : null" :alt='product.name.en')
   
   .product__info
-    h2.product__title {{'product ' + product.name.en}}
+    h2.product__title {{product.name.en}}
     .product__price
       strong {{ price | formatCurrency }}
     .product__sizes

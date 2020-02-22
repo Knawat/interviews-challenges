@@ -1,9 +1,8 @@
 // Some resets
-
-html 
+html
   font-size: 16px
   box-sizing: border-box
-  font-family: 'Montserrat', 'sans-serif'
+  font-family: 'Lato', 'sans-serif'
 
   @media only screen and (max-width: 650px)
     font-size: 14px
@@ -17,7 +16,7 @@ html, body
   height: 100%
 
 ol, ul
-	list-style: none
+  list-style: none
 
 a, button
   cursor: pointer
@@ -29,10 +28,8 @@ button
   border: none
   background: none
 
-
 // Utilities
-
-.container 
+.container
   width: 85%
   max-width: 1100px
   margin: 0 auto
@@ -41,19 +38,21 @@ button
   margin-bottom: 2rem
   color: $primary
   text-align: center
-  font-size 2rem
+  font-size: 2rem
+
   @media only screen and (max-width: 960px)
-    font-size 1.5rem
+    font-size: 1.5rem
 
 .button
-  display block
-  padding 0.5rem 1rem
+  display: block
+  padding: 0.5rem 1rem
   background: $secondary
   color: $primary
-  border-radius $border-radius
+  border-radius: $border-radius
   text-align: center
   font-size: 1rem
   font-weight: bold
-  transition background 200ms ease
+  transition: background 200ms ease
+
   &:hover, &:focus
-    background lighten($secondary, 20%)
+    background: lighten($secondary, 20%)
