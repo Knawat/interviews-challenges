@@ -14,10 +14,10 @@
       ul.summary__details
         li.summary__item
           dt.summary__point Order Value
-          dd.summary__value {{$store.getters.getCartPrice}}
+          dd.summary__value {{$store.getters.getCartPrice | formatCurrency}}
         li.summary__item
           dt.summary__point Weight
-          dd.summary__value {{$store.getters.getCartWeight}}
+          dd.summary__value {{$store.getters.getCartWeight | formatWeight}}
 
       button.summary__btn.button(v-if="$store.getters.getCartItems[0]") Checkout Now
       router-link.summary__btn.button(v-else to="/") Continue Shopping

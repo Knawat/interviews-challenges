@@ -23,7 +23,7 @@ li.cart-item
     
     .cart-item__price
       span.cart-item__price-text Item total: 
-      strong {{itemTotal | appendCurrency}}
+      strong {{itemTotal | formatCurrency}}
       
 </template>
 

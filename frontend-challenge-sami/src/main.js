@@ -9,7 +9,7 @@ Vue.config.productionTip = false;
 
 Vue.use(ApiPlugin);
 
-Vue.filter("appendCurrency", value => {
+Vue.filter("formatCurrency", value => {
   if (!value) return "";
   const formatCurrency = new Intl.NumberFormat("en-US", {
     style: "currency",
@@ -19,6 +19,17 @@ Vue.filter("appendCurrency", value => {
   });
 
   return formatCurrency.format(value).replace(/^(\D+)/, "$1 ");
+});
+
+Vue.filter("formatWeight", value => {
+  if (!value) return "";
+  const formatWeight = new Intl.NumberFormat("en-US", {
+    style: "decimal",
+    minimumFractionDigits: 0,
+    maximumFractionDigits: 2
+  });
+
+  return `${formatWeight.format(value)} KG`;
 });
 
 new Vue({

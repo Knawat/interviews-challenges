@@ -40,7 +40,7 @@ export default new Vuex.Store({
         return total;
       }, 0);
 
-      return `$ ${totalPrice.toFixed(2)}`;
+      return totalPrice;
     },
     getCartWeight: ({ cartItems }) => {
       const totalWeight = cartItems.reduce((total, item) => {
@@ -50,7 +50,7 @@ export default new Vuex.Store({
         return total;
       }, 0);
 
-      return `${totalWeight} KG`;
+      return totalWeight;
     }
   },
   mutations: {

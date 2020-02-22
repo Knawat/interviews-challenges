@@ -12,7 +12,7 @@ article.product(tabindex="0" ref="product")
   .product__info
     h2.product__title {{'product ' + product.name.en}}
     .product__price
-      strong {{ price | appendCurrency }}
+      strong {{ price | formatCurrency }}
     .product__sizes
       strong.product__size(v-for="size in sizes" :key="size") {{size}}
 </template>
