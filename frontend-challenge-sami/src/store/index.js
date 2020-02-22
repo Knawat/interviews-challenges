@@ -45,9 +45,9 @@ export default new Vuex.Store({
     getCartWeight: ({ cartItems }) => {
       const totalWeight = cartItems.reduce((total, item) => {
         const itemWeight = +getProductWeight(item.product) * item.quantity;
-        total += itemWeight;
+        total += +itemWeight.toFixed(2);
 
-        return total.toFixed(2);
+        return total;
       }, 0);
 
       return `${totalWeight} KG`;
