@@ -1,11 +1,15 @@
 <template>
   <div class="columns is-centered is-multiline" style="margin:10px">
     <template v-if="products">
-      <div class="card column is-one-quarter" v-for="product in productsList" :key="product.sku">
+      <div
+        class="card column is-one-quarter"
+        v-for="product in productsList"
+        :key="product.sku"
+      >
         <VmProducts :product="product"></VmProducts>
       </div>
     </template>
-    <div class="section" v-if="!products || products.length === 0">
+    <div class="section" v-if="!productsList || productsList.length === 0">
       <p>{{ noProductLabel }}</p>
     </div>
   </div>
@@ -25,11 +29,6 @@ export default {
       noProductLabel: "No product found",
       products: []
     };
-  },
-  computed: {
-    allProducts() {
-      return this.products;
-    }
   }
 };
 </script>

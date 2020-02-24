@@ -1,11 +1,19 @@
 <template>
   <div>
     <VmHero></VmHero>
-    <VmProductsList v-if="products.length > 0" :productsList="products"></VmProductsList>
+
+    <VmProductsList
+      v-if="products.length > 0"
+      :productsList="products"
+    ></VmProductsList>
     <div class="section" v-if="!isDataLoaded">
-      <progress class="progress is-small is-primary" max="100">Loading product</progress>
+      <div class="columns is-centered">
+        <span class="title">Loading........</span>
+      </div>
     </div>
-    <div class="section" v-else-if="isDataLoaded && products.length === 0">No Data Found!</div>
+    <div class="section" v-else-if="isDataLoaded && products.length === 0">
+      No Data Found!
+    </div>
   </div>
 </template>
 
@@ -50,12 +58,6 @@ export default {
           this.isDataLoaded = true;
         });
     }
-  },
-  computed: {
-    allProducts() {
-      return this.products;
-    }
-  },
-  methods: {}
+  }
 };
 </script>
