@@ -1,7 +1,7 @@
 <template>
   <div>
-    <div class="card-image column">
-      <figure class="image is-4by3" v-if="product.images.length > 0">
+    <div class="card-image">
+      <figure class="image is-3by4" v-if="product.images.length > 0">
         <img :src="product.images[0]" alt="Placeholder image" class="image" />
       </figure>
       <figure class="image is-4by3" v-else>
@@ -56,7 +56,7 @@
         </div>
 
         <div class="select color-select" v-if="isColorOptionAvailable.length > 0">
-          <p class="is-pulled-right">
+          <p class="is-pulled-right colordropdown">
             <select>
               <option>-- Select Color --</option>
               <option v-for="(color, index) in isColorOptionAvailable[0].options" :key="index">
@@ -67,7 +67,7 @@
         </div>
       </div>
       <div class="card-footer btn-actions">
-        <div class="card-footer-item field is-grouped">
+        <div class="card-footer-item field is-grouped footerbtn">
           <div class="has-text-centered center">
             <div class="buttons is-inline-block margin-btn">
               <button
@@ -240,6 +240,7 @@ strike {
 }
 .center {
   width: 100%;
+  display: block;
 }
 
 .margin-btn {
@@ -247,5 +248,15 @@ strike {
 }
 .margin-dropdown {
   margin: 5px auto;
+}
+.footerbtn {
+  display: -webkit-box;
+}
+@media screen and (min-width: 767px) and (max-width: 857px) {
+  .colordropdown {
+    font-size: 15px;
+    position: relative;
+    left: 8px;
+  }
 }
 </style>
