@@ -1,12 +1,12 @@
-var gulp = require('gulp');
+let gulp = require("gulp");
 
-gulp.task('')
+gulp.task("");
 
-						// return  client.cat.indices()
-						// return client.indices.delete({index:'doc'})
-						// return client.index(
-						// 	{	
-						// 		index: 'users',
-						// 		type: 'user',
-						// 		body: entity 
-						// 	})
+// return  client.cat.indices()
+// return client.indices.delete({index:'doc'})
+// return client.index(
+// 	{	
+// 		index: 'users',
+// 		type: 'user',
+// 		body: entity 
+// 	})
