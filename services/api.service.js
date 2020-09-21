@@ -5,44 +5,44 @@ const { UnAuthorizedError } = ApiGateway.Errors;
 
 
 module.exports = {
-    name: "api",
+	name: "api",
 	mixins: [ApiGateway],
     
 	settings: {
 		port: process.env.API_PORT || 3000,
 
-        routes: [{
-            aliases: {
+		routes: [{
+			aliases: {
 
-                // create
-                "POST /users/create": "users.create",
+				// create
+				"POST /users/create": "users.create",
 
-                // Login
-                "POST /users/login": "users.login",
+				// Login
+				"POST /users/login": "users.login",
 
 				// Current user
-                "GET /user": "users.me",
+				"GET /user": "users.me",
                 
-                // Get user's cart
+				// Get user's cart
 				"GET /user/cart": "users.cart",
 
-                // List Products
-                // "GET /products": "products.list",
+				// List Products
+				// "GET /products": "products.list",
 
-                // Create Product
-                "POST /products/create": "products.create",
+				// Create Product
+				"POST /products/create": "products.create",
                 
-                // Get Product
-                "GET /products/:id": "products.get",
+				// Get Product
+				"GET /products/:id": "products.get",
 
-                // Add to cart
-                "POST /products/:product/cart": "products.cart",
+				// Add to cart
+				"POST /products/:product/cart": "products.cart",
 
-            },
-            authorization: true
-        }],
-    },
-    methods: {
+			},
+			authorization: true
+		}],
+	},
+	methods: {
 		/**
 		 * Authorize the request
 		 *
@@ -68,8 +68,8 @@ module.exports = {
 								if (user) {
 									this.logger.info("Authenticated via JWT: ", user.username);
 									// Reduce user fields (it will be transferred to other nodes)
-                                    ctx.meta.user = user._source;
-                                    ctx.meta.user._id = user._id;
+									ctx.meta.user = user._source;
+									ctx.meta.user._id = user._id;
                                     
 									ctx.meta.token = token;
 								}
@@ -83,5 +83,5 @@ module.exports = {
 						return this.Promise.reject(new UnAuthorizedError());
 				});
 		},
-    }
-    };
+	}
+};
