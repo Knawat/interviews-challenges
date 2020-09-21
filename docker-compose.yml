@@ -1,0 +1,108 @@
+version: "3.0"
+
+services:
+  nats:
+    image: 'nats'
+
+  api:
+    build:
+      context: .
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    links:
+      - nats
+    depends_on:
+      - nats
+    labels:
+      - "traefik.enable=true"   
+      - "traefik.backend=api"
+      - "traefik.port=3000"
+      - "traefik.frontend.entryPoints=http"
+      - "traefik.frontend.rule=PathPrefix:/"
+
+  
+  products:
+    build:
+      context: .
+    env_file: docker-compose.env
+    environment:
+      SERVICES: products
+    links:
+      - nats
+    depends_on:
+      - nats
+    #deploy:
+    #  replicas: 2
+
+  carts:
+    build:
+      context: .
+    env_file: docker-compose.env
+    environment:
+      SERVICES: carts
+    links:
+      - nats
+    depends_on:
+      - nats
+    #deploy:
+    #  replicas: 2
+
+  users:
+    build:
+      context: .
+    env_file: docker-compose.env
+    environment:
+      SERVICES: users
+    links:
+      - nats
+    depends_on:
+      - nats
+    #deploy:
+    #  replicas: 2
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.4.0
+    container_name: elasticsearch
+    environment:
+      - xpack.security.enabled=false
+      - discovery.type=single-node
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+      nofile:
+        soft: 65536
+        hard: 65536
+    volumes:
+      - elasticsearch-data:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+      - 9300:9300
+
+  traefik:
+    image: traefik:1.7
+    command: --web --docker --docker.domain=docker.localhost --logLevel=INFO
+    ports:
+      - "3000:80"
+      - "3001:8080"
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+
+  nats:
+    image: 'nats'
+
+  redis:
+    image: "redis:alpine"
+    volumes:
+      - $PWD/redis-data:/var/lib/redis
+      - $PWD/redis.conf:/usr/local/etc/redis/redis.conf
+    ports:
+      - "6379:6379"
+    
+    
+volumes:
+  elasticsearch-data:
+    driver: local
