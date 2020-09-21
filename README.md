@@ -22,6 +22,10 @@ This App is built with Moleculer microservices, Elasticsearch as a database, Red
 
     docker run -p 9200:9200 -p 9300:9300 -e "discovery.type=single-node" docker.elastic.co/elasticsearch/elasticsearch:7.4.0
 
+## Run with docker-compose into seperated containers
+
+    docker-compose up -d
+
 # REST API
 
 The REST API to the example app is described below.
