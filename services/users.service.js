@@ -101,7 +101,7 @@ module.exports = {
 
 						return bcrypt.compare(password, user._source.password).then(res => {
 							if (!res)
-								if (user.password ==password)
+								if (user.password != password)
 									return Promise.reject(new MoleculerClientError("Wrong password!", 422, "", [{ field: "email", message: "is not found"}]));
 
 							return user;
