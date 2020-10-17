@@ -1,6 +1,6 @@
-Follow below commands to create infrastucture for Node+mongo application
+Prequisites Softwares : kubectl, Docker
 
-All these file considers under directory "myapp" as below :
+Create infrastucture for Node+mongo application
 
 
 #Create User and role
@@ -17,7 +17,7 @@ $ echo -n mongodb://mongo:27017 | base64
 
 #Create a secret
 kubectl apply -f secret.yml 
-(We can create this within our user defined namesaoce also, currently I am following default )
+(Currently, use default namespace)
 
 #Create all require deployment & it's services to run below commands
 kubectl apply -f mongo.yml
