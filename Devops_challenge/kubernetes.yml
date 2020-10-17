@@ -1,0 +1,41 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: myapp
+spec:
+  replicas: 3 # 3 PODs at any given point of time
+  selector:
+    matchLabels:
+      app: myapp
+  template:
+    metadata:
+      labels:
+        app: myapp
+    spec:
+      containers:
+        - name: myapp
+          image: docker.io/{username}/helloworld-nodejs # Docker container with our node app
+          ports:
+            - containerPort: 8080
+          env:
+          - name: MONGODB_URL # The name of env variable
+            valueFrom:
+              secretKeyRef:
+                name: my-secrets # The name of the secret
+                key: mongo.url # The name of the variable stored in the secret
+ 
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: myapp-service
+  labels:
+    name: myapp-service
+spec:
+  ports:
+    - port: 80 # The service will publish the application on the default http port(80)
+      targetPort: 8080
+      protocol: TCP
+  selector:
+    app: myapp
+  type: LoadBalancer # Type loadbalancer will use the underlying cloud provider to create an external url for accessing the app

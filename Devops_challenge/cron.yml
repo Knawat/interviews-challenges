@@ -1,0 +1,62 @@
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  name: singleton
+  labels:
+    app: myapp
+    special: singleton
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: myapp
+      special: singleton
+  template:
+    metadata:
+      labels:
+        app: myapp
+        special: singleton
+    spec:
+      containers:
+      - name: myapp
+        image: docker.io/{username}/helloworld-nodejs
+        ports:
+        - containerPort: 8080
+
+---
+
+kind: Service
+apiVersion: v1
+metadata:
+  name: singleton
+spec:
+  selector:
+    special: singleton
+  ports:
+  - protocol: TCP
+    port: 80
+    targetPort: 80
+
+---
+
+apiVersion: batch/v1beta1
+kind: CronJob
+metadata:
+  name: callout
+spec:
+  schedule: "*/2 * * * *"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 1
+  failedJobsHistoryLimit: 1
+  jobTemplate:
+    spec:
+      template:
+        spec:
+          containers:
+          - name: callout
+            image: buildpack-deps:curl
+            args:
+            - /bin/sh
+            - -ec
+            - curl http://localhost
+          restartPolicy: Never
