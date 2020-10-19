@@ -49,6 +49,8 @@ will show the service URL.
 Use curl to test the app:
 `curl -H "Host: helloworld-python.default.example.com"  http://localhost`
 
+##Create the CronJob
+`kubectl apply -f cronjob.yaml`
 
 
 
