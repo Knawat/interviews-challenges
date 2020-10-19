@@ -7,7 +7,17 @@ spec:
   template:
     spec:
       containers:
-        - image: docker.io/mhm0ud/helloworld-python
-          env:
-            - name: TARGET
-              value: "Python Sample v1"
+      - image: docker.io/mhm0ud/helloworld-python
+        env:
+        - name: TARGET
+          value: "Python Sample v1"
+    # The secret data is exposed to Containers in the Pod through a Volume.
+        volumeMounts:
+        - name: secret-volume
+          mountPath: /etc/secret-volume
+      volumes:
+      - name: secret-volume
+        secret:
+          secretName: db-secret 
+  
+    

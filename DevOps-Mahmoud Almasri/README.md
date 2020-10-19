@@ -1,7 +1,8 @@
-This is a sample project regarding to the DevOps assigment, I'll suppose that we have kubrentese cluster up and running. 
+#DevOps Assignment 
+This is a sample project regarding the DevOps assignment, I'll suppose that we have the Kubernetes cluster up and running. 
 
 ##Create a [installation instructions For Knative Serving](https://knative.dev/docs/serving/samples/hello-world/helloworld-python/) service:
-This app needs Kubernetes with knative serving , and Docker intsalled.
+This app needs Kubernetes with knative serving, and Docker installed.
 [installation instructions For Knative Serving](https://knative.dev/docs/install/any-kubernetes-cluster/#installing-the-serving-component)
 
 To Test the app you can use:
@@ -34,7 +35,20 @@ Create the mongo deployment using:
 Create the mongo service deployment using:
 `kubectl apply -f mongo-svc.yaml`
 
-I used the MONGO_INITDB_ROOT_USERNAME and MONGO_INITDB_ROOT_PASSWORD variables to initialise the admin db with a username and password in mongo.yaml, and get its values from the secret.
+I used the MONGO_INITDB_ROOT_USERNAME and MONGO_INITDB_ROOT_PASSWORD variables to initialize the admin DB with a username and password in mongo.yaml, and get its values from the secret.
+
+##Re-create the service using:
+`kubectl apply -f service.yaml`
+
+You can see the image used in the service from Dockerfile and app.py.
+
+To test the app use:
+`kubectl get svc`
+will show the service URL.
+
+Use curl to test the app:
+`curl -H "Host: helloworld-python.default.example.com"  http://localhost`
+
 
 
 
