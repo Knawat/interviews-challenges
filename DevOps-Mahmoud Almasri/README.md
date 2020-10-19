@@ -10,6 +10,27 @@ To Test the app you can use:
 
 
 
+##Create a persistent volume, I am using a local path /tmp/db
+Use `kubectl create -f mongo-pv.yaml`
+
+##Obtain the persistent volume
+Use `kubectl create -f mongo-pvc.yaml`
+
+##Create Secret
+convert the strings(username:my-app, password:123123) to base64 as follows:
+`echo -n 'mya-app' | base64`
+The output is:
+bXktYXBw
+
+`echo -n '123123' | base64`
+The output is:
+MTIzMTIz
+
+create the Secret using `kubectl apply -f ./secret.yaml`
+
+
+
+
 
 
 
