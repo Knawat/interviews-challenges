@@ -19,6 +19,19 @@ spec:
           volumeMounts:
             - name: storage
               mountPath: /data/db
+          env:
+           - name: MONGO_INITDB_ROOT_USERNAME
+             valueFrom:
+               secretKeyRef:
+                 name: db-secret
+                 key: username
+           - name: MONGO_INITDB_ROOT_PASSWORD
+             valueFrom:
+               secretKeyRef:
+                 name: db-secret
+                 key: password
+           - name: MONGO_INITDB_DATABASE
+             value: admin           
       volumes:
         - name: storage
           persistentVolumeClaim:
