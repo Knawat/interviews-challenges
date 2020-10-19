@@ -1,8 +1,6 @@
 import os
-import subprocess
-from flask import Flask, request, jsonify
+from flask import Flask
 from flask_pymongo import PyMongo
-from bson.objectid import ObjectId
 
 #get the username and password of the DB from the bined volume
 mongoadmin = os.popen("cat /etc/secret-volume/username").read()
@@ -24,5 +22,4 @@ def cron_job():
     return "Hi Cron Job!"
 
 if __name__ == "__main__":
-    app.debug = True
     app.run(debug=True,host='0.0.0.0',port=int(os.environ.get('PORT', 8080)))

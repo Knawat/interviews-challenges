@@ -9,8 +9,6 @@ To Test the app you can use:
 `kubectl get ksvc` to see the URL of the service
 `curl -H "Host: ServiceURL"  http://localhost`
 
-
-
 ##Create a persistent volume, I am using a local path /tmp/db
 Use `kubectl apply -f mongo-pv.yaml`
 
@@ -51,9 +49,3 @@ Use curl to test the app:
 
 ##Create the CronJob
 `kubectl apply -f cronjob.yaml`
-
-
-
-
-
-
