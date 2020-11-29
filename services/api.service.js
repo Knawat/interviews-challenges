@@ -40,7 +40,7 @@ module.exports = {
                     'POST register': 'auth.register',
                     'POST login': 'auth.login',
                     'GET products': 'products.list',
-                    'GET products/create': 'products.create',
+                    'POST products/create': 'products.create',
                     'GET cart': 'cart.summary',
                     'POST cart/add': 'cart.add',
                     'POST cart/clear': 'cart.clear'

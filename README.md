@@ -1,22 +1,90 @@
-# Knawat is hiring
+## Interview Challenges
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career
+Simple e-commerce task
+## Functionality:
 
-## Open vacancies (Software Team)
+- User can login & register.
+- User can add products in the cart.
+- User can get his cart summary.
+- docker-compose support
 
-- ~~[Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)~~
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- ~~[System Analyst (ERP)](http://smrtr.io/N-Rm)~~
+## Backend:
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Jest, Kubernetes, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuff check
+- Elasticsearch as a database.
+- NATs messaging system for services transportation.
+- Redis for caching 
 
-## Hiring Process for technical positions
+## Api Collection
+    - POST /api/register body:{name,email,password}
+    - POST /api/login body:{email,password}
+    - POST /api/products/create body:{ 
+                                      name: {type: "string"},
+                                      url: {type: "string"},
+                                      sku: {type: "string"},
+                                      barcode: {type: "string"},
+                                      brand: {type: "string"},
+                                      category: {type: "string"}
+                                      } 
+                                  headers:{Authorization:<useer_token>}
+                                  
+    - POST /api/cart/add body:{productId} headers:{Authorization:<useer_token>}
+    - GET /api/cart headers:{Authorization:<useer_token>}
+    - POST /api/cart/clear headers:{Authorization:<useer_token>}
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skills, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+## Build Setup
+
+```bash
+# Install dependencies
+npm install
+
+# Start developing with REPL
+npm run dev
+
+# Start production
+npm start
+
+# Run unit tests
+npm test
+
+# Run ESLint
+npm run lint
+
+# Run Prettier
+npm run prettier
+```
+
+## Run in Docker (production)
+
+### Set environment
+
+
+### Run in Docker (Development)
+
+1.  Start with docker-compose: `node dc:up` OR `docker-compose up -d`
+
+    It starts all services in separated containers, a Redis server for caching and a [Traefik](https://traefik.io/) reverse proxy. All nodes communicate via NATs transporter.
+
+2.  Open the http://docker-ip:3000
+
+
+## Code Overview
+
+### Dependencies
+
+- [moleculer](https://github.com/moleculerjs/moleculer) - Microservices framework for NodeJS
+- [moleculer-web](https://github.com/moleculerjs/moleculer-web) - Official API Gateway service for Moleculer
+- [nats](https://github.com/nats-io/node-nats) - [NATS](https://nats.io) transport driver for Moleculer _(optional)_
+- [elasticsearch](https://github.com/elastic/elasticsearch-js) - [ELASTICSEARCH](https://www.elastic.co/products/elasticsearch) as database
+- [ioredis](https://github.com/luin/ioredis) - [REDIS](https://redis.io/) caching
+- [jsonwebtoken](https://github.com/auth0/node-jsonwebtoken) - JWT user autheentication
+
+### Application Structure
+
+- `moleculer.config.js` - Moleculer ServiceBroker configuration file.
+- `services/` - This folder contains the services.
+
+## Test
+
+```
+$ npm test
+```
