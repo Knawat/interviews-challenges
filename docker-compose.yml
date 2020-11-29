@@ -1,0 +1,224 @@
+version: '3.3'
+
+services:
+
+  api:
+    build:
+      context: .
+    image: kanwat
+    container_name: 'kanwat-api'
+    restart: always
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 4000    # Port of API gateway
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=api"
+      - "traefik.port=4000"
+      - "traefik.frontend.entryPoints=http"
+      - "traefik.frontend.rule=PathPrefix:/"
+    networks:
+      - elastic
+      - internal
+
+
+  auth:
+    build:
+      context: .
+    image: kanwat
+    container_name: 'kanwat-auth'
+    restart: always
+    env_file: docker-compose.env
+    environment:
+      SERVICES: auth
+    labels:
+      - "traefik.enable=false"
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+    networks:
+      - elastic
+      - internal
+
+  products:
+    build:
+      context: .
+    image: kanwat
+    container_name: 'kanwat-products'
+    restart: always
+    env_file: docker-compose.env
+    environment:
+      SERVICES: product
+    labels:
+      - "traefik.enable=false"
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+    networks:
+      - elastic
+      - internal
+
+  cart:
+    build:
+      context: .
+    image: kanwat
+    container_name: 'kanwat-cart'
+    restart: always
+    env_file: docker-compose.env
+    environment:
+      SERVICES: cart
+    labels:
+      - "traefik.enable=false"
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+    networks:
+      - elastic
+      - internal
+
+  users:
+    build:
+      context: .
+    image: kanwat
+    container_name: users
+    restart: always
+    env_file: docker-compose.env
+    environment:
+      SERVICES: users
+    labels:
+      - "traefik.enable=false"
+    links:
+      - nats
+      - redis
+      - elasticsearch
+    depends_on:
+      - nats
+      - redis
+      - elasticsearch
+    networks:
+      - elastic
+      - internal
+
+  nats:
+    image: nats
+    container_name: kanwat-nats
+    env_file: docker-compose.env
+    ports:
+      - 4222:4222
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    container_name: 'kanwat-redis'
+    env_file: docker-compose.env
+    environment:
+      - PORT:6379
+    labels:
+      - "traefik.enable=false"
+    networks:
+      - internal
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    container_name: elasticsearch
+    environment:
+      - node.name=elasticsearch
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=es02
+      - cluster.initial_master_nodes=elasticsearch,es02
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms1000m -Xmx1000m"
+    labels:
+      - "traefik.enable=false"
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data01:/usr/share/elasticsearch/data
+    ports:
+      - 9200:9200
+    networks:
+      - elastic
+
+  es02:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.10.0
+    container_name: es02
+    environment:
+      - node.name=es02
+      - cluster.name=es-docker-cluster
+      - discovery.seed_hosts=elasticsearch,es03
+      - cluster.initial_master_nodes=elasticsearch,es02,es03
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+    labels:
+      - "traefik.enable=false"
+
+    ulimits:
+      memlock:
+        soft: -1
+        hard: -1
+    volumes:
+      - data02:/usr/share/elasticsearch/data
+    networks:
+      - elastic
+
+  traefik:
+    image: traefik:1.7
+    container_name: "kanwat-traefik"
+    command:
+      - "--api"
+      - "--docker"
+      - "--docker.watch"
+    labels:
+      - "traefik.enable=true"
+      - "traefik.backend=traefik"
+      - "traefik.port=8080"
+    ports:
+      - 4000:80
+      - 3001:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock
+      - /dev/null:/traefik.toml
+    networks:
+      - internal
+      - default
+
+volumes:
+  data01:
+    driver: local
+  data02:
+    driver: local
+
+networks:
+  internal:
+
+  elastic:
+    driver: bridge

@@ -1,0 +1,53 @@
+{
+  "name": "kanwat",
+  "version": "1.0.0",
+  "description": "My Moleculer project",
+  "scripts": {
+    "dev": "moleculer-runner --repl --hot --env services",
+    "start": "moleculer-runner services",
+    "cli": "moleculer connect NATS",
+    "ci": "jest --watch",
+    "test": "jest --coverage",
+    "lint": "eslint services mixins",
+    "prettier": "prettier services/*.js mixins/*.js test/unit/*.js *.js --write",
+    "dc:up": "docker-compose up --build -d",
+    "dc:down": "docker-compose down"
+  },
+  "keywords": [
+    "microservices",
+    "moleculer"
+  ],
+  "devDependencies": {
+    "eslint": "^5.16.0",
+    "eslint-config-airbnb-base": "^13.2.0",
+    "eslint-config-prettier": "^3.6.0",
+    "eslint-plugin-import": "^2.22.1",
+    "jest": "^23.6.0",
+    "jest-cli": "^23.6.0",
+    "moleculer-repl": "^0.6.4",
+    "npm-check": "^5.9.2",
+    "prettier": "^1.19.1"
+  },
+  "dependencies": {
+    "bcrypt": "^5.0.0",
+    "dotenv": "^6.2.0",
+    "elasticsearch": "^15.5.0",
+    "ioredis": "^4.19.2",
+    "jsonwebtoken": "^8.5.1",
+    "lodash": "^4.17.20",
+    "moleculer": "^0.14.11",
+    "moleculer-web": "^0.9.0",
+    "nats": "^1.4.12"
+  },
+  "engines": {
+    "node": ">= 8.x.x"
+  },
+  "jest": {
+    "coverageDirectory": "../coverage",
+    "testEnvironment": "node",
+    "rootDir": "./services",
+    "roots": [
+      "../test"
+    ]
+  }
+}
