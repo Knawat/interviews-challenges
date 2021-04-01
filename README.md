@@ -1,24 +1,128 @@
-# Knawat is hiring
+Testing UI:
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career.
+Test File: signin_create account__specs
 
-Check our stack [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/knawat/knawat)
+1.Sign In: 
 
-## Open vacancies (Software Team)
+To Open Given Test Page and Click on Sign In Button
+Is Sign In Button clickable or not 
 
-- ~~[Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)~~
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- ~~[System Analyst (ERP)](http://smrtr.io/N-Rm)~~
+2.Registration Process with Error Mesage on Empty Credentials
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Jest, Kubernetes, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuff check
+If user dont give any email and click on create an account button
+If user give wrong email format and click on create an account button  (Note: Give any wrong format email as input)
 
-## Hiring Process for technical positions
+------------------------------------------------------------------------------------------------------------------------------------------
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skills, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+Test File: registration_process1_spec
+
+1.To Open Given Test Page and Click on Sign In Button
+2.Registration Process with Error Mesage on Empty Credentials
+
+When User give correct format of email
+When User click on Register Button Without Giving any Credentials: See System Prompts Error Message
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:registration_process2_spec
+
+1.To Open Given Test Page and Click on Sign In Button
+2.Registration Form Feild Validation (When Wrong Format Inputs Given)
+  
+  Note: To See Validation is Applied on each field mentioned on Registration Form 
+ 
+When user give Name of Wrong Format (First Name, Last Name)
+When user give Password Less Than 5 Characters)
+When user give wrong Zip/Postal Code
+When user give A Large Text in Assign an address alias for future reference Field )
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:registration_process3_spec
+1.To Open Given Test Page and Click on Sign In Button
+2.Registration Process (With Happy Flow: When All Correct Format Inputs Given)
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+Testing rest API
+
+Test File:Authors(Get Request)_spec
+
+1.Api Testing (Get Api With No Parameter)
+//Happy Flow
+Hit Get Api and Validate:Response Status Code and Body
+
+2.Just make change from "Authors"to "Auth"
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:Authors(Get with Parameters)_spec
+
+1.Hit Get Api with Valid Parameter and Validate:Response Status Code and Body
+2.Hit Get Api with Invalid Parameter and Validate:Response Status Code and Body
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:Authors(Post Request)_spec
+
+1.Hit Post Api and Validate:Response Status Code and Body
+  //Happy Flow
+
+2.Make Some Alteration in Body and Hit Post Api and Validate:Response Status Code
+  //Here make some changes" Remove Id value and First Name
+
+-------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:Authors(Put Request)_spec
+
+1.Hit Post Api and Validate:Response Status Code and Body
+
+2.Make Some Alteration in Parameter and Hit Post Api and Validate:Response Status Code
+  //Just make a change in Paramter: 1111111111111111111
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+Test File:cypress.json
+
+Add this code snippet in cypress.json
+
+{
+    "chromeWebSecurity": false,
+    "modifyObstructiveCode": true,
+"experimentalSourceRewriting": true
+}
+
+--------------------------------------------------------------------------------------------------------------------------------------------
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
