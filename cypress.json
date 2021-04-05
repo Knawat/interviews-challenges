@@ -1,0 +1,5 @@
+{
+    "modifyObstructiveCode": true,
+    "experimentalSourceRewriting": true,
+    "baseUrl": "http://automationpractice.com"
+}

@@ -1,0 +1,23 @@
+{
+  "name": "interviews-challenges",
+  "version": "1.0.0",
+  "description": "Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career.",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "cypress:open": "cypress open"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/daahmed/interviews-challenges.git"
+  },
+  "author": "ahmed.awouda",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/daahmed/interviews-challenges/issues"
+  },
+  "homepage": "https://github.com/daahmed/interviews-challenges#readme",
+  "devDependencies": {
+    "cypress": "^6.8.0"
+  }
+}
