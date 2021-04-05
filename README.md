@@ -1,6 +1,6 @@
 
 # introducttion 
-this is an Assesmnt Automation Test Project for web application and API base on javascript language. all script have been wreten according to test scenarios, you can found the test scenarioes in \scenarios\Test scenarios.
+This is an Assesmnt Automation Test Project for web application and API base on javascript language. all script have been wreten according to test scenarios, you can found the test scenarioes in \scenarios\Test scenarios.
 
 ## Technologies:
 - vs code: code editor.
@@ -11,7 +11,7 @@ this is an Assesmnt Automation Test Project for web application and API base on 
 These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
 ## Branch
-the automation test script has been placed in automation_test branch.
+The automation test script has been placed in automation_test branch.
 
 ## project structure
 - \cypress\fixtures: automation test data.
@@ -20,20 +20,20 @@ the automation test script has been placed in automation_test branch.
 - \scenarios: test scenarios file 
 
 # Setup
-- clone the project.
-- run the project.
-- select the test and see the test result.
+- Clone the project.
+- Run the project.
+- Select the test and see the test result.
 
 ## Clone
 Clone this repo to your local machine using https://github.com/daahmed/knawat_automation.git link
 
 ## Running the tests
-follow this steps
-- open the project in vscode editor.
-- open the vscode terminal 
-- write 'npm install' in terminal to get the packages.
-- write 'npm run cypress:open' in terminal to run the tests.
-- select one of the test scripts you want to run and watch the result.
+Follow this steps
+- Open the project in vscode editor.
+- Open the vscode terminal 
+- Write 'npm install' in terminal to get the packages.
+- Write 'npm run cypress:open' in terminal to run the tests.
+- Select one of the test scripts you want to run and watch the result.
 
 
   
