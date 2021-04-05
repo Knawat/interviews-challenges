@@ -1,24 +1,44 @@
-# Knawat is hiring
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career.
+# introducttion 
+this is an Assesmnt Automation Test Project for web application and API base on javascript language. all script have been wreten according to test scenarios, you can found the test scenarioes in \scenarios\Test scenarios.
 
-Check our stack [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/knawat/knawat)
+## Technologies:
+- vs code: code editor.
+- javaScript: program language used to write test script
+- Cypress: automation test framework base on JavaScript language.
+ 
+# Getting Started
+These instructions will get you a copy of the project up and running on your local machine for development and testing purposes.
 
-## Open vacancies (Software Team)
+## Branch
+the automation test script has been placed in automation_test branch.
 
-- ~~[Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)~~
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- ~~[System Analyst (ERP)](http://smrtr.io/N-Rm)~~
+## project structure
+- \cypress\fixtures: automation test data.
+- \cypress\integration\API:automation test script for APIs.
+- \cypress\integration\web_application: automation test script for web application.
+- \scenarios: test scenarios file 
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Jest, Kubernetes, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuff check
+# Setup
+- clone the project.
+- run the project.
+- select the test and see the test result.
 
-## Hiring Process for technical positions
+## Clone
+Clone this repo to your local machine using https://github.com/daahmed/knawat_automation.git link
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skills, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+## Running the tests
+follow this steps
+- open the project in vscode editor.
+- open the vscode terminal 
+- write 'npm install' in terminal to get the packages.
+- write 'npm run cypress:open' in terminal to run the tests.
+- select one of the test scripts you want to run and watch the result.
+
+
+  
+
+
+
+
+
