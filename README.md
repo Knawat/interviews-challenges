@@ -1,24 +1,41 @@
-# Knawat is hiring
+1. Run the following command to start the docker containers
 
-Work remote or join our team @ the lovely Istanbul. For the full list click here https://knawat.com/career.
+# npm run dc:up
 
-Check our stack [![StackShare](http://img.shields.io/badge/tech-stack-0690fa.svg?style=flat)](https://stackshare.io/knawat/knawat)
+The above command should start the api gateway with http://localhost:3000/api
 
-## Open vacancies (Software Team)
+2. Sample Payload for Registering the user
+   payload:{
+   "email": "string",
+   "password":"string",
+   "username":"string",
+   "mobilenum":number
+   }
 
-- ~~[Full Stack Developer - JavaScript (Meteor & React)](http://smrtr.io/N-QQ)~~
-- [Back-End Developer - Node.js](http://smrtr.io/N-RJ)
-- [Front-End Developer](http://smrtr.io/N-Q-)
-- [Software test Engineer](http://smrtr.io/N-QR)
-- [WordPress Developer](http://smrtr.io/N-QV)
-- [Intern Software Developer](http://smrtr.io/N-Rh)
-- ~~[System Analyst (ERP)](http://smrtr.io/N-Rm)~~
+    # API_URL:- POST http://localhost:3000/api/users
 
-We are using Moleculer, Docker, Elasticsearch, ELK Stack, Jest, Kubernetes, Selenium, Ghost Inspector, Redis, NATs, RabbitMQ and maybe some other stuff check
+3. Sample Payload for login
 
-## Hiring Process for technical positions
+    paylaod:{
+    email:string,
+    password:string
+    }
 
-1. General interview: Exploring your skills and answering your questions about Knawat.
-2. Technical assignment (optional): Validating skills, it is optional if you can share some previous code with us.
-3. Technical Assignment & Live coding interview: Discussing the previous assignment and do some code together.
-4. Culture Fit Interview: Interview with someone from our higher management level preparing to get an offer.
+    # API_URL:- POST http://localhost:3000/api/users/login
+
+    Note:- The above api will return a token in response. please attach
+    the token in authorization headers as Bearer token
+
+4. Sample Payload for Adding Product to Cart
+   payload:{
+   name: string,
+   description: string,
+   brand: string,
+   price: number
+   }
+
+# API_URL:- POST http://localhost:3000/api/cart
+
+5. Use the Following api to get the summary from cart
+
+    # API_URL:- GET http://localhost:3000/api/summary

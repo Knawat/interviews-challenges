@@ -1,0 +1,95 @@
+version: "3.3"
+
+services:
+  api:
+    build:
+      context: .
+    image: demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: api
+      PORT: 3000
+    depends_on:
+      - redis
+    labels:
+      - "traefik.enable=true"
+      - "traefik.http.routers.api-gw.rule=PathPrefix(`/`)"
+      - "traefik.http.services.api-gw.loadbalancer.server.port=3000"
+    networks:
+      - internal
+
+  cart:
+    build:
+      context: .
+    image: demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: cart
+    depends_on:
+      - redis
+      - mongo
+
+    networks:
+      - internal
+
+  users:
+    build:
+      context: .
+    image: demo
+    env_file: docker-compose.env
+    environment:
+      SERVICES: users
+      ES_HOST: elasticsearch
+    depends_on:
+      - redis
+      - elasticsearch
+    networks:
+      - internal
+
+  mongo:
+    image: mongo:4
+    volumes:
+      - data:/data/db
+    networks:
+      - internal
+
+  redis:
+    image: redis:alpine
+    networks:
+      - internal
+
+  elasticsearch:
+    image: docker.elastic.co/elasticsearch/elasticsearch:7.0.1
+    ports:
+      - 9300:9300
+      - 9200:9200
+    volumes:
+      - esdata:/usr/share/elasticsearch/data
+    environment:
+      - bootstrap.memory_lock=true
+      - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
+      - discovery.type=single-node
+    networks:
+      - internal
+
+  traefik:
+    image: traefik:v2.1
+    command:
+      - "--api.insecure=true" # Don't do that in production!
+      - "--providers.docker=true"
+      - "--providers.docker.exposedbydefault=false"
+    ports:
+      - 3000:80
+      - 3001:8080
+    volumes:
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    networks:
+      - internal
+      - default
+
+networks:
+  internal:
+
+volumes:
+  esdata:
+  data:
